@@ -113,7 +113,7 @@ async function connect(user) {
     ui.applyRecords(incoming);
     ready = true;
     window.miBandaCloud.mode = "cloud";
-    ui.showApp("cloud", user.displayName || user.email || "Google");
+    ui.showApp("cloud", { name: user.displayName || user.email || "Cuenta de Google", email: user.email || "" });
     ui.syncMessage("Sincronizado con Firebase");
     unsubscribe = onSnapshot(ref, snapshot => {
       // Local pending edits take precedence until the server acknowledges them.
@@ -157,11 +157,21 @@ el("connectGoogle").addEventListener("click", async () => {
   else el("signInBtn").click();
 });
 
-el("signOutBtn").addEventListener("click", async () => {
-  stopListening();
-  await signOut(auth);
-  ui.showGate("Sesión cerrada. Entra con Google para recuperar tus registros sincronizados.", true);
-});
+async function closeSession() {
+  const buttons = [el("signOutBtn"), el("signOutHeader")];
+  buttons.forEach(button => button.disabled = true);
+  try {
+    await signOut(auth);
+    stopListening();
+    ui.showGate("Sesión cerrada. Entra con Google para recuperar tus registros sincronizados.", true);
+  } catch (error) {
+    ui.notify("No se ha podido cerrar sesión: " + friendlyError(error));
+  } finally {
+    buttons.forEach(button => button.disabled = false);
+  }
+}
+el("signOutBtn").addEventListener("click", closeSession);
+el("signOutHeader").addEventListener("click", closeSession);
 
 onAuthStateChanged(auth, user => {
   el("signInBtn").disabled = false;
