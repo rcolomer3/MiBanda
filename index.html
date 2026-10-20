@@ -181,6 +181,18 @@
 @media(prefers-reduced-motion:reduce){
   .bottomnav button,.bottomnav .add-action .add-circle{transition:none;}
 }
+
+/* En móvil, Registros y + abren pantallas diferentes. */
+@media(max-width:740px){
+  #records[data-mobile-view="history"] #formPanel{display:none;}
+  #records[data-mobile-view="form"] #historyPanel{display:none;}
+  .bottomnav .add-action.selected .add-circle{
+    border-color:#1d69e0;
+    box-shadow:0 8px 20px rgba(37,99,235,.35),0 0 0 3px rgba(37,99,235,.12);
+  }
+  #records[data-mobile-view="history"] #historyPanel{margin-top:0;}
+  #records[data-mobile-view="form"] #formPanel{margin-top:0;}
+}
 </style>
 </head>
 <body>
@@ -219,9 +231,9 @@
 <div class="panel"><div class="section-head"><h2>Detalle del periodo</h2></div><div class="summary-list"><div class="minirow"><span>Ensayos asistidos</span><strong id="progressCount">0 / 0</strong></div><div class="progress"><div id="progressFill" style="width:0"></div></div><div class="minirow"><span>Ensayos no asistidos</span><strong id="missed">0</strong></div></div><p class="note" style="margin-top:24px">El porcentaje cuenta los ensayos a los que asististe respecto al total de ensayos registrados.</p></div></div>
 <div class="panel recent"><div class="section-head"><h2>Últimos registros</h2><button class="btn sm" id="viewAll">Ver todos</button></div><div id="recentList"></div></div>
 </section>
-<section id="records" class="page"><div class="head"><div><h1>Ensayos y actos</h1><p>Apunta cuándo tenías actividad y si asististe.</p></div></div>
+<section id="records" class="page" data-mobile-view="history"><div class="head"><div><h1 id="recordsHeading">Ensayos y actos</h1><p id="recordsIntro">Consulta tu historial o añade un ensayo o acto.</p></div></div>
 <div class="panel" id="formPanel" style="margin-bottom:16px"><div class="section-head"><h2 id="formTitle">Nuevo registro</h2></div><form id="recordForm"><div class="form-grid"><div class="field"><label for="date">Fecha *</label><input required id="date" type="date"></div><div class="field"><label for="kind">Tipo *</label><select id="kind"><option value="Ensayo">🎼 Ensayo</option><option value="Acto">🎺 Acto</option></select></div><div class="field"><label for="name">Nombre / descripción *</label><input id="name" maxlength="120" required placeholder="Ej.: Ensayo general"></div><div class="field"><label for="status">Asistencia *</label><select id="status"><option value="yes">✅ Asistí</option><option value="no">❌ No asistí</option></select></div><div class="field wide"><label for="notes">Notas (opcional)</label><textarea id="notes" rows="2" maxlength="500" placeholder="Lugar, repertorio, observaciones..."></textarea></div></div><div class="form-actions"><button class="btn primary" type="submit" id="saveBtn">Guardar registro</button><button class="btn" type="button" id="cancelEdit" hidden>Cancelar edición</button></div></form></div>
-<div class="panel"><div class="section-head"><h2>Historial <span id="recordCount" class="muted"></span></h2><button class="btn sm" id="exportCsv">Exportar CSV</button></div><div class="toolbar"><input id="search" placeholder="Buscar ensayo, acto o notas..." aria-label="Buscar"><select id="typeFilter" aria-label="Filtrar tipo"><option value="all">Todos los tipos</option><option value="Ensayo">Solo ensayos</option><option value="Acto">Solo actos</option></select><select id="statusFilter" aria-label="Filtrar asistencia"><option value="all">Todas las asistencias</option><option value="yes">Asistí</option><option value="no">No asistí</option></select></div><p class="note" id="recordFilterDescription"></p><div class="tablewrap"><table><thead><tr><th>Fecha</th><th>Actividad</th><th>Nombre</th><th>Asistencia</th><th>Acciones</th></tr></thead><tbody id="rows"></tbody></table></div><div class="empty" id="emptyRecords" hidden>No hay registros con estos filtros.</div></div>
+<div class="panel" id="historyPanel"><div class="section-head"><h2>Historial <span id="recordCount" class="muted"></span></h2><button class="btn sm" id="exportCsv">Exportar CSV</button></div><div class="toolbar"><input id="search" placeholder="Buscar ensayo, acto o notas..." aria-label="Buscar"><select id="typeFilter" aria-label="Filtrar tipo"><option value="all">Todos los tipos</option><option value="Ensayo">Solo ensayos</option><option value="Acto">Solo actos</option></select><select id="statusFilter" aria-label="Filtrar asistencia"><option value="all">Todas las asistencias</option><option value="yes">Asistí</option><option value="no">No asistí</option></select></div><p class="note" id="recordFilterDescription"></p><div class="tablewrap"><table><thead><tr><th>Fecha</th><th>Actividad</th><th>Nombre</th><th>Asistencia</th><th>Acciones</th></tr></thead><tbody id="rows"></tbody></table></div><div class="empty" id="emptyRecords" hidden>No hay registros con estos filtros.</div></div>
 </section>
 <section id="settings" class="page"><div class="head"><div><h1>Ajustes</h1><p>Sincronización y copias de seguridad.</p></div></div>
 <div class="panel sync-panel">
@@ -261,7 +273,31 @@ function fmtDate(iso){const a=iso.split('-');return `${a[2]}/${a[1]}/${a[0]}`}
 function labelStatus(s){return {yes:'Asistí',no:'No asistí'}[s]||s}
 function pill(s){return `<span class="pill ${s}">${s==='yes'?'✓ ':'✕ '}${labelStatus(s)}</span>`}
 function toast(msg){$('toast').textContent=msg;$('toast').classList.add('on');clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>$('toast').classList.remove('on'),2800)}
-function show(page){document.querySelectorAll('.page').forEach(e=>e.classList.toggle('active',e.id===page));document.querySelectorAll('[data-page]').forEach(e=>{const active=e.dataset.page===page;e.classList.toggle('active',active);if(e.closest('.bottomnav')){if(active)e.setAttribute('aria-current','page');else e.removeAttribute('aria-current')}});if(page==='records')renderTable();scrollTo({top:0,behavior:'smooth'})}
+function setMobileRecordsView(view){
+  const mobile=window.matchMedia('(max-width:740px)').matches;
+  const page=$('records');
+  page.dataset.mobileView=view;
+  $('recordsHeading').textContent=mobile?(view==='form'?(editing?'Editar registro':'Nuevo registro'):'Mis registros'):'Ensayos y actos';
+  $('recordsIntro').textContent=mobile?(view==='form'?'Registra un ensayo o acto y marca tu asistencia.':'Consulta los ensayos y actos que has registrado.'):'Consulta tu historial o añade un ensayo o acto.';
+  const isForm=mobile&&view==='form'&&page.classList.contains('active');
+  const recordTab=document.querySelector('.bottomnav [data-page="records"]');
+  const addTab=$('mobileAdd');
+  addTab.classList.toggle('selected',isForm);
+  recordTab.classList.toggle('active',page.classList.contains('active')&&!isForm);
+  if(isForm){recordTab.removeAttribute('aria-current');addTab.setAttribute('aria-current','page')}
+  else{addTab.removeAttribute('aria-current');if(page.classList.contains('active'))recordTab.setAttribute('aria-current','page');else recordTab.removeAttribute('aria-current')}
+}
+function show(page){
+  document.querySelectorAll('.page').forEach(e=>e.classList.toggle('active',e.id===page));
+  document.querySelectorAll('[data-page]').forEach(e=>{
+    const active=e.dataset.page===page;
+    e.classList.toggle('active',active);
+    if(e.closest('.bottomnav')){if(active)e.setAttribute('aria-current','page');else e.removeAttribute('aria-current')}
+  });
+  if(page==='records')renderTable();
+  setMobileRecordsView('history');
+  scrollTo({top:0,behavior:'smooth'});
+}
 function initYears(){const years=new Set(records.map(r=>r.date.slice(0,4)));years.add(String(new Date().getFullYear()));if(/^\d{4}$/.test(filterYear))years.add(filterYear);const opts=['<option value="all">Todos los años</option>',...[...years].sort((a,b)=>Number(b)-Number(a)).map(y=>`<option value="${y}">${y}</option>`)];$('year').innerHTML=opts.join('');$('year').value=filterYear}
 function subset(){return records.filter(r=>(filterYear==='all'||r.date.slice(0,4)===filterYear)&&(filterMonth==='all'||Number(r.date.slice(5,7))===Number(filterMonth)))}
 function ordered(arr){return [...arr].sort((a,b)=>b.date.localeCompare(a.date)||b.id.localeCompare(a.id))}
@@ -278,13 +314,14 @@ function render(){renderDashboard();renderTable()}
 function resetForm(){$('recordForm').reset();$('date').value=today();editing=null;$('saveBtn').textContent='Guardar registro';$('formTitle').textContent='Nuevo registro';$('cancelEdit').hidden=true}
 function download(content,name,mime){const blob=new Blob([content],{type:mime}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000)}
 function csvCell(x){return '"'+String(x??'').replace(/"/g,'""')+'"'}
-$('recordForm').addEventListener('submit',e=>{e.preventDefault();const date=$('date').value,kind=$('kind').value,name=$('name').value.trim(),status=$('status').value,notes=$('notes').value.trim();if(!date||!/^\d{4}-\d{2}-\d{2}$/.test(date)||!name||!['Ensayo','Acto'].includes(kind)||!['yes','no'].includes(status))return;if(editing){const idx=records.findIndex(r=>r.id===editing);if(idx<0)return;records[idx]={id:editing,date,kind,name,status,notes}}else records.push({id:typeof crypto!=='undefined'&&crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random(),date,kind,name,status,notes});if(!save())return;filterYear=date.slice(0,4);filterMonth='all';render();resetForm();toast('Registro guardado correctamente')});
-$('rows').addEventListener('click',e=>{const edit=e.target.closest('[data-edit]'),del=e.target.closest('[data-delete]');if(edit){const r=records.find(r=>r.id===edit.dataset.edit);if(!r)return;editing=r.id;$('date').value=r.date;$('kind').value=r.kind;$('name').value=r.name;$('status').value=r.status==='just'?'no':r.status;$('notes').value=r.notes||'';$('saveBtn').textContent='Guardar cambios';$('formTitle').textContent='Editar registro';$('cancelEdit').hidden=false;$('formPanel').scrollIntoView({behavior:'smooth',block:'start'});$('name').focus({preventScroll:true})}if(del){const r=records.find(r=>r.id===del.dataset.delete);if(!r||!confirm(`¿Eliminar "${r.name}" del ${fmtDate(r.date)}?`))return;records=records.filter(x=>x.id!==r.id);if(editing===r.id)resetForm();if(save()){render();toast('Registro eliminado')}}});
-function openNewRecord(){resetForm();show('records');requestAnimationFrame(()=>$('formPanel').scrollIntoView({behavior:'smooth',block:'start'}))}
-$('cancelEdit').addEventListener('click',resetForm);
+$('recordForm').addEventListener('submit',e=>{e.preventDefault();const date=$('date').value,kind=$('kind').value,name=$('name').value.trim(),status=$('status').value,notes=$('notes').value.trim();if(!date||!/^\d{4}-\d{2}-\d{2}$/.test(date)||!name||!['Ensayo','Acto'].includes(kind)||!['yes','no'].includes(status))return;if(editing){const idx=records.findIndex(r=>r.id===editing);if(idx<0)return;records[idx]={id:editing,date,kind,name,status,notes}}else records.push({id:typeof crypto!=='undefined'&&crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random(),date,kind,name,status,notes});if(!save())return;filterYear=date.slice(0,4);filterMonth='all';render();resetForm();if(window.matchMedia('(max-width:740px)').matches){setMobileRecordsView('history');scrollTo({top:0,behavior:'smooth'})}toast('Registro guardado correctamente')});
+$('rows').addEventListener('click',e=>{const edit=e.target.closest('[data-edit]'),del=e.target.closest('[data-delete]');if(edit){const r=records.find(r=>r.id===edit.dataset.edit);if(!r)return;editing=r.id;$('date').value=r.date;$('kind').value=r.kind;$('name').value=r.name;$('status').value=r.status==='just'?'no':r.status;$('notes').value=r.notes||'';$('saveBtn').textContent='Guardar cambios';$('formTitle').textContent='Editar registro';$('cancelEdit').hidden=false;setMobileRecordsView('form');requestAnimationFrame(()=>{$('formPanel').scrollIntoView({behavior:'smooth',block:'start'});$('name').focus({preventScroll:true})})}if(del){const r=records.find(r=>r.id===del.dataset.delete);if(!r||!confirm(`¿Eliminar "${r.name}" del ${fmtDate(r.date)}?`))return;records=records.filter(x=>x.id!==r.id);if(editing===r.id)resetForm();if(save()){render();toast('Registro eliminado')}}});
+function openNewRecord(){resetForm();show('records');setMobileRecordsView('form');requestAnimationFrame(()=>$('formPanel').scrollIntoView({behavior:'smooth',block:'start'}))}
+$('cancelEdit').addEventListener('click',()=>{resetForm();if(window.matchMedia('(max-width:740px)').matches){setMobileRecordsView('history');scrollTo({top:0,behavior:'smooth'})}});
 document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.page)));
 $('quickAdd').addEventListener('click',openNewRecord);
 $('mobileAdd').addEventListener('click',openNewRecord);
+window.addEventListener('resize',()=>{if($('records').classList.contains('active'))setMobileRecordsView($('records').dataset.mobileView||'history')});
 $('viewAll').addEventListener('click',()=>show('records'));
 $('year').addEventListener('change',()=>{filterYear=$('year').value;render()});$('month').addEventListener('change',()=>{filterMonth=$('month').value;render()});$('clearFilters').addEventListener('click',()=>{filterYear='all';filterMonth='all';render()});['search','typeFilter','statusFilter'].forEach(id=>$(id).addEventListener(id==='search'?'input':'change',renderTable));
 $('exportJson').addEventListener('click',()=>{download(JSON.stringify({version:1,records},null,2),`mi-banda-copia-${today()}.json`,'application/json');toast('Copia descargada')});
