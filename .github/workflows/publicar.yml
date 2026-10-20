@@ -26,8 +26,11 @@ jobs:
       - name: Preparar el sitio
         run: |
           mkdir -p sitio
-          cp index.html sitio/index.html
+          # Incluir el módulo de Firebase: el HTML lo carga por separado.
+          cp index.html firebase-sync.js sitio/
           touch sitio/.nojekyll
+          test -s sitio/index.html
+          test -s sitio/firebase-sync.js
       - name: Configurar GitHub Pages
         uses: actions/configure-pages@v5
       - name: Subir archivos
