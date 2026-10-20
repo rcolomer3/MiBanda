@@ -259,6 +259,36 @@
 .trend-summary::before{content:"✦";color:#2976d7;font-size:15px;line-height:1.1}
 @media(max-width:740px){.attendance-trend{padding:17px}.trend-heading{gap:8px;align-items:start}.trend-heading h2{font-size:16px}.trend-heading .note{font-size:11px}.trend-period{font-size:10px;padding:6px 8px}.trend-visual{grid-template-columns:31px minmax(0,1fr);gap:6px;margin-top:18px}.trend-months span{font-size:9px}.trend-plot,.trend-y-labels{height:150px}.trend-summary{margin-top:17px}}
 @media(max-width:365px){.trend-months span{font-size:8px}.trend-period{max-width:102px;white-space:normal;text-align:center}}
+
+/* Secciones de últimos registros separadas en el resumen */
+.recent-split{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:16px}
+.recent-split .recent{margin-top:0;min-width:0}
+.recent-split .section-head{align-items:flex-start}
+.recent-split .section-head h2{font-size:17px}
+.recent-split .recent-item{grid-template-columns:43px minmax(0,1fr) auto;gap:9px}
+.recent-split .recent-item small{display:block;margin-top:4px}
+.recent-split .recent-item strong{overflow-wrap:anywhere}
+@media(max-width:1000px){.recent-split{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:740px){.recent-split{gap:12px}.recent-split .recent-item{grid-template-columns:43px minmax(0,1fr)}.recent-split .recent-item .pill{grid-column:2;justify-self:start}}
+/* Historial: pestañas para ensayos y actos */
+.record-kinds{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:5px;border:1px solid #e5ebf5;border-radius:15px;background:#f2f5fa;margin:14px 0 16px}
+.kind-tab{min-width:0;min-height:44px;display:flex;align-items:center;justify-content:center;gap:8px;padding:9px 7px;border:1px solid transparent;border-radius:11px;background:transparent;color:#64748b;font-size:13px;font-weight:750;cursor:pointer;transition:background .18s,color .18s,box-shadow .18s}
+.kind-tab.active{background:white;color:#1d64c8;border-color:#e1e9f8;box-shadow:0 2px 8px rgba(15,23,42,.06)}
+.kind-tab:focus-visible{outline:2px solid #60a5fa;outline-offset:2px}
+.kind-tab-count{min-width:22px;display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:3px 5px;background:#e4eaf4;color:#52677e;font-size:10px;font-variant-numeric:tabular-nums}
+.kind-tab.active .kind-tab-count{background:#e7f0ff;color:#1759b5}
+#historyPanel .toolbar{grid-template-columns:minmax(180px,2fr) minmax(130px,1fr)}
+#historyPanel .toolbar #search{grid-column:auto}
+@media(max-width:740px){.record-kinds{margin:12px 0 15px}.kind-tab{font-size:12px;gap:5px}.kind-tab-count{font-size:10px}#historyPanel .toolbar{display:grid;grid-template-columns:minmax(0,1fr)}#historyPanel .toolbar #search{grid-column:auto}}
+/* El aviso solo muestra desconexión cuando realmente no hay confirmación. */
+.sync-state{display:flex;align-items:center;gap:9px;font-weight:750;line-height:1.5;margin-bottom:4px}
+.sync-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;background:#f59e0b;box-shadow:0 0 0 4px #fef3c7}
+.sync-state[data-state="ok"]{color:#166534}
+.sync-state[data-state="ok"] .sync-dot{background:#16a34a;box-shadow:0 0 0 4px #dcfce7}
+.sync-state[data-state="error"]{color:#b42336}
+.sync-state[data-state="error"] .sync-dot{background:#e11d48;box-shadow:0 0 0 4px #ffe4e6}
+.sync-state[data-state="working"]{color:#946000}
+.sync-help{font-size:12px;color:#64748b;line-height:1.5;margin:0 0 12px}
 </style>
 </head>
 <body>
@@ -309,16 +339,35 @@
   </div>
   <p id="trendSummary" class="trend-summary" role="status"></p>
 </div>
-<div class="panel recent"><div class="section-head"><h2>Últimos registros</h2><button class="btn sm" id="viewAll">Ver todos</button></div><div id="recentList"></div></div>
+<div class="recent-split">
+  <div class="panel recent">
+    <div class="section-head"><h2>Últimos ensayos</h2><button type="button" class="btn sm" data-recent-kind="Ensayo">Ver ensayos</button></div>
+    <div id="recentEnsayos"></div>
+  </div>
+  <div class="panel recent">
+    <div class="section-head"><h2>Últimos actos</h2><button type="button" class="btn sm" data-recent-kind="Acto">Ver actos</button></div>
+    <div id="recentActos"></div>
+  </div>
+</div>
 </section>
 <section id="records" class="page" data-mobile-view="history"><div class="head"><div><h1 id="recordsHeading">Ensayos y actos</h1><p id="recordsIntro">Consulta tu historial o añade un ensayo o acto.</p></div></div>
 <div class="panel" id="formPanel" style="margin-bottom:16px"><div class="section-head"><h2 id="formTitle">Nuevo registro</h2></div><form id="recordForm"><div class="form-grid"><div class="field"><label for="date">Fecha *</label><input required id="date" type="date"></div><div class="field"><label for="kind">Tipo *</label><select id="kind"><option value="Ensayo">🎼 Ensayo</option><option value="Acto">🎺 Acto</option></select></div><div class="field"><label for="name">Nombre / descripción *</label><input id="name" maxlength="120" required placeholder="Ej.: Ensayo general"></div><div class="field"><label for="status">Asistencia *</label><select id="status"><option value="yes">✅ Asistí</option><option value="no">❌ No asistí</option></select></div><div class="field wide"><label for="notes">Notas (opcional)</label><textarea id="notes" rows="2" maxlength="500" placeholder="Lugar, repertorio, observaciones..."></textarea></div></div><div class="form-actions"><button class="btn primary" type="submit" id="saveBtn">Guardar registro</button><button class="btn" type="button" id="cancelEdit" hidden>Cancelar edición</button></div></form></div>
-<div class="panel" id="historyPanel"><div class="section-head"><h2>Historial <span id="recordCount" class="muted"></span></h2><button class="btn sm" id="exportCsv">Exportar CSV</button></div><div class="toolbar"><input id="search" placeholder="Buscar ensayo, acto o notas..." aria-label="Buscar"><select id="typeFilter" aria-label="Filtrar tipo"><option value="all">Todos los tipos</option><option value="Ensayo">Solo ensayos</option><option value="Acto">Solo actos</option></select><select id="statusFilter" aria-label="Filtrar asistencia"><option value="all">Todas las asistencias</option><option value="yes">Asistí</option><option value="no">No asistí</option></select></div><p class="note" id="recordFilterDescription"></p><div class="tablewrap"><table><thead><tr><th>Fecha</th><th>Actividad</th><th>Nombre</th><th>Asistencia</th><th>Acciones</th></tr></thead><tbody id="rows"></tbody></table></div><div id="mobileRecords" class="mobile-record-list" aria-label="Lista de ensayos y actos"></div><div class="empty" id="emptyRecords" hidden>No hay registros con estos filtros.</div></div>
+<div class="panel" id="historyPanel">
+  <div class="section-head"><h2>Historial <span id="recordCount" class="muted"></span></h2><button class="btn sm" id="exportCsv">Exportar CSV</button></div>
+  <div class="record-kinds" role="group" aria-label="Ver registros por tipo">
+    <button type="button" class="kind-tab active" data-kind-tab="all" aria-pressed="true"><span>Todos</span><span class="kind-tab-count" id="countAll">0</span></button>
+    <button type="button" class="kind-tab" data-kind-tab="Ensayo" aria-pressed="false"><span>Ensayos</span><span class="kind-tab-count" id="countEnsayos">0</span></button>
+    <button type="button" class="kind-tab" data-kind-tab="Acto" aria-pressed="false"><span>Actos</span><span class="kind-tab-count" id="countActos">0</span></button>
+  </div>
+  <div class="toolbar"><input id="search" placeholder="Buscar ensayo, acto o notas..." aria-label="Buscar">
+    <select id="typeFilter" hidden aria-label="Filtro interno por tipo"><option value="all">Todos los tipos</option><option value="Ensayo">Solo ensayos</option><option value="Acto">Solo actos</option></select>
+    <select id="statusFilter" aria-label="Filtrar asistencia"><option value="all">Todas las asistencias</option><option value="yes">Asistí</option><option value="no">No asistí</option></select></div><p class="note" id="recordFilterDescription"></p><div class="tablewrap"><table><thead><tr><th>Fecha</th><th>Actividad</th><th>Nombre</th><th>Asistencia</th><th>Acciones</th></tr></thead><tbody id="rows"></tbody></table></div><div id="mobileRecords" class="mobile-record-list" aria-label="Lista de ensayos y actos"></div><div class="empty" id="emptyRecords" hidden>No hay registros con estos filtros.</div></div>
 </section>
 <section id="settings" class="page"><div class="head"><div><h1>Ajustes</h1><p>Sincronización y copias de seguridad.</p></div></div>
 <div class="panel sync-panel">
 <h2>Cuenta y sincronización</h2>
-<p id="syncStatus" class="sync-state" role="status">Modo local · sin sincronización</p>
+<p id="syncStatus" class="sync-state" role="status" data-state="working"><span class="sync-dot" aria-hidden="true"></span><span id="syncStatusText">Comprobando conexión con Firebase…</span></p>
+<p id="syncHelp" class="sync-help">El estado se actualizará cuando Firebase confirme la conexión.</p>
 <p id="syncAccount" class="note"></p>
 <div class="settings-list">
 <button class="btn primary" id="connectGoogle">Conectar con Google</button>
