@@ -298,6 +298,44 @@
 .sync-state[data-state="error"] .sync-dot{background:#e11d48;box-shadow:0 0 0 4px #ffe4e6}
 .sync-state[data-state="working"]{color:#946000}
 .sync-help{font-size:12px;color:#64748b;line-height:1.5;margin:0 0 12px}
+
+/* Información interactiva en ambas gráficas: ratón, teclado y toque móvil. */
+.bar-group.graph-target{
+  appearance:none;min-width:0;padding:0;border:0;background:transparent;color:inherit;
+  cursor:pointer;border-radius:8px 8px 0 0;-webkit-tap-highlight-color:transparent;
+}
+.bar-group.graph-target:hover,.bar-group.graph-target:focus-visible{background:rgba(37,99,235,.065)}
+.bar-group.graph-target:focus-visible{outline:2px solid #60a5fa;outline-offset:2px}
+.bar-group.graph-target .bar{display:block;transition:filter .15s ease,height .15s}
+.bar-group.graph-target:hover .bar{filter:brightness(1.09)}
+.trend-hotspots{
+  position:absolute;inset:0;z-index:3;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));
+}
+.trend-month-hit{
+  appearance:none;border:0;background:transparent;padding:0;min-width:0;cursor:crosshair;
+  -webkit-tap-highlight-color:transparent;border-radius:5px;
+}
+.trend-month-hit:hover,.trend-month-hit:focus-visible{background:rgba(37,99,235,.065)}
+.trend-month-hit:focus-visible{outline:2px solid #60a5fa;outline-offset:-2px}
+.trend-plot .trend-point{pointer-events:none}
+.graph-tooltip{
+  position:fixed;z-index:60;top:0;left:0;width:224px;max-width:calc(100vw - 20px);
+  padding:13px 15px;background:rgba(15,23,42,.98);color:white;border-radius:14px;
+  box-shadow:0 14px 34px rgba(15,23,42,.22);pointer-events:none;
+  line-height:1.4;
+}
+.graph-tooltip-title{font-size:13px;font-weight:800;margin-bottom:9px;letter-spacing:.1px}
+.graph-tooltip-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:4px 0;font-size:12px;color:#dbe5f4}
+.graph-tooltip-row strong{color:#fff;font-size:13px;font-variant-numeric:tabular-nums}
+.graph-tooltip-label{display:inline-flex;align-items:center;gap:7px;min-width:0}
+.graph-tooltip-dot{width:8px;height:8px;flex-shrink:0;display:inline-block;border-radius:3px;background:#60a5fa}
+.graph-tooltip-dot.actos{background:#34d399}
+.graph-tooltip-pct{color:#fff;font-size:25px;line-height:1.1;font-weight:850;letter-spacing:-.7px;margin:1px 0 8px;font-variant-numeric:tabular-nums}
+.graph-tooltip-note{font-size:11px;color:#c6d3e5;line-height:1.5}
+@media(max-width:740px){
+  .graph-tooltip{width:210px;padding:12px 13px;border-radius:13px}
+  .trend-month-hit{cursor:pointer}
+}
 </style>
 </head>
 <body>
@@ -391,7 +429,7 @@
   <button type="button" data-page="records" aria-label="Ver ensayos y actos"><svg class="dock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg><span class="dock-label">Registros</span></button>
   <button type="button" class="add-action" id="mobileAdd" aria-label="Registrar un ensayo o acto"><span class="add-circle" aria-hidden="true"><svg class="dock-icon dock-plus-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span><span class="dock-label">Añadir</span></button>
   <button type="button" data-page="settings" aria-label="Abrir ajustes"><svg class="dock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h4m4 0h10M3 12h10m4 0h4M3 18h4m4 0h10"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="9" cy="18" r="2"/></svg><span class="dock-label">Ajustes</span></button>
-</nav><div class="toast" id="toast" role="status"></div>
+</nav><div class="graph-tooltip" id="graphTooltip" role="tooltip" hidden></div><div class="toast" id="toast" role="status"></div>
 <script>
 (()=>{'use strict';
 const KEY='miBandaAsistencias_v1',monthNames=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
@@ -443,8 +481,9 @@ function ordered(arr){return [...arr].sort((a,b)=>b.date.localeCompare(a.date)||
 function renderDashboard(){initYears();$('month').value=filterMonth;const data=subset(),ensayos=data.filter(r=>r.kind==='Ensayo'),acts=data.filter(r=>r.kind==='Acto'),yes=ensayos.filter(r=>r.status==='yes').length,no=ensayos.filter(r=>r.status==='no').length,actsYes=acts.filter(r=>r.status==='yes').length,pct=ensayos.length?Math.round(100*yes/ensayos.length):null;
 $('totalRehearsals').textContent=ensayos.length.toLocaleString('es-ES');$('attendedRehearsals').textContent=yes.toLocaleString('es-ES');$('actsAttended').textContent=actsYes.toLocaleString('es-ES');$('attendanceRate').textContent=pct===null?'—':`${pct} %`;$('rehearsalDetail').textContent=ensayos.length?`Último: ${fmtDate(ordered(ensayos)[0].date)}`:'Sin ensayos en el periodo';$('missedDetail').textContent=`${no} faltas en total`;$('actsDetail').textContent=`${acts.length} actos registrados`;
 $('progressCount').textContent=`${yes} / ${ensayos.length}`;$('progressFill').style.width=(pct??0)+'%';$('missed').textContent=no;
+hideGraphTooltip();
 const chartData=filterYear==='all'?data:records.filter(r=>r.date.slice(0,4)===filterYear);const buckets=Array.from({length:12},(_,m)=>{const list=chartData.filter(r=>Number(r.date.slice(5,7))===m+1);return {ensayos:list.filter(r=>r.kind==='Ensayo'&&r.status==='yes').length,actos:list.filter(r=>r.kind==='Acto'&&r.status==='yes').length}});const max=Math.max(1,...buckets.flatMap(b=>[b.ensayos,b.actos]));$('chartYear').textContent=filterYear==='all'?'Todos los años (agrupado por mes)':filterYear+(filterMonth==='all'?'':` · ${monthNames[Number(filterMonth)-1]} seleccionado`);
-$('chart').innerHTML=buckets.map((b,i)=>`<div class="bar-group" title="${monthNames[i]}: ${b.ensayos} ensayos asistidos, ${b.actos} actos realizados" style="${filterMonth!=='all'&&Number(filterMonth)!==i+1?'opacity:.32;':''}"><div class="bar ensayo" style="height:${b.ensayos?Math.max(3,b.ensayos/max*100):0}%"></div><div class="bar acto" style="height:${b.actos?Math.max(3,b.actos/max*100):0}%"></div></div>`).join('');$('monthLabels').innerHTML=monthNames.map(n=>`<span>${n.slice(0,3)}</span>`).join('');
+$('chart').innerHTML=buckets.map((b,i)=>`<button type="button" class="bar-group graph-target" data-graph-point data-chart-type="activity" data-month-index="${i}" data-attended="${b.ensayos}" data-acts="${b.actos}" aria-label="${monthNames[i]}: ${b.ensayos} ensayos asistidos y ${b.actos} actos realizados" style="${filterMonth!=='all'&&Number(filterMonth)!==i+1?'opacity:.32;':''}"><span class="bar ensayo" style="height:${b.ensayos?Math.max(3,b.ensayos/max*100):0}%"></span><span class="bar acto" style="height:${b.actos?Math.max(3,b.actos/max*100):0}%"></span></button>`).join('');$('monthLabels').innerHTML=monthNames.map(n=>`<span>${n.slice(0,3)}</span>`).join('');
 renderTrend();
 const makeRecent=(kind,target)=>{
   const list=ordered(data.filter(r=>r.kind===kind)).slice(0,4);
@@ -486,9 +525,10 @@ function renderTrend(){
   // they remain perfectly round, with the same centers as the month labels.
   const dots=months.filter(m=>m.pct!==null).map(m=>{
     const p=coords(m),highlight=m.index===selected;
-    return `<span class="trend-point${highlight?' selected':''}" style="left:${(p.x/660*100).toFixed(3)}%;top:${(p.y/160*100).toFixed(3)}%" title="${m.name}: ${m.pct} % (${m.attended} de ${m.total} ensayos)" aria-hidden="true"></span>`;
+    return `<span class="trend-point${highlight?' selected':''}" style="left:${(p.x/660*100).toFixed(3)}%;top:${(p.y/160*100).toFixed(3)}%" aria-hidden="true"></span>`;
   }).join('');
-  $('trendPlot').innerHTML=`<svg viewBox="0 0 660 160" preserveAspectRatio="none" focusable="false" aria-hidden="true"><defs><linearGradient id="trendAreaGradient" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#bfdbfe" stop-opacity=".7"/><stop offset="100%" stop-color="#eff6ff" stop-opacity=".08"/></linearGradient></defs>${grid}${area}${line}</svg>${dots}${months.every(m=>m.pct===null)?'<div class="trend-empty">Todavía no hay ensayos en este periodo.</div>':''}`;
+  const hotspots=months.map(m=>`<button type="button" class="trend-month-hit graph-target" data-graph-point data-chart-type="attendance" data-month-index="${m.index}" data-attended="${m.attended}" data-total="${m.total}" data-pct="${m.pct===null?'':m.pct}" aria-label="${m.name}: ${m.pct===null?'sin ensayos registrados':m.pct+' % de asistencia ('+m.attended+' de '+m.total+' ensayos)'}"></button>`).join('');
+  $('trendPlot').innerHTML=`<svg viewBox="0 0 660 160" preserveAspectRatio="none" focusable="false" aria-hidden="true"><defs><linearGradient id="trendAreaGradient" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#bfdbfe" stop-opacity=".7"/><stop offset="100%" stop-color="#eff6ff" stop-opacity=".08"/></linearGradient></defs>${grid}${area}${line}</svg>${dots}${months.every(m=>m.pct===null)?'<div class="trend-empty">Todavía no hay ensayos en este periodo.</div>':''}<div class="trend-hotspots">${hotspots}</div>`;
   $('trendMonths').innerHTML=months.map(m=>`<span class="${m.pct!==null?'with-data ':''}${m.index===selected?'highlight':''}" title="${m.name}: ${m.pct===null?'sin ensayos':m.pct+' % ('+m.attended+' de '+m.total+')'}">${m.name.slice(0,3)}</span>`).join('');
   $('trendPlot').setAttribute('aria-label','Porcentaje mensual de asistencia a ensayos. '+(filterYear==='all'?'Todos los años agrupados por mes. ':'Año '+filterYear+'. ')+months.map(m=>m.name+': '+(m.pct===null?'sin ensayos':m.pct+' por ciento, '+m.attended+' de '+m.total)).join('; '));
   const valid=(selected>=0?months.filter(m=>m.index===selected):months).filter(m=>m.pct!==null);
@@ -583,6 +623,79 @@ document.querySelectorAll('[data-recent-kind]').forEach(button=>button.addEventL
   $('typeFilter').value=button.dataset.recentKind;
   show('records');
 }));
+
+/* One tooltip for both charts; delegated listeners work after every render. */
+let activeGraphPoint=null, graphTooltipPinned=false;
+function hideGraphTooltip(){
+  $('graphTooltip').hidden=true;
+  activeGraphPoint=null;
+  graphTooltipPinned=false;
+}
+function showGraphTooltip(point,pinned=false,pointer=null){
+  if(pinned&&graphTooltipPinned&&activeGraphPoint===point){hideGraphTooltip();return}
+  const index=Number(point.dataset.monthIndex);
+  if(!Number.isInteger(index)||index<0||index>=monthNames.length)return;
+  const month=monthNames[index],year=filterYear==='all'?'Todos los años':filterYear;
+  const heading='<div class="graph-tooltip-title">'+month+' · '+year+'</div>';
+  let detail;
+  if(point.dataset.chartType==='activity'){
+    const attended=Number(point.dataset.attended)||0,acts=Number(point.dataset.acts)||0;
+    detail='<div class="graph-tooltip-row"><span class="graph-tooltip-label"><i class="graph-tooltip-dot"></i>Ensayos asistidos</span><strong>'+attended.toLocaleString('es-ES')+'</strong></div>'
+      +'<div class="graph-tooltip-row"><span class="graph-tooltip-label"><i class="graph-tooltip-dot actos"></i>Actos realizados</span><strong>'+acts.toLocaleString('es-ES')+'</strong></div>';
+  }else if(point.dataset.chartType==='attendance'){
+    const total=Number(point.dataset.total)||0,attended=Number(point.dataset.attended)||0;
+    detail=total?'<div class="graph-tooltip-pct">'+Math.round(attended/total*100)+' %</div><div class="graph-tooltip-note">'+attended+' de '+total+' '+(total===1?'ensayo registrado':'ensayos registrados')+' · asistencia</div>'
+      :'<div class="graph-tooltip-note">No hay ensayos registrados en este mes. Sin porcentaje de asistencia.</div>';
+  }else return;
+  const tooltip=$('graphTooltip');
+  tooltip.innerHTML=heading+detail;
+  tooltip.hidden=false;
+  tooltip.style.visibility='hidden';
+  activeGraphPoint=point;
+  graphTooltipPinned=pinned;
+  const rect=point.getBoundingClientRect(),width=tooltip.offsetWidth,height=tooltip.offsetHeight;
+  const x=pointer&&pointer.pointerType!=='touch'&&Number.isFinite(pointer.clientX)?pointer.clientX:rect.left+rect.width/2;
+  const y=pointer&&pointer.pointerType!=='touch'&&Number.isFinite(pointer.clientY)?pointer.clientY:rect.top+Math.min(rect.height/2,70);
+  const left=Math.max(10,Math.min(x-width/2,window.innerWidth-width-10));
+  let top=y-height-15;
+  if(top<10)top=y+18;
+  top=Math.max(10,Math.min(top,window.innerHeight-height-10));
+  tooltip.style.left=left+'px';
+  tooltip.style.top=top+'px';
+  tooltip.style.visibility='visible';
+}
+['chart','trendPlot'].forEach(id=>{
+  const plot=$(id);
+  const targetOf=node=>node&&node.closest?node.closest('[data-graph-point]'):null;
+  plot.addEventListener('pointerover',event=>{
+    if(event.pointerType==='touch'||graphTooltipPinned)return;
+    const target=targetOf(event.target);
+    if(target&&plot.contains(target))showGraphTooltip(target,false,event);
+  });
+  plot.addEventListener('pointerout',event=>{
+    if(event.pointerType==='touch'||graphTooltipPinned)return;
+    const from=targetOf(event.target),to=targetOf(event.relatedTarget);
+    if(from&&from!==to)hideGraphTooltip();
+  });
+  plot.addEventListener('focusin',event=>{
+    const target=targetOf(event.target);
+    if(target&&plot.contains(target))showGraphTooltip(target,false);
+  });
+  plot.addEventListener('focusout',event=>{
+    const from=targetOf(event.target),to=targetOf(event.relatedTarget);
+    if(from&&from!==to&&!graphTooltipPinned)hideGraphTooltip();
+  });
+  plot.addEventListener('click',event=>{
+    const target=targetOf(event.target);
+    if(target&&plot.contains(target))showGraphTooltip(target,true,event);
+  });
+});
+document.addEventListener('pointerdown',event=>{
+  if(!event.target.closest('[data-graph-point]'))hideGraphTooltip();
+});
+window.addEventListener('scroll',hideGraphTooltip,{passive:true});
+window.addEventListener('resize',hideGraphTooltip);
+
 $('year').addEventListener('change',()=>{filterYear=$('year').value;render()});$('month').addEventListener('change',()=>{filterMonth=$('month').value;render()});$('clearFilters').addEventListener('click',()=>{filterYear='all';filterMonth='all';render()});['search','typeFilter','statusFilter'].forEach(id=>$(id).addEventListener(id==='search'?'input':'change',renderTable));
 $('exportJson').addEventListener('click',()=>{download(JSON.stringify({version:1,records},null,2),`mi-banda-copia-${today()}.json`,'application/json');toast('Copia descargada')});
 $('exportCsv').addEventListener('click',()=>{const arr=filteredRecords(),lines=[['Fecha','Tipo','Actividad','Asistencia','Notas'],...arr.map(r=>[fmtDate(r.date),r.kind,r.name,labelStatus(r.status),r.notes||''])];download('\ufeff'+lines.map(row=>row.map(csvCell).join(';')).join('\r\n'),`mi-banda-registros-${today()}.csv`,'text/csv;charset=utf-8');toast('CSV descargado')});
