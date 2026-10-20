@@ -9,10 +9,26 @@
 @media(max-width:1100px){.stats{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:1fr}.content{padding:24px}}
 @media(max-width:740px){body{padding-bottom:74px}.app{display:block}.sidebar{display:none}.content{padding:17px 13px}.head h1{font-size:25px}.stats{gap:10px}.card{padding:15px}.value{font-size:25px}.layout{gap:12px}.panel{padding:16px}.filters{gap:9px}.filters .field{flex:1;min-width:130px}.filters select{min-width:0}.toolbar{grid-template-columns:1fr 1fr}.toolbar input{grid-column:1/-1}.bottomnav{display:flex;position:fixed;bottom:0;left:0;right:0;justify-content:space-around;align-items:center;height:69px;background:#0f172a;padding-bottom:env(safe-area-inset-bottom);z-index:5}.bottomnav button{border:0;background:none;color:#94a3b8;padding:5px;font-size:12px;min-width:75px}.bottomnav button.active{color:white;font-weight:800}.toast{bottom:82px;left:15px;right:15px;text-align:center}.bars{gap:5px}}
 @media(max-width:460px){.form-grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.detail{font-size:11px}.recent-item{grid-template-columns:42px minmax(0,1fr)}.recent-item .pill{grid-column:2;justify-self:start}.months{gap:3px;font-size:10px}}
+
+/* Firebase: sesión y estado de sincronización */
+[hidden]{display:none!important}
+.auth-gate{min-height:100vh;display:grid;place-items:center;padding:25px;background:linear-gradient(135deg,#0f172a,#243f64)}
+.auth-card{width:min(100%,440px);padding:32px;border-radius:22px;background:#fff;box-shadow:0 20px 65px rgba(0,0,0,.20);text-align:center}
+.auth-card .brandicon{font-size:48px}.auth-card h1{margin:12px 0;color:#0f172a;font-size:28px}
+.auth-card p{color:#64748b;line-height:1.65;font-size:14px;margin:10px 0 22px}
+.auth-card .btn{width:100%;margin-top:8px}
+.sync-panel{margin-bottom:16px}.sync-state{margin:10px 0;color:#475569;font-size:14px}
+.sync-state strong{color:#166534}.sync-panel .settings-list{margin-top:12px}
 </style>
 </head>
 <body>
-<div class="app">
+<div id="authGate" class="auth-gate"><div class="auth-card">
+<div class="brandicon">🎺</div><h1>Mi Banda</h1><p id="authMessage">Cargando Firebase…</p>
+<button class="btn primary" id="signInBtn" disabled>Entrar con Google</button>
+<button class="btn" id="localModeBtn">Continuar sin sincronización</button>
+<p style="font-size:12px;margin-bottom:0">Tus ensayos y actos solo se sincronizan si accedes con Google.</p>
+</div></div>
+<div class="app" hidden>
 <aside class="sidebar"><div class="brand">🎺 Mi Banda<small>Control de asistencias</small></div><nav class="nav"><button data-page="dashboard" class="active">📊 Resumen</button><button data-page="records">📅 Ensayos y actos</button><button data-page="settings">⚙️ Ajustes</button></nav></aside>
 <main class="content">
 <section id="dashboard" class="page active">
@@ -32,9 +48,19 @@
 <div class="panel" id="formPanel" style="margin-bottom:16px"><div class="section-head"><h2 id="formTitle">Nuevo registro</h2></div><form id="recordForm"><div class="form-grid"><div class="field"><label for="date">Fecha *</label><input required id="date" type="date"></div><div class="field"><label for="kind">Tipo *</label><select id="kind"><option value="Ensayo">🎼 Ensayo</option><option value="Acto">🎺 Acto</option></select></div><div class="field"><label for="name">Nombre / descripción *</label><input id="name" maxlength="120" required placeholder="Ej.: Ensayo general"></div><div class="field"><label for="status">Asistencia *</label><select id="status"><option value="yes">✅ Asistí</option><option value="no">❌ No asistí</option></select></div><div class="field wide"><label for="notes">Notas (opcional)</label><textarea id="notes" rows="2" maxlength="500" placeholder="Lugar, repertorio, observaciones..."></textarea></div></div><div class="form-actions"><button class="btn primary" type="submit" id="saveBtn">Guardar registro</button><button class="btn" type="button" id="cancelEdit" hidden>Cancelar edición</button></div></form></div>
 <div class="panel"><div class="section-head"><h2>Historial <span id="recordCount" class="muted"></span></h2><button class="btn sm" id="exportCsv">Exportar CSV</button></div><div class="toolbar"><input id="search" placeholder="Buscar ensayo, acto o notas..." aria-label="Buscar"><select id="typeFilter" aria-label="Filtrar tipo"><option value="all">Todos los tipos</option><option value="Ensayo">Solo ensayos</option><option value="Acto">Solo actos</option></select><select id="statusFilter" aria-label="Filtrar asistencia"><option value="all">Todas las asistencias</option><option value="yes">Asistí</option><option value="no">No asistí</option></select></div><p class="note" id="recordFilterDescription"></p><div class="tablewrap"><table><thead><tr><th>Fecha</th><th>Actividad</th><th>Nombre</th><th>Asistencia</th><th>Acciones</th></tr></thead><tbody id="rows"></tbody></table></div><div class="empty" id="emptyRecords" hidden>No hay registros con estos filtros.</div></div>
 </section>
-<section id="settings" class="page"><div class="head"><div><h1>Ajustes</h1><p>Copia y guarda tus datos cuando quieras.</p></div></div><div class="panel"><h2>Copias de seguridad</h2><p class="note">Tus datos se guardan únicamente en este navegador, en este dispositivo. Si borras los datos del navegador o utilizas otro ordenador, no aparecerán allí. Haz copias JSON periódicamente.</p><div class="settings-list"><button class="btn primary" id="exportJson">⬇ Descargar copia JSON</button><label class="btn select-file">⬆ Restaurar copia JSON<input type="file" accept=".json,application/json" id="importJson"></label></div></div><div class="panel" style="margin-top:16px"><h2>Administración</h2><p class="note">Eliminar todos los registros no se puede deshacer. Antes puedes descargar una copia de seguridad.</p><button class="btn danger" id="deleteAll">Borrar todos los registros</button></div></section>
+<section id="settings" class="page"><div class="head"><div><h1>Ajustes</h1><p>Sincronización y copias de seguridad.</p></div></div>
+<div class="panel sync-panel">
+<h2>Cuenta y sincronización</h2>
+<p id="syncStatus" class="sync-state" role="status">Modo local · sin sincronización</p>
+<p id="syncAccount" class="note"></p>
+<div class="settings-list">
+<button class="btn primary" id="connectGoogle">Conectar con Google</button>
+<button class="btn" id="signOutBtn" hidden>Cerrar sesión</button>
+</div>
+</div>
+<div class="panel"><h2>Copias de seguridad</h2><p class="note">Con Google tus registros se sincronizan mediante Firebase. También se conserva una copia en este navegador y puedes exportar tus datos en JSON. Si utilizas el modo local, los cambios solo están en este dispositivo.</p><div class="settings-list"><button class="btn primary" id="exportJson">⬇ Descargar copia JSON</button><label class="btn select-file">⬆ Restaurar copia JSON<input type="file" accept=".json,application/json" id="importJson"></label></div></div><div class="panel" style="margin-top:16px"><h2>Administración</h2><p class="note">Eliminar todos los registros no se puede deshacer. Antes puedes descargar una copia de seguridad.</p><button class="btn danger" id="deleteAll">Borrar todos los registros</button></div></section>
 </main></div>
-<nav class="bottomnav"><button class="active" data-page="dashboard">📊<br>Resumen</button><button data-page="records">📅<br>Registros</button><button data-page="settings">⚙️<br>Ajustes</button></nav><div class="toast" id="toast" role="status"></div>
+<nav class="bottomnav" hidden><button class="active" data-page="dashboard">📊<br>Resumen</button><button data-page="records">📅<br>Registros</button><button data-page="settings">⚙️<br>Ajustes</button></nav><div class="toast" id="toast" role="status"></div>
 <script>
 (()=>{'use strict';
 const KEY='miBandaAsistencias_v1',monthNames=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
@@ -42,7 +68,13 @@ const $=id=>document.getElementById(id);const today=()=>{const d=new Date();retu
 let records=[];try{const data=JSON.parse(localStorage.getItem(KEY)||'[]');if(Array.isArray(data))records=data.filter(isValidRecord).map(r=>r.status==='just'?{...r,status:'no'}:r)}catch(e){console.warn('Error leyendo datos almacenados',e)}
 let editing=null;let filterYear=new Date().getFullYear().toString();let filterMonth='all';let toastTimeout;
 function isValidRecord(r){return r&&typeof r.id==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(r.date)&&['Ensayo','Acto'].includes(r.kind)&&typeof r.name==='string'&&['yes','no','just'].includes(r.status)&&(!r.notes||typeof r.notes==='string')}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(records));return true}catch(e){alert('No se pudieron guardar los datos. Comprueba el almacenamiento disponible.');return false}}
+function save(){try{
+localStorage.setItem(KEY,JSON.stringify(records));
+if(window.miBandaCloud?.mode==='cloud'){
+ window.miBandaCloud.save(records.map(r=>({...r}))).catch(error=>console.error('Error guardando en Firebase:',error));
+}
+return true
+}catch(e){alert('No se pudieron guardar los datos. Comprueba el almacenamiento disponible.');return false}}
 function escapeHtml(str){return String(str??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function fmtDate(iso){const a=iso.split('-');return `${a[2]}/${a[1]}/${a[0]}`}
 function labelStatus(s){return {yes:'Asistí',no:'No asistí'}[s]||s}
@@ -73,7 +105,44 @@ $('exportJson').addEventListener('click',()=>{download(JSON.stringify({version:1
 $('exportCsv').addEventListener('click',()=>{const arr=filteredRecords(),lines=[['Fecha','Tipo','Actividad','Asistencia','Notas'],...arr.map(r=>[fmtDate(r.date),r.kind,r.name,labelStatus(r.status),r.notes||''])];download('\ufeff'+lines.map(row=>row.map(csvCell).join(';')).join('\r\n'),`mi-banda-registros-${today()}.csv`,'text/csv;charset=utf-8');toast('CSV descargado')});
 $('importJson').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{const obj=JSON.parse(await file.text()),newRecords=Array.isArray(obj)?obj:obj.records;if(!Array.isArray(newRecords)||!newRecords.every(isValidRecord))throw Error('Archivo no válido');if(!confirm(`¿Restaurar ${newRecords.length} registros? Reemplazará los ${records.length} que tienes actualmente.`))return;const old=records;records=newRecords.map(r=>({...r,status:r.status==='just'?'no':r.status,notes:r.notes||''}));if(!save()){records=old;return}resetForm();render();toast('Copia restaurada correctamente')}catch(err){alert('No se ha podido importar. Selecciona una copia JSON válida de esta web.')}finally{e.target.value=''}});
 $('deleteAll').addEventListener('click',()=>{if(!records.length)return toast('No hay registros que borrar');if(!confirm('¿Seguro que quieres eliminar TODOS los ensayos y actos? Esta acción no se puede deshacer.'))return;records=[];if(save()){resetForm();render();toast('Todos los registros eliminados')}});
+
+/* Bridge with the Firebase module: no remote data is displayed before sign-in. */
+let localOffline=false;
+window.miBandaUI={
+ getLocalRecords:()=>records.map(r=>({...r})),
+ applyRecords:next=>{
+  if(!Array.isArray(next))return;
+  records=next.filter(isValidRecord).map(r=>({...r,status:r.status==='just'?'no':r.status,notes:r.notes||''}));
+  try{localStorage.setItem(KEY,JSON.stringify(records))}catch(e){console.warn('No se pudo guardar la copia local',e)}
+  resetForm();render();
+ },
+ isLocalMode:()=>localOffline,
+ showGate:(message,enabled)=>{
+  localOffline=false;
+  $('authMessage').textContent=message||'Accede con Google para sincronizar.';
+  $('authGate').hidden=false;
+  document.querySelector('.app').hidden=true;
+  document.querySelector('.bottomnav').hidden=true;
+  if(enabled!==undefined)$('signInBtn').disabled=!enabled;
+ },
+ showApp:(mode,account)=>{
+  localOffline=(mode==='local');
+  $('authGate').hidden=true;
+  document.querySelector('.app').hidden=false;
+  document.querySelector('.bottomnav').hidden=false;
+  if(window.miBandaCloud)window.miBandaCloud.mode=mode==='cloud'?'cloud':'local-offline';
+  $('connectGoogle').hidden=mode==='cloud';
+  $('signOutBtn').hidden=mode!=='cloud';
+  $('syncAccount').textContent=mode==='cloud'?'Cuenta: '+(account||'Google'):'Los registros no se comparten entre dispositivos.';
+  $('syncStatus').textContent=mode==='cloud'?'Sincronizado con Firebase':'Modo local · sin sincronización';
+  render();
+ },
+ syncMessage:message=>{$('syncStatus').textContent=message},
+ notify:message=>{toast(message);console.warn(message)}
+};
+$('localModeBtn').addEventListener('click',()=>window.miBandaUI.showApp('local'));
 monthNames.forEach((name,i)=>$('month').insertAdjacentHTML('beforeend',`<option value="${i+1}">${name}</option>`));resetForm();render();
 })();
 </script>
+<script type="module" src="./firebase-sync.js"></script>
 </body></html>
