@@ -30,6 +30,8 @@ const previousUserKey = "miBanda_cloud_last_uid";
 let currentRef = null, currentUser = null, unsubscribe = null, ready = false, writeCounter = 0;
 let connecting = false;
 let loggingOut = false;
+let lastServerContact = 0;
+let verifyingConnection = false;
 
 function friendlyError(error) {
   const code = error?.code || "";
@@ -47,6 +49,7 @@ function stopListening() {
   ready = false;
   currentRef = null;
   currentUser = null;
+  lastServerContact = 0;
   writeCounter++;
   window.miBandaCloud.mode = "local";
 }
@@ -59,9 +62,10 @@ async function push(nextRecords) {
   ui.syncMessage("Guardando en Firebase…", "working");
   try {
     await setDoc(currentRef, { records: nextRecords, updatedAt: serverTimestamp() });
+    lastServerContact = Date.now();
     if (sequence === writeCounter && currentUser?.uid === uid) {
       localStorage.removeItem(pendingKey);
-      ui.syncMessage("Sincronizado con Firebase", "ok");
+      ui.syncMessage("Sincronizado con Firebase", "ok", lastServerContact);
     }
   } catch (error) {
     if (currentUser?.uid === uid) {
@@ -81,6 +85,7 @@ async function connect(user) {
   try {
     const ref = doc(db, "users", user.uid, "apps", "miBanda");
     const snapshot = await getDocFromServer(ref);
+    lastServerContact = Date.now();
     const savedCloud = snapshot.exists() && Array.isArray(snapshot.data()?.records) ? snapshot.data().records : [];
     const local = ui.getLocalRecords();
     const lastUser = localStorage.getItem(previousUserKey);
@@ -116,7 +121,7 @@ async function connect(user) {
     ready = true;
     window.miBandaCloud.mode = "cloud";
     ui.showApp("cloud", { name: user.displayName || user.email || "Cuenta de Google", email: user.email || "" });
-    ui.syncMessage("Sincronizado con Firebase");
+    ui.syncMessage("Sincronizado con Firebase", "ok", lastServerContact);
     // Firestore can deliver a cached snapshot first. With metadata updates
     // enabled we also receive the later server confirmation even if the data
     // is unchanged, so "Sin conexión" does not get stuck incorrectly.
@@ -135,11 +140,18 @@ async function connect(user) {
         ui.applyRecords(fresh);
       }
       if (snapshot.metadata.fromCache) {
-        ui.syncMessage(navigator.onLine === false
-          ? "Sin conexión a Internet · mostrando los últimos datos"
-          : "Comprobando sincronización con Firebase…", "working");
+        // The direct server read at sign-in already proved connectivity.
+        // A cached listener notification alone is not an offline error.
+        if (navigator.onLine === false) {
+          ui.syncMessage("El navegador indica que no hay Internet", "error");
+        } else if (lastServerContact) {
+          ui.syncMessage("Conexión con Firebase confirmada · comprobando actualizaciones", "ok", lastServerContact);
+        } else {
+          ui.syncMessage("Comprobando sincronización con Firebase…", "working");
+        }
       } else {
-        ui.syncMessage("Sincronizado con Firebase", "ok");
+        lastServerContact = Date.now();
+        ui.syncMessage("Sincronizado con Firebase", "ok", lastServerContact);
       }
     }, error => {
       ui.syncMessage("No se puede comprobar la sincronización", "error");
@@ -152,6 +164,39 @@ async function connect(user) {
     connecting = false;
   }
 }
+
+// Test the server directly without overwriting locally edited records.
+async function verifyConnection() {
+  if (verifyingConnection) return;
+  if (!ready || !currentRef || !currentUser || loggingOut) {
+    ui.syncMessage("No hay una sesión de Firebase preparada", "error");
+    return;
+  }
+  const button = el("checkConnectionBtn");
+  const uid = currentUser.uid, ref = currentRef;
+  verifyingConnection = true;
+  button.disabled = true;
+  button.textContent = "Comprobando…";
+  ui.syncMessage("Consultando directamente el servidor de Firebase…", "working");
+  try {
+    await getDocFromServer(ref);
+    if (!ready || auth.currentUser?.uid !== uid || loggingOut) return;
+    lastServerContact = Date.now();
+    const pending = localStorage.getItem(pendingKey) === uid;
+    ui.syncMessage(pending
+      ? "Conexión con Firebase confirmada · cambios pendientes"
+      : "Conexión con Firebase confirmada", "ok", lastServerContact);
+  } catch (error) {
+    if (!ready || auth.currentUser?.uid !== uid || loggingOut) return;
+    ui.syncMessage("No se pudo comprobar la conexión: " + friendlyError(error), "error");
+    console.warn("No se pudo comprobar Firestore", error);
+  } finally {
+    verifyingConnection = false;
+    button.disabled = false;
+    button.textContent = "Comprobar conexión";
+  }
+}
+el("checkConnectionBtn").addEventListener("click", verifyConnection);
 
 el("signInBtn").addEventListener("click", async () => {
   el("signInBtn").disabled = true;
