@@ -29,6 +29,7 @@ const pendingKey = "miBanda_cloud_pending_uid";
 const previousUserKey = "miBanda_cloud_last_uid";
 let currentRef = null, currentUser = null, unsubscribe = null, ready = false, writeCounter = 0;
 let connecting = false;
+let loggingOut = false;
 
 function friendlyError(error) {
   const code = error?.code || "";
@@ -106,6 +107,7 @@ async function connect(user) {
         await setDoc(ref, { records: incoming, updatedAt: serverTimestamp() });
       }
     }
+    if (loggingOut || auth.currentUser?.uid !== user.uid) return;
     localStorage.setItem(migratedKey, "1");
     localStorage.setItem(previousUserKey, user.uid);
     currentRef = ref;
@@ -127,7 +129,7 @@ async function connect(user) {
     });
   } catch (error) {
     console.error("Firebase connection error:", error);
-    ui.showGate("No se ha podido conectar: " + friendlyError(error) + " Puedes seguir en modo local hasta terminar la configuración.", true);
+    ui.showGate("No se ha podido conectar: " + friendlyError(error) + " Comprueba la configuración de Firebase e inténtalo de nuevo.", true);
   } finally {
     connecting = false;
   }
@@ -157,35 +159,56 @@ el("connectGoogle").addEventListener("click", async () => {
   else el("signInBtn").click();
 });
 
-async function closeSession() {
+async function closeSession(event) {
+  event?.preventDefault();
+  if (loggingOut) return;
+
   const uid = auth.currentUser?.uid;
   if (uid && localStorage.getItem(pendingKey) === uid) {
-    const proceed = confirm("Hay cambios pendientes de sincronizar. Si cierras sesión ahora, podrías perderlos. Es recomendable descargar una copia JSON en Ajustes. ¿Quieres cerrar sesión igualmente?");
+    const proceed = confirm(
+      "Hay cambios pendientes de sincronizar que podrían perderse si cierras sesión. " +
+      "Puedes descargar una copia JSON desde Ajustes antes de salir. ¿Quieres cerrar sesión igualmente?"
+    );
     if (!proceed) return;
   }
+
+  loggingOut = true;
   const buttons = [el("signOutBtn"), el("signOutHeader")];
-  buttons.forEach(button => button.disabled = true);
+  buttons.forEach(button => {
+    button.disabled = true;
+    button.textContent = "Cerrando sesión…";
+  });
+
   try {
+    // Wait for Firebase Auth to remove its persisted user. Merely hiding
+    // the interface would leave an active Google session in this web app.
     await signOut(auth);
     stopListening();
-    // Remove this user's cached records when signing out, not their Firestore data.
-    // Otherwise the "Continuar sin sincronización" option would reveal them.
-    ui.applyRecords([]);
-    ui.showGate("Sesión cerrada. Entra con Google para recuperar tus registros sincronizados.", true);
+    localStorage.removeItem(pendingKey);
+    ui.applyRecords([]); // Only clears the local cache; Firestore data remains untouched.
+    ui.showGate("Sesión cerrada correctamente. Entra con Google cuando quieras volver.", true);
+    window.location.reload(); // Refresh the Auth state and reliably show the login screen.
   } catch (error) {
-    ui.notify("No se ha podido cerrar sesión: " + friendlyError(error));
-  } finally {
-    buttons.forEach(button => button.disabled = false);
+    console.error("No se pudo cerrar sesión de Firebase", error);
+    loggingOut = false;
+    buttons.forEach(button => {
+      button.disabled = false;
+      button.textContent = "Cerrar sesión";
+    });
+    alert("No se pudo cerrar sesión: " + friendlyError(error));
   }
 }
+
 el("signOutBtn").addEventListener("click", closeSession);
 el("signOutHeader").addEventListener("click", closeSession);
 
 onAuthStateChanged(auth, user => {
   el("signInBtn").disabled = false;
+  if (loggingOut) return;
   if (user) {
     connect(user);
-  } else if (!ui.isLocalMode()) {
-    ui.showGate("Inicia sesión con Google para sincronizar los ensayos y actos entre dispositivos.", true);
+  } else {
+    stopListening();
+    ui.showGate("Inicia sesión con Google para ver tus ensayos y actos.", true);
   }
 }, error => ui.showGate(friendlyError(error), true));
