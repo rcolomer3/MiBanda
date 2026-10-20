@@ -109,6 +109,9 @@
   .bottomnav button {font-size:11px;}
 }
 
+/* El botón + del menú sustituye Añadir registro solo en móvil */
+@media(max-width:740px){#quickAdd{display:none!important}}
+
 /* Mi Banda | dock de navegación móvil */
 @media(max-width:740px){
   body{background:#f6f8fc;padding-bottom:calc(128px + env(safe-area-inset-bottom,0px));}
