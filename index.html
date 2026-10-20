@@ -108,6 +108,76 @@
   .bottomnav {gap:2px;padding-left:6px;padding-right:6px;}
   .bottomnav button {font-size:11px;}
 }
+
+/* Mi Banda | dock de navegación móvil */
+@media(max-width:740px){
+  body{background:#f6f8fc;padding-bottom:calc(128px + env(safe-area-inset-bottom,0px));}
+  .content{padding:18px 16px 38px;}
+  .head{margin-bottom:19px;gap:12px;}
+  .head h1{font-size:25px;letter-spacing:-.75px;font-weight:760;}
+  .head p{font-size:13px;line-height:1.45;}
+  .panel{border-radius:20px;border-color:#e5eaf2;box-shadow:0 5px 22px rgba(29,48,77,.035);}
+  .card{border-radius:19px;}
+  .account-bar{margin-bottom:19px;gap:8px;}
+  .account-pill{border-radius:17px;padding:8px 11px;border-color:#e6ebf4;box-shadow:0 3px 14px rgba(15,23,42,.025);}
+  .account-icon{background:#edf4ff;color:#2563eb;}
+  .account-logout{border-radius:12px;background:#fff;font-weight:650;}
+  .filters{gap:10px;}
+  .filters select{background:#fff;}
+  .bottomnav{
+    display:grid;
+    position:fixed;
+    top:auto;left:12px;right:12px;
+    bottom:calc(11px + env(safe-area-inset-bottom,0px));
+    width:auto;height:78px;min-height:78px;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    align-items:center;justify-items:stretch;justify-content:initial;
+    gap:3px;padding:7px 9px;
+    background:rgba(255,255,255,.97);
+    border:1px solid rgba(226,233,243,.96);
+    border-radius:24px;
+    box-shadow:0 16px 42px rgba(15,23,42,.16),0 2px 7px rgba(15,23,42,.035);
+    -webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);
+    z-index:15;isolation:isolate;
+  }
+  .bottomnav button{
+    appearance:none;display:flex;flex-direction:column;
+    justify-content:center;align-items:center;gap:5px;
+    width:100%;min-width:0;height:64px;margin:0;padding:6px 1px;
+    border:0;border-radius:17px;background:transparent;
+    color:#8390a4;font-size:11px;font-weight:620;line-height:1.1;
+    letter-spacing:-.05px;white-space:nowrap;
+    -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+    transition:color .18s ease,background .18s ease,transform .18s ease;
+  }
+  .bottomnav button.active:not(.add-action){
+    background:#eff5ff;color:#1767d7;font-weight:760;
+  }
+  .bottomnav button:not(.add-action):active{transform:scale(.95);}
+  .bottomnav .dock-icon{display:block;width:24px;height:24px;flex-shrink:0;}
+  .bottomnav .dock-label{display:block;}
+  .bottomnav .add-action{color:#2370db;font-weight:760;gap:2px;padding:3px 1px 4px;}
+  .bottomnav .add-action .dock-label{font-size:11px;}
+  .bottomnav .add-action .add-circle{
+    display:grid;place-items:center;width:45px;height:45px;flex-shrink:0;
+    border-radius:15px;border:1px solid #438fff;
+    background:linear-gradient(150deg,#409cff 0%,#216be4 62%,#145ac7 100%);
+    color:#fff;box-shadow:0 7px 15px rgba(37,99,235,.28),inset 0 1px 1px rgba(255,255,255,.3);
+    transition:transform .18s ease,box-shadow .18s ease;
+  }
+  .bottomnav .add-action .dock-plus-icon{width:24px;height:24px;stroke-width:2.7;}
+  .bottomnav .add-action:active .add-circle{transform:scale(.93);box-shadow:0 4px 9px rgba(37,99,235,.22);}
+  .bottomnav button:focus-visible{outline:2px solid #60a5fa;outline-offset:-3px;}
+  .toast{bottom:calc(104px + env(safe-area-inset-bottom,0px));left:16px;right:16px;border-radius:14px;}
+}
+@media(max-width:360px){
+  .bottomnav{left:8px;right:8px;padding:7px 6px;gap:0;}
+  .bottomnav button{font-size:10.5px;}
+  .content{padding-left:12px;padding-right:12px;}
+}
+@media(prefers-reduced-motion:reduce){
+  .bottomnav button,.bottomnav .add-action .add-circle{transition:none;}
+}
 </style>
 </head>
 <body>
@@ -163,10 +233,10 @@
 <div class="panel"><h2>Copias de seguridad</h2><p class="note">Tus registros se sincronizan con Firebase al entrar con Google. También puedes descargar una copia de seguridad en JSON.</p><div class="settings-list"><button class="btn primary" id="exportJson">⬇ Descargar copia JSON</button><label class="btn select-file">⬆ Restaurar copia JSON<input type="file" accept=".json,application/json" id="importJson"></label></div></div><div class="panel" style="margin-top:16px"><h2>Administración</h2><p class="note">Eliminar todos los registros no se puede deshacer. Antes puedes descargar una copia de seguridad.</p><button class="btn danger" id="deleteAll">Borrar todos los registros</button></div></section>
 </main></div>
 <nav class="bottomnav" hidden aria-label="Navegación móvil">
-  <button type="button" class="active" data-page="dashboard" aria-label="Ir al resumen"><span class="nav-icon" aria-hidden="true">📊</span><span>Resumen</span></button>
-  <button type="button" data-page="records" aria-label="Ver ensayos y actos"><span class="nav-icon" aria-hidden="true">📅</span><span>Registros</span></button>
-  <button type="button" class="add-action" id="mobileAdd" aria-label="Añadir un ensayo o acto"><span class="add-circle" aria-hidden="true">+</span><span>Añadir</span></button>
-  <button type="button" data-page="settings" aria-label="Abrir ajustes"><span class="nav-icon" aria-hidden="true">⚙️</span><span>Ajustes</span></button>
+  <button type="button" class="active" data-page="dashboard" aria-label="Ir al resumen" aria-current="page"><svg class="dock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 21v-8h6v8"/></svg><span class="dock-label">Inicio</span></button>
+  <button type="button" data-page="records" aria-label="Ver ensayos y actos"><svg class="dock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg><span class="dock-label">Registros</span></button>
+  <button type="button" class="add-action" id="mobileAdd" aria-label="Registrar un ensayo o acto"><span class="add-circle" aria-hidden="true"><svg class="dock-icon dock-plus-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span><span class="dock-label">Añadir</span></button>
+  <button type="button" data-page="settings" aria-label="Abrir ajustes"><svg class="dock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/><path d="m19.4 15.1 1.1.9-2 3.5-1.4-.5a8 8 0 0 1-2.1 1.2l-.3 1.5h-4l-.3-1.5a8 8 0 0 1-2.1-1.2l-1.4.5-2-3.5 1.1-.9a8.8 8.8 0 0 1 0-2.4l-1.1-.9 2-3.5 1.4.5a8 8 0 0 1 2.1-1.2l.3-1.5h4l.3 1.5a8 8 0 0 1 2.1 1.2l1.4-.5 2 3.5-1.1.9a8.8 8.8 0 0 1 0 2.4z"/></svg><span class="dock-label">Ajustes</span></button>
 </nav><div class="toast" id="toast" role="status"></div>
 <script>
 (()=>{'use strict';
@@ -188,7 +258,7 @@ function fmtDate(iso){const a=iso.split('-');return `${a[2]}/${a[1]}/${a[0]}`}
 function labelStatus(s){return {yes:'Asistí',no:'No asistí'}[s]||s}
 function pill(s){return `<span class="pill ${s}">${s==='yes'?'✓ ':'✕ '}${labelStatus(s)}</span>`}
 function toast(msg){$('toast').textContent=msg;$('toast').classList.add('on');clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>$('toast').classList.remove('on'),2800)}
-function show(page){document.querySelectorAll('.page').forEach(e=>e.classList.toggle('active',e.id===page));document.querySelectorAll('[data-page]').forEach(e=>e.classList.toggle('active',e.dataset.page===page));if(page==='records')renderTable();scrollTo({top:0,behavior:'smooth'})}
+function show(page){document.querySelectorAll('.page').forEach(e=>e.classList.toggle('active',e.id===page));document.querySelectorAll('[data-page]').forEach(e=>{const active=e.dataset.page===page;e.classList.toggle('active',active);if(e.closest('.bottomnav')){if(active)e.setAttribute('aria-current','page');else e.removeAttribute('aria-current')}});if(page==='records')renderTable();scrollTo({top:0,behavior:'smooth'})}
 function initYears(){const years=new Set(records.map(r=>r.date.slice(0,4)));years.add(String(new Date().getFullYear()));if(/^\d{4}$/.test(filterYear))years.add(filterYear);const opts=['<option value="all">Todos los años</option>',...[...years].sort((a,b)=>Number(b)-Number(a)).map(y=>`<option value="${y}">${y}</option>`)];$('year').innerHTML=opts.join('');$('year').value=filterYear}
 function subset(){return records.filter(r=>(filterYear==='all'||r.date.slice(0,4)===filterYear)&&(filterMonth==='all'||Number(r.date.slice(5,7))===Number(filterMonth)))}
 function ordered(arr){return [...arr].sort((a,b)=>b.date.localeCompare(a.date)||b.id.localeCompare(a.id))}
