@@ -371,6 +371,7 @@
 <p id="syncAccount" class="note"></p>
 <div class="settings-list">
 <button class="btn primary" id="connectGoogle">Conectar con Google</button>
+<button class="btn" type="button" id="checkConnectionBtn" hidden>Comprobar conexión</button>
 <button class="btn" id="signOutBtn" hidden>Cerrar sesión</button>
 </div>
 </div>
@@ -610,6 +611,7 @@ window.miBandaUI={
   $('connectGoogle').hidden=true;
   $('signOutBtn').hidden=false;
   $('signOutHeader').hidden=false;
+  $('checkConnectionBtn').hidden=false;
   const userName=typeof account==='object'?(account.name||account.email||'Google'):(account||'Google');
   const userEmail=typeof account==='object'?(account.email||''):'';
   $('accountName').textContent=userName;
@@ -623,15 +625,15 @@ window.miBandaUI={
   $('syncStatusText').textContent=message;
   $('syncStatus').dataset.state=current;
   $('syncHelp').textContent=current==='ok'
-    ?'Última confirmación de Firebase: '+new Date().toLocaleString('es-ES',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit',year:'numeric'})+'.'
+    ?'Última comprobación del servidor: '+new Date().toLocaleString('es-ES',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit',year:'numeric'})+'.'
     :current==='error'
-      ?'No hay confirmación del servidor. Comprueba tu conexión antes de cerrar la web.'
-      :'Esperando confirmación del servidor; los datos de este dispositivo siguen disponibles.';
+      ?'No se ha podido confirmar el acceso al servidor. Pulsa Comprobar conexión para reintentarlo.'
+      :'Consultando Firestore. Si tarda demasiado, pulsa Comprobar conexión.';
  },
  notify:message=>{toast(message);console.warn(message)}
 };
 monthNames.forEach((name,i)=>$('month').insertAdjacentHTML('beforeend',`<option value="${i+1}">${name}</option>`));resetForm();render();
 })();
 </script>
-<script type="module" src="./firebase-sync.js?v=20261020-persist3"></script>
+<script type="module" src="./firebase-sync.js?v=20261020-connection5"></script>
 </body></html>
