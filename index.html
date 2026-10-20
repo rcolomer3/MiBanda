@@ -426,10 +426,10 @@ function renderTrend(){
     $('trendSummary').textContent='No hay ensayos registrados'+(selected>=0?' en el mes seleccionado':' en este periodo')+'. Los meses sin datos no cuentan como 0 %.';
   }else if(selected>=0){
     const m=valid[0];
-    $('trendSummary').textContent=m.name+': '+m.pct+' % de asistencia ('+m.attended+' de '+m.total+' ensayos). Los demás meses se mantienen para comparar.';
+    $('trendSummary').textContent=m.name+': '+m.pct+' % de asistencia ('+m.attended+' de '+m.total+' '+(m.total===1?'ensayo':'ensayos')+'). Los demás meses se mantienen para comparar.';
   }else{
     const best=[...valid].sort((a,b)=>b.pct-a.pct||b.total-a.total||a.index-b.index)[0];
-    $('trendSummary').textContent='Mejor mes: '+best.name+' · '+best.pct+' % de asistencia ('+best.attended+' de '+best.total+' ensayos).'+(filterYear==='all'?' Los datos se agrupan por mes entre todos los años.':'');
+    $('trendSummary').textContent='Mejor mes: '+best.name+' · '+best.pct+' % de asistencia ('+best.attended+' de '+best.total+' '+(best.total===1?'ensayo':'ensayos')+').'+(filterYear==='all'?' Los datos se agrupan por mes entre todos los años.':'');
   }
 }
 function filteredRecords(){const search=$('search').value.trim().toLocaleLowerCase('es-ES');return ordered(subset().filter(r=>($('typeFilter').value==='all'||r.kind===$('typeFilter').value)&&($('statusFilter').value==='all'||r.status===$('statusFilter').value)&&(!search||`${r.name} ${r.notes||''} ${r.kind}`.toLocaleLowerCase('es-ES').includes(search))))}
@@ -444,7 +444,7 @@ function renderTable(){
     const m=Number(r.date.slice(5,7))-1;
     const label=`${r.kind} del ${fmtDate(r.date)}`;
     return `<article class="mobile-record-card ${r.kind==='Acto'?'kind-acto':'kind-ensayo'}" aria-label="${escapeHtml(label)}">
-      <div class="mobile-record-date" aria-hidden="true"><span class="day">${r.date.slice(8,10)}</span><span class="month">${monthNames[m].slice(0,3)}</span><span class="year">${r.date.slice(0,4)}</span></div>
+      <div class="mobile-record-date" aria-hidden="true"><span class="day">${r.date.slice(8,10)}</span><span class="month">${(monthNames[m]||'Mes').slice(0,3)}</span><span class="year">${r.date.slice(0,4)}</span></div>
       <div class="mobile-record-body">
         <div class="mobile-record-meta"><span class="mobile-record-kind">${r.kind==='Ensayo'?'♫':'♬'} ${r.kind}</span>${pill(r.status)}</div>
         <strong class="mobile-record-name">${escapeHtml(r.name)}</strong>
