@@ -1,0 +1,20 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Only a signed-in person can read or modify their own Mi Banda data.
+    match /users/{userId}/apps/{appId} {
+      allow read: if request.auth != null
+                  && request.auth.uid == userId
+                  && appId == "miBanda";
+      allow create, update: if request.auth != null
+                  && request.auth.uid == userId
+                  && appId == "miBanda"
+                  && request.resource.data.keys().hasOnly(["records", "updatedAt"])
+                  && request.resource.data.records is list
+                  && request.resource.data.records.size() <= 3000;
+      allow delete: if request.auth != null
+                  && request.auth.uid == userId
+                  && appId == "miBanda";
+    }
+  }
+}
