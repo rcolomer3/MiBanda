@@ -167,7 +167,7 @@ onAuthStateChanged(auth, user => {
   el("signInBtn").disabled = false;
   if (user) {
     connect(user);
-  } else if (window.miBandaCloud.mode !== "local-offline") {
+  } else if (!ui.isLocalMode()) {
     ui.showGate("Inicia sesión con Google para sincronizar los ensayos y actos entre dispositivos.", true);
   }
 }, error => ui.showGate(friendlyError(error), true));
