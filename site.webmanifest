@@ -1,0 +1,26 @@
+{
+  "name": "Mi Banda · Ensayos y actos",
+  "short_name": "Mi Banda",
+  "description": "Control personal de ensayos, actos y asistencias",
+  "lang": "es",
+  "id": "/MiBanda/",
+  "start_url": "/MiBanda/",
+  "scope": "/MiBanda/",
+  "display": "standalone",
+  "background_color": "#f4f6f8",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "./favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
