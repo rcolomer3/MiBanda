@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import {
   getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup,
-  signInWithRedirect, signOut
+  signInWithRedirect, signOut, setPersistence, browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 import {
   getFirestore, doc, getDocFromServer, onSnapshot, setDoc, serverTimestamp
@@ -22,7 +22,7 @@ const auth = getAuth(app);
 auth.languageCode = "es";
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
-provider.setCustomParameters({ prompt: "select_account" });
+// No account selector forced on each manual login.
 const ui = window.miBandaUI;
 const el = id => document.getElementById(id);
 const pendingKey = "miBanda_cloud_pending_uid";
@@ -77,7 +77,7 @@ async function connect(user) {
   if (connecting) return;
   connecting = true;
   stopListening();
-  ui.showGate("Cargando tus registros de Firebase…", false);
+  ui.showLoading("Cargando tus registros de Firebase…");
   try {
     const ref = doc(db, "users", user.uid, "apps", "miBanda");
     const snapshot = await getDocFromServer(ref);
@@ -202,13 +202,24 @@ async function closeSession(event) {
 el("signOutBtn").addEventListener("click", closeSession);
 el("signOutHeader").addEventListener("click", closeSession);
 
-onAuthStateChanged(auth, user => {
-  el("signInBtn").disabled = false;
-  if (loggingOut) return;
-  if (user) {
-    connect(user);
-  } else {
-    stopListening();
-    ui.showGate("Inicia sesión con Google para ver tus ensayos y actos.", true);
+async function initializeAuth() {
+  // Persist Google sign-in across reloads and browser restarts.
+  // The first auth-state callback is emitted after Firebase restores this session.
+  try {
+    await setPersistence(auth, browserLocalPersistence);
+  } catch (error) {
+    // Some private browsing modes may block persistent storage.
+    console.warn("La persistencia de sesión no está disponible:", error);
   }
-}, error => ui.showGate(friendlyError(error), true));
+  onAuthStateChanged(auth, user => {
+    el("signInBtn").disabled = false;
+    if (loggingOut) return;
+    if (user) {
+      connect(user);
+    } else {
+      stopListening();
+      ui.showGate("Inicia sesión con Google para ver tus ensayos y actos.", true);
+    }
+  }, error => ui.showGate("Error al restaurar sesión: " + friendlyError(error), true));
+}
+initializeAuth();
