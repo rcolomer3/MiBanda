@@ -248,8 +248,17 @@
 .trend-plot .trend-gridline{stroke:#e8eef5;stroke-width:1;vector-effect:non-scaling-stroke}
 .trend-plot .trend-area{fill:url(#trendAreaGradient);opacity:.65}
 .trend-plot .trend-stroke{fill:none;stroke:#2778e4;stroke-width:3;stroke-linejoin:round;stroke-linecap:round;vector-effect:non-scaling-stroke}
-.trend-plot .trend-point{fill:#fff;stroke:#2778e4;stroke-width:3;vector-effect:non-scaling-stroke}
-.trend-plot .trend-point.selected{fill:#2778e4;stroke:#fff;stroke-width:3;vector-effect:non-scaling-stroke}
+.trend-plot .trend-point{
+  position:absolute;z-index:1;display:block;width:12px;height:12px;
+  border-radius:50%;border:3px solid #2778e4;background:#fff;
+  box-shadow:0 1px 5px rgba(37,99,235,.12);
+  transform:translate(-50%,-50%);
+  box-sizing:border-box;pointer-events:auto;
+}
+.trend-plot .trend-point.selected{
+  width:15px;height:15px;border:3px solid #fff;background:#2778e4;
+  box-shadow:0 0 0 2px #2778e4,0 2px 9px rgba(37,99,235,.25);
+}
 .trend-plot .trend-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:13px;text-align:center;padding:10px}
 .trend-months{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:0;margin-top:11px;text-align:center}
 .trend-months span{font-size:10px;font-weight:650;color:#94a3b8;min-width:0}
@@ -318,7 +327,7 @@
 <div class="head"><div><h1>Resumen de asistencias</h1><p>Consulta tu actividad en la banda de un vistazo.</p></div><button class="btn primary" id="quickAdd">＋ Añadir registro</button></div>
 <div class="filters"><div class="field"><label for="year">Año</label><select id="year"></select></div><div class="field"><label for="month">Mes</label><select id="month"><option value="all">Todo el año</option></select></div><button class="btn" id="clearFilters">Ver todo</button></div>
 <div class="stats">
-<div class="card stat-card ensayos"><div class="stat-top"><div class="label">Ensayos registrados</div><span class="stat-icon" aria-hidden="true">🎼</span></div><div class="value" id="totalRehearsals">0</div><div class="detail" id="rehearsalDetail">0 asistencias</div></div>
+<div class="card stat-card ensayos"><div class="stat-top"><div class="label">Ensayos registrados</div><span class="stat-icon" aria-hidden="true">🎼</span></div><div class="value" id="totalRehearsals">0</div><div class="detail" id="rehearsalDetail">Sin ensayos en el periodo</div></div>
 <div class="card stat-card asistidos"><div class="stat-top"><div class="label">Ensayos asistidos</div><span class="stat-icon" aria-hidden="true">✅</span></div><div class="value" id="attendedRehearsals">0</div><div class="detail" id="missedDetail">0 faltas</div></div>
 <div class="card stat-card actos"><div class="stat-top"><div class="label">Actos realizados</div><span class="stat-icon" aria-hidden="true">🎺</span></div><div class="value" id="actsAttended">0</div><div class="detail" id="actsDetail">0 actos registrados</div></div>
 <div class="card stat-card porcentaje"><div class="stat-top"><div class="label">Asistencia a ensayos</div><span class="stat-icon" aria-hidden="true">📈</span></div><div class="value" id="attendanceRate">—</div><div class="detail">Sobre todos los ensayos registrados</div></div>
@@ -432,7 +441,7 @@ function initYears(){const years=new Set(records.map(r=>r.date.slice(0,4)));year
 function subset(){return records.filter(r=>(filterYear==='all'||r.date.slice(0,4)===filterYear)&&(filterMonth==='all'||Number(r.date.slice(5,7))===Number(filterMonth)))}
 function ordered(arr){return [...arr].sort((a,b)=>b.date.localeCompare(a.date)||b.id.localeCompare(a.id))}
 function renderDashboard(){initYears();$('month').value=filterMonth;const data=subset(),ensayos=data.filter(r=>r.kind==='Ensayo'),acts=data.filter(r=>r.kind==='Acto'),yes=ensayos.filter(r=>r.status==='yes').length,no=ensayos.filter(r=>r.status==='no').length,actsYes=acts.filter(r=>r.status==='yes').length,pct=ensayos.length?Math.round(100*yes/ensayos.length):null;
-$('totalRehearsals').textContent=ensayos.length.toLocaleString('es-ES');$('attendedRehearsals').textContent=yes.toLocaleString('es-ES');$('actsAttended').textContent=actsYes.toLocaleString('es-ES');$('attendanceRate').textContent=pct===null?'—':`${pct} %`;$('rehearsalDetail').textContent=`${yes} asistencias`;$('missedDetail').textContent=`${no} faltas en total`;$('actsDetail').textContent=`${acts.length} actos registrados`;
+$('totalRehearsals').textContent=ensayos.length.toLocaleString('es-ES');$('attendedRehearsals').textContent=yes.toLocaleString('es-ES');$('actsAttended').textContent=actsYes.toLocaleString('es-ES');$('attendanceRate').textContent=pct===null?'—':`${pct} %`;$('rehearsalDetail').textContent=ensayos.length?`Último: ${fmtDate(ordered(ensayos)[0].date)}`:'Sin ensayos en el periodo';$('missedDetail').textContent=`${no} faltas en total`;$('actsDetail').textContent=`${acts.length} actos registrados`;
 $('progressCount').textContent=`${yes} / ${ensayos.length}`;$('progressFill').style.width=(pct??0)+'%';$('missed').textContent=no;
 const chartData=filterYear==='all'?data:records.filter(r=>r.date.slice(0,4)===filterYear);const buckets=Array.from({length:12},(_,m)=>{const list=chartData.filter(r=>Number(r.date.slice(5,7))===m+1);return {ensayos:list.filter(r=>r.kind==='Ensayo'&&r.status==='yes').length,actos:list.filter(r=>r.kind==='Acto'&&r.status==='yes').length}});const max=Math.max(1,...buckets.flatMap(b=>[b.ensayos,b.actos]));$('chartYear').textContent=filterYear==='all'?'Todos los años (agrupado por mes)':filterYear+(filterMonth==='all'?'':` · ${monthNames[Number(filterMonth)-1]} seleccionado`);
 $('chart').innerHTML=buckets.map((b,i)=>`<div class="bar-group" title="${monthNames[i]}: ${b.ensayos} ensayos asistidos, ${b.actos} actos realizados" style="${filterMonth!=='all'&&Number(filterMonth)!==i+1?'opacity:.32;':''}"><div class="bar ensayo" style="height:${b.ensayos?Math.max(3,b.ensayos/max*100):0}%"></div><div class="bar acto" style="height:${b.actos?Math.max(3,b.actos/max*100):0}%"></div></div>`).join('');$('monthLabels').innerHTML=monthNames.map(n=>`<span>${n.slice(0,3)}</span>`).join('');
@@ -459,7 +468,7 @@ function renderTrend(){
   });
   const selected=filterMonth==='all'?-1:Number(filterMonth)-1;
   $('trendPeriod').textContent=filterYear==='all'?'Todos los años':filterYear;
-  const coords=m=>({x:12+(m.index*636/11),y:8+(100-m.pct)*1.44});
+  const coords=m=>({x:(m.index+0.5)*660/12,y:8+(100-m.pct)*1.44});
   const paths=[],areas=[];let run=[];
   const flush=()=>{
     if(run.length>=2){
@@ -473,11 +482,13 @@ function renderTrend(){
   const grid=[8,80,152].map(y=>`<line class="trend-gridline" x1="0" y1="${y}" x2="660" y2="${y}"/>`).join('');
   const area=areas.map(d=>`<path class="trend-area" d="${d}"/>`).join('');
   const line=paths.map(d=>`<path class="trend-stroke" d="${d}"/>`).join('');
+  // SVG lines stretch horizontally on small screens. Render dots in HTML so
+  // they remain perfectly round, with the same centers as the month labels.
   const dots=months.filter(m=>m.pct!==null).map(m=>{
     const p=coords(m),highlight=m.index===selected;
-    return `<circle class="trend-point${highlight?' selected':''}" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${highlight?6:4.7}"><title>${m.name}: ${m.pct} % (${m.attended} de ${m.total} ensayos)</title></circle>`;
+    return `<span class="trend-point${highlight?' selected':''}" style="left:${(p.x/660*100).toFixed(3)}%;top:${(p.y/160*100).toFixed(3)}%" title="${m.name}: ${m.pct} % (${m.attended} de ${m.total} ensayos)" aria-hidden="true"></span>`;
   }).join('');
-  $('trendPlot').innerHTML=`<svg viewBox="0 0 660 160" preserveAspectRatio="none" focusable="false" aria-hidden="true"><defs><linearGradient id="trendAreaGradient" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#bfdbfe" stop-opacity=".7"/><stop offset="100%" stop-color="#eff6ff" stop-opacity=".08"/></linearGradient></defs>${grid}${area}${line}${dots}</svg>${months.every(m=>m.pct===null)?'<div class="trend-empty">Todavía no hay ensayos en este periodo.</div>':''}`;
+  $('trendPlot').innerHTML=`<svg viewBox="0 0 660 160" preserveAspectRatio="none" focusable="false" aria-hidden="true"><defs><linearGradient id="trendAreaGradient" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#bfdbfe" stop-opacity=".7"/><stop offset="100%" stop-color="#eff6ff" stop-opacity=".08"/></linearGradient></defs>${grid}${area}${line}</svg>${dots}${months.every(m=>m.pct===null)?'<div class="trend-empty">Todavía no hay ensayos en este periodo.</div>':''}`;
   $('trendMonths').innerHTML=months.map(m=>`<span class="${m.pct!==null?'with-data ':''}${m.index===selected?'highlight':''}" title="${m.name}: ${m.pct===null?'sin ensayos':m.pct+' % ('+m.attended+' de '+m.total+')'}">${m.name.slice(0,3)}</span>`).join('');
   $('trendPlot').setAttribute('aria-label','Porcentaje mensual de asistencia a ensayos. '+(filterYear==='all'?'Todos los años agrupados por mes. ':'Año '+filterYear+'. ')+months.map(m=>m.name+': '+(m.pct===null?'sin ensayos':m.pct+' por ciento, '+m.attended+' de '+m.total)).join('; '));
   const valid=(selected>=0?months.filter(m=>m.index===selected):months).filter(m=>m.pct!==null);
