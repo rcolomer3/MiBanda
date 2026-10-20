@@ -233,6 +233,32 @@
   .mobile-record-actions .action-icon{width:15px;height:15px;flex-shrink:0}
   #historyPanel .empty{padding:25px 12px}
 }
+
+/* Evolución mensual: línea de porcentaje, sin confundir meses sin ensayos con 0 %. */
+.attendance-trend{margin-top:16px}
+.trend-heading{align-items:start;gap:15px}
+.trend-heading h2{margin-bottom:5px}
+.trend-explanation{margin:0;font-size:12px;line-height:1.5}
+.trend-period{white-space:nowrap;border-radius:100px;padding:7px 10px;background:#eff6ff;color:#1e62be;font-size:11px;font-weight:750}
+.trend-visual{display:grid;grid-template-columns:36px minmax(0,1fr);gap:10px;min-width:0;margin-top:21px}
+.trend-y-labels{height:165px;display:flex;flex-direction:column;justify-content:space-between;text-align:right;color:#8996a6;font-size:10px;padding:0 0 2px}
+.trend-main{min-width:0}
+.trend-plot{height:165px;position:relative;width:100%;min-width:0}
+.trend-plot svg{display:block;width:100%;height:100%;overflow:visible}
+.trend-plot .trend-gridline{stroke:#e8eef5;stroke-width:1;vector-effect:non-scaling-stroke}
+.trend-plot .trend-area{fill:url(#trendAreaGradient);opacity:.65}
+.trend-plot .trend-stroke{fill:none;stroke:#2778e4;stroke-width:3;stroke-linejoin:round;stroke-linecap:round;vector-effect:non-scaling-stroke}
+.trend-plot .trend-point{fill:#fff;stroke:#2778e4;stroke-width:3;vector-effect:non-scaling-stroke}
+.trend-plot .trend-point.selected{fill:#2778e4;stroke:#fff;stroke-width:3;vector-effect:non-scaling-stroke}
+.trend-plot .trend-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:13px;text-align:center;padding:10px}
+.trend-months{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:0;margin-top:11px;text-align:center}
+.trend-months span{font-size:10px;font-weight:650;color:#94a3b8;min-width:0}
+.trend-months span.with-data{color:#64748b}
+.trend-months span.highlight{color:#1e62be;font-weight:850}
+.trend-summary{display:flex;align-items:start;gap:8px;border-radius:12px;background:#f4f8fe;color:#45617d;padding:12px 13px;margin:19px 0 0;font-size:12px;line-height:1.55}
+.trend-summary::before{content:"✦";color:#2976d7;font-size:15px;line-height:1.1}
+@media(max-width:740px){.attendance-trend{padding:17px}.trend-heading{gap:8px;align-items:start}.trend-heading h2{font-size:16px}.trend-heading .note{font-size:11px}.trend-period{font-size:10px;padding:6px 8px}.trend-visual{grid-template-columns:31px minmax(0,1fr);gap:6px;margin-top:18px}.trend-months span{font-size:9px}.trend-plot,.trend-y-labels{height:150px}.trend-summary{margin-top:17px}}
+@media(max-width:365px){.trend-months span{font-size:8px}.trend-period{max-width:102px;white-space:normal;text-align:center}}
 </style>
 </head>
 <body>
@@ -269,6 +295,20 @@
 </div>
 <div class="layout"><div class="panel"><div class="section-head"><h2>Actividad por meses</h2><span id="chartYear"></span></div><div class="bars" id="chart"></div><div class="months" id="monthLabels"></div><div class="legend"><span><i style="background:#2563eb"></i> Ensayos asistidos</span><span><i style="background:#22a06b"></i> Actos realizados</span></div></div>
 <div class="panel"><div class="section-head"><h2>Detalle del periodo</h2></div><div class="summary-list"><div class="minirow"><span>Ensayos asistidos</span><strong id="progressCount">0 / 0</strong></div><div class="progress"><div id="progressFill" style="width:0"></div></div><div class="minirow"><span>Ensayos no asistidos</span><strong id="missed">0</strong></div></div><p class="note" style="margin-top:24px">El porcentaje cuenta los ensayos a los que asististe respecto al total de ensayos registrados.</p></div></div>
+<div class="panel attendance-trend">
+  <div class="section-head trend-heading">
+    <div><h2>Evolución mensual de asistencia</h2><p class="note trend-explanation">Porcentaje de ensayos asistidos respecto a los registrados en cada mes.</p></div>
+    <span class="trend-period" id="trendPeriod">Año actual</span>
+  </div>
+  <div class="trend-visual">
+    <div class="trend-y-labels" aria-hidden="true"><span>100 %</span><span>50 %</span><span>0 %</span></div>
+    <div class="trend-main">
+      <div id="trendPlot" class="trend-plot" role="img" aria-label="Gráfica de asistencia mensual de ensayos"></div>
+      <div id="trendMonths" class="trend-months" aria-hidden="true"></div>
+    </div>
+  </div>
+  <p id="trendSummary" class="trend-summary" role="status"></p>
+</div>
 <div class="panel recent"><div class="section-head"><h2>Últimos registros</h2><button class="btn sm" id="viewAll">Ver todos</button></div><div id="recentList"></div></div>
 </section>
 <section id="records" class="page" data-mobile-view="history"><div class="head"><div><h1 id="recordsHeading">Ensayos y actos</h1><p id="recordsIntro">Consulta tu historial o añade un ensayo o acto.</p></div></div>
@@ -346,7 +386,51 @@ $('totalRehearsals').textContent=ensayos.length.toLocaleString('es-ES');$('atten
 $('progressCount').textContent=`${yes} / ${ensayos.length}`;$('progressFill').style.width=(pct??0)+'%';$('missed').textContent=no;
 const chartData=filterYear==='all'?data:records.filter(r=>r.date.slice(0,4)===filterYear);const buckets=Array.from({length:12},(_,m)=>{const list=chartData.filter(r=>Number(r.date.slice(5,7))===m+1);return {ensayos:list.filter(r=>r.kind==='Ensayo'&&r.status==='yes').length,actos:list.filter(r=>r.kind==='Acto'&&r.status==='yes').length}});const max=Math.max(1,...buckets.flatMap(b=>[b.ensayos,b.actos]));$('chartYear').textContent=filterYear==='all'?'Todos los años (agrupado por mes)':filterYear+(filterMonth==='all'?'':` · ${monthNames[Number(filterMonth)-1]} seleccionado`);
 $('chart').innerHTML=buckets.map((b,i)=>`<div class="bar-group" title="${monthNames[i]}: ${b.ensayos} ensayos asistidos, ${b.actos} actos realizados" style="${filterMonth!=='all'&&Number(filterMonth)!==i+1?'opacity:.32;':''}"><div class="bar ensayo" style="height:${b.ensayos?Math.max(3,b.ensayos/max*100):0}%"></div><div class="bar acto" style="height:${b.actos?Math.max(3,b.actos/max*100):0}%"></div></div>`).join('');$('monthLabels').innerHTML=monthNames.map(n=>`<span>${n.slice(0,3)}</span>`).join('');
+renderTrend();
 const recent=ordered(data).slice(0,5);$('recentList').innerHTML=recent.length?recent.map(r=>`<div class="recent-item"><div class="emoji">${r.kind==='Ensayo'?'🎼':'🎺'}</div><div><strong>${escapeHtml(r.name)}</strong><small>${fmtDate(r.date)} · ${escapeHtml(r.kind)}</small></div>${pill(r.status)}</div>`).join(''):'<div class="empty">Todavía no hay actividad en este periodo. Añade tu primer ensayo o acto.</div>';
+}
+function renderTrend(){
+  // When "Todos los años" is selected, each point groups the same calendar
+  // month across all years; months with no rehearsals are absent, not 0%.
+  const source=filterYear==='all'?records:records.filter(r=>r.date.slice(0,4)===filterYear);
+  const months=monthNames.map((name,index)=>{
+    const rehearsals=source.filter(r=>r.kind==='Ensayo'&&Number(r.date.slice(5,7))===index+1);
+    const attended=rehearsals.filter(r=>r.status==='yes').length;
+    return {name,index,total:rehearsals.length,attended,pct:rehearsals.length?Math.round(100*attended/rehearsals.length):null};
+  });
+  const selected=filterMonth==='all'?-1:Number(filterMonth)-1;
+  $('trendPeriod').textContent=filterYear==='all'?'Todos los años':filterYear;
+  const coords=m=>({x:12+(m.index*636/11),y:8+(100-m.pct)*1.44});
+  const paths=[],areas=[];let run=[];
+  const flush=()=>{
+    if(run.length>=2){
+      const points=run.map(m=>coords(m));
+      paths.push('M'+points.map(p=>p.x.toFixed(1)+','+p.y.toFixed(1)).join(' L'));
+      areas.push('M'+points[0].x.toFixed(1)+',152 L'+points.map(p=>p.x.toFixed(1)+','+p.y.toFixed(1)).join(' L')+' L'+points[points.length-1].x.toFixed(1)+',152 Z');
+    }
+    run=[];
+  };
+  months.forEach(m=>{if(m.pct===null)flush();else run.push(m)});flush();
+  const grid=[8,80,152].map(y=>`<line class="trend-gridline" x1="0" y1="${y}" x2="660" y2="${y}"/>`).join('');
+  const area=areas.map(d=>`<path class="trend-area" d="${d}"/>`).join('');
+  const line=paths.map(d=>`<path class="trend-stroke" d="${d}"/>`).join('');
+  const dots=months.filter(m=>m.pct!==null).map(m=>{
+    const p=coords(m),highlight=m.index===selected;
+    return `<circle class="trend-point${highlight?' selected':''}" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${highlight?6:4.7}"><title>${m.name}: ${m.pct} % (${m.attended} de ${m.total} ensayos)</title></circle>`;
+  }).join('');
+  $('trendPlot').innerHTML=`<svg viewBox="0 0 660 160" preserveAspectRatio="none" focusable="false" aria-hidden="true"><defs><linearGradient id="trendAreaGradient" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#bfdbfe" stop-opacity=".7"/><stop offset="100%" stop-color="#eff6ff" stop-opacity=".08"/></linearGradient></defs>${grid}${area}${line}${dots}</svg>${months.every(m=>m.pct===null)?'<div class="trend-empty">Todavía no hay ensayos en este periodo.</div>':''}`;
+  $('trendMonths').innerHTML=months.map(m=>`<span class="${m.pct!==null?'with-data ':''}${m.index===selected?'highlight':''}" title="${m.name}: ${m.pct===null?'sin ensayos':m.pct+' % ('+m.attended+' de '+m.total+')'}">${m.name.slice(0,3)}</span>`).join('');
+  $('trendPlot').setAttribute('aria-label','Porcentaje mensual de asistencia a ensayos. '+(filterYear==='all'?'Todos los años agrupados por mes. ':'Año '+filterYear+'. ')+months.map(m=>m.name+': '+(m.pct===null?'sin ensayos':m.pct+' por ciento, '+m.attended+' de '+m.total)).join('; '));
+  const valid=(selected>=0?months.filter(m=>m.index===selected):months).filter(m=>m.pct!==null);
+  if(!valid.length){
+    $('trendSummary').textContent='No hay ensayos registrados'+(selected>=0?' en el mes seleccionado':' en este periodo')+'. Los meses sin datos no cuentan como 0 %.';
+  }else if(selected>=0){
+    const m=valid[0];
+    $('trendSummary').textContent=m.name+': '+m.pct+' % de asistencia ('+m.attended+' de '+m.total+' ensayos). Los demás meses se mantienen para comparar.';
+  }else{
+    const best=[...valid].sort((a,b)=>b.pct-a.pct||b.total-a.total||a.index-b.index)[0];
+    $('trendSummary').textContent='Mejor mes: '+best.name+' · '+best.pct+' % de asistencia ('+best.attended+' de '+best.total+' ensayos).'+(filterYear==='all'?' Los datos se agrupan por mes entre todos los años.':'');
+  }
 }
 function filteredRecords(){const search=$('search').value.trim().toLocaleLowerCase('es-ES');return ordered(subset().filter(r=>($('typeFilter').value==='all'||r.kind===$('typeFilter').value)&&($('statusFilter').value==='all'||r.status===$('statusFilter').value)&&(!search||`${r.name} ${r.notes||''} ${r.kind}`.toLocaleLowerCase('es-ES').includes(search))))}
 function renderTable(){
