@@ -193,6 +193,19 @@
   #records[data-mobile-view="history"] #historyPanel{margin-top:0;}
   #records[data-mobile-view="form"] #formPanel{margin-top:0;}
 }
+
+/* Formulario responsivo: evita que el selector nativo de fecha de Safari sobresalga */
+#formPanel,#recordForm,#recordForm .form-grid,#recordForm .field{min-width:0;max-width:100%}
+#recordForm .form-grid>*{min-width:0}
+#recordForm input,#recordForm select,#recordForm textarea{display:block;min-width:0;max-width:100%;width:100%;box-sizing:border-box}
+#recordForm input[type="date"]{min-width:0;max-width:100%;width:100%;-webkit-min-logical-width:0}
+#recordForm input[type="date"]::-webkit-date-and-time-value{min-width:0;text-align:left}
+@media(max-width:740px){
+  #recordForm .form-grid{grid-template-columns:minmax(0,1fr);gap:16px}
+  #recordForm .field{width:100%;min-width:0}
+  #recordForm input,#recordForm select,#recordForm textarea{font-size:16px}
+  #recordForm input[type="date"]{min-height:46px;overflow:hidden}
+}
 </style>
 </head>
 <body>
