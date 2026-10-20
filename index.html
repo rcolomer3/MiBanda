@@ -19,6 +19,16 @@
 .auth-card .btn{width:100%;margin-top:8px}
 .sync-panel{margin-bottom:16px}.sync-state{margin:10px 0;color:#475569;font-size:14px}
 .sync-state strong{color:#166534}.sync-panel .settings-list{margin-top:12px}
+
+/* Cuenta siempre visible, también en el móvil */
+.account-bar{display:flex;justify-content:flex-end;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 21px}
+.account-pill{display:flex;align-items:center;gap:10px;min-width:0;padding:8px 12px;border:1px solid var(--line);border-radius:14px;background:white}
+.account-icon{width:35px;height:35px;display:grid;place-items:center;flex-shrink:0;background:#eff6ff;border-radius:50%;font-size:18px}
+.account-details{display:flex;flex-direction:column;min-width:0;gap:2px}
+.account-details strong{font-size:12px;font-weight:750;line-height:1.2}
+.account-details small{font-size:11px;color:var(--muted);overflow-wrap:anywhere}
+.account-logout{font-size:12px;padding:8px 12px;min-height:38px}
+@media(max-width:740px){.account-bar{justify-content:space-between;gap:8px;margin-bottom:17px}.account-pill{flex:1;padding:7px 9px}.account-logout{padding:8px 10px;white-space:nowrap}}
 </style>
 </head>
 <body>
@@ -31,6 +41,16 @@
 <div class="app" hidden>
 <aside class="sidebar"><div class="brand">🎺 Mi Banda<small>Control de asistencias</small></div><nav class="nav"><button data-page="dashboard" class="active">📊 Resumen</button><button data-page="records">📅 Ensayos y actos</button><button data-page="settings">⚙️ Ajustes</button></nav></aside>
 <main class="content">
+<div class="account-bar" aria-label="Sesión de usuario">
+  <div class="account-pill">
+    <span class="account-icon" aria-hidden="true">👤</span>
+    <div class="account-details">
+      <strong id="accountName">Modo local</strong>
+      <small id="accountEmail">Sin sincronización</small>
+    </div>
+  </div>
+  <button class="btn account-logout" id="signOutHeader" type="button" hidden>Cerrar sesión</button>
+</div>
 <section id="dashboard" class="page active">
 <div class="head"><div><h1>Resumen de asistencias</h1><p>Consulta tu actividad en la banda de un vistazo.</p></div><button class="btn primary" id="quickAdd">＋ Añadir registro</button></div>
 <div class="filters"><div class="field"><label for="year">Año</label><select id="year"></select></div><div class="field"><label for="month">Mes</label><select id="month"><option value="all">Todo el año</option></select></div><button class="btn" id="clearFilters">Ver todo</button></div>
@@ -41,7 +61,7 @@
 <div class="card"><div class="label">Asistencia a ensayos</div><div class="value amber" id="attendanceRate">—</div><div class="detail">Sobre todos los ensayos registrados</div></div>
 </div>
 <div class="layout"><div class="panel"><div class="section-head"><h2>Actividad por meses</h2><span id="chartYear"></span></div><div class="bars" id="chart"></div><div class="months" id="monthLabels"></div><div class="legend"><span><i style="background:#2563eb"></i> Ensayos asistidos</span><span><i style="background:#22a06b"></i> Actos realizados</span></div></div>
-<div class="panel"><div class="section-head"><h2>Detalle del periodo</h2></div><div class="summary-list"><div class="minirow"><span>Ensayos asistidos</span><strong id="progressCount">0 / 0</strong></div><div class="progress"><div id="progressFill" style="width:0"></div></div><div class="minirow"><span>Ensayos no asistidos</span><strong id="missed">0</strong></div><div class="minirow"><span>Actos a los que faltaste</span><strong id="missedActs">0</strong></div></div><p class="note" style="margin-top:24px">El porcentaje cuenta los ensayos a los que asististe respecto al total de ensayos registrados.</p></div></div>
+<div class="panel"><div class="section-head"><h2>Detalle del periodo</h2></div><div class="summary-list"><div class="minirow"><span>Ensayos asistidos</span><strong id="progressCount">0 / 0</strong></div><div class="progress"><div id="progressFill" style="width:0"></div></div><div class="minirow"><span>Ensayos no asistidos</span><strong id="missed">0</strong></div></div><p class="note" style="margin-top:24px">El porcentaje cuenta los ensayos a los que asististe respecto al total de ensayos registrados.</p></div></div>
 <div class="panel recent"><div class="section-head"><h2>Últimos registros</h2><button class="btn sm" id="viewAll">Ver todos</button></div><div id="recentList"></div></div>
 </section>
 <section id="records" class="page"><div class="head"><div><h1>Ensayos y actos</h1><p>Apunta cuándo tenías actividad y si asististe.</p></div></div>
@@ -86,7 +106,7 @@ function subset(){return records.filter(r=>(filterYear==='all'||r.date.slice(0,4
 function ordered(arr){return [...arr].sort((a,b)=>b.date.localeCompare(a.date)||b.id.localeCompare(a.id))}
 function renderDashboard(){initYears();$('month').value=filterMonth;const data=subset(),ensayos=data.filter(r=>r.kind==='Ensayo'),acts=data.filter(r=>r.kind==='Acto'),yes=ensayos.filter(r=>r.status==='yes').length,no=ensayos.filter(r=>r.status==='no').length,actsYes=acts.filter(r=>r.status==='yes').length,pct=ensayos.length?Math.round(100*yes/ensayos.length):null;
 $('totalRehearsals').textContent=ensayos.length.toLocaleString('es-ES');$('attendedRehearsals').textContent=yes.toLocaleString('es-ES');$('actsAttended').textContent=actsYes.toLocaleString('es-ES');$('attendanceRate').textContent=pct===null?'—':`${pct} %`;$('rehearsalDetail').textContent=`${yes} asistencias`;$('missedDetail').textContent=`${no} faltas en total`;$('actsDetail').textContent=`${acts.length} actos registrados`;
-$('progressCount').textContent=`${yes} / ${ensayos.length}`;$('progressFill').style.width=(pct??0)+'%';$('missed').textContent=no;$('missedActs').textContent=acts.filter(r=>r.status!=='yes').length;
+$('progressCount').textContent=`${yes} / ${ensayos.length}`;$('progressFill').style.width=(pct??0)+'%';$('missed').textContent=no;
 const chartData=filterYear==='all'?data:records.filter(r=>r.date.slice(0,4)===filterYear);const buckets=Array.from({length:12},(_,m)=>{const list=chartData.filter(r=>Number(r.date.slice(5,7))===m+1);return {ensayos:list.filter(r=>r.kind==='Ensayo'&&r.status==='yes').length,actos:list.filter(r=>r.kind==='Acto'&&r.status==='yes').length}});const max=Math.max(1,...buckets.flatMap(b=>[b.ensayos,b.actos]));$('chartYear').textContent=filterYear==='all'?'Todos los años (agrupado por mes)':filterYear+(filterMonth==='all'?'':` · ${monthNames[Number(filterMonth)-1]} seleccionado`);
 $('chart').innerHTML=buckets.map((b,i)=>`<div class="bar-group" title="${monthNames[i]}: ${b.ensayos} ensayos asistidos, ${b.actos} actos realizados" style="${filterMonth!=='all'&&Number(filterMonth)!==i+1?'opacity:.32;':''}"><div class="bar ensayo" style="height:${b.ensayos?Math.max(3,b.ensayos/max*100):0}%"></div><div class="bar acto" style="height:${b.actos?Math.max(3,b.actos/max*100):0}%"></div></div>`).join('');$('monthLabels').innerHTML=monthNames.map(n=>`<span>${n.slice(0,3)}</span>`).join('');
 const recent=ordered(data).slice(0,5);$('recentList').innerHTML=recent.length?recent.map(r=>`<div class="recent-item"><div class="emoji">${r.kind==='Ensayo'?'🎼':'🎺'}</div><div><strong>${escapeHtml(r.name)}</strong><small>${fmtDate(r.date)} · ${escapeHtml(r.kind)}</small></div>${pill(r.status)}</div>`).join(''):'<div class="empty">Todavía no hay actividad en este periodo. Añade tu primer ensayo o acto.</div>';
@@ -133,7 +153,12 @@ window.miBandaUI={
   if(window.miBandaCloud)window.miBandaCloud.mode=mode==='cloud'?'cloud':'local-offline';
   $('connectGoogle').hidden=mode==='cloud';
   $('signOutBtn').hidden=mode!=='cloud';
-  $('syncAccount').textContent=mode==='cloud'?'Cuenta: '+(account||'Google'):'Los registros no se comparten entre dispositivos.';
+  $('signOutHeader').hidden=mode!=='cloud';
+  const userName=typeof account==='object'?(account.name||account.email||'Google'):(account||'Google');
+  const userEmail=typeof account==='object'?(account.email||''):'';
+  $('accountName').textContent=mode==='cloud'?userName:'Modo local';
+  $('accountEmail').textContent=mode==='cloud'?(userEmail||'Conectado con Google'):'Sin sincronización';
+  $('syncAccount').textContent=mode==='cloud'?'Cuenta: '+userName+(userEmail&&userEmail!==userName?' · '+userEmail:''):'Los registros no se comparten entre dispositivos.';
   $('syncStatus').textContent=mode==='cloud'?'Sincronizado con Firebase':'Modo local · sin sincronización';
   render();
  },
