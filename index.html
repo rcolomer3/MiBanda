@@ -53,6 +53,61 @@
 @media(max-width:460px){.stat-card .stat-icon{width:36px;height:36px;font-size:19px;border-radius:10px}.stat-card .value{font-size:28px}.stat-card .stat-top .label{font-size:12px}}
 .boot-spinner{width:25px;height:25px;border:3px solid #cbd5e1;border-top-color:#2563eb;border-radius:50%;animation:boot-spin .7s linear infinite;margin:18px auto 0}
 @keyframes boot-spin{to{transform:rotate(360deg)}}
+
+/* Menú inferior ampliado, con acceso directo a crear registros */
+@media (max-width:740px) {
+  body {padding-bottom:calc(110px + env(safe-area-inset-bottom));}
+  .bottomnav {
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    align-items:center;
+    gap:6px;
+    width:100%;
+    height:calc(88px + env(safe-area-inset-bottom));
+    padding:8px 12px calc(8px + env(safe-area-inset-bottom));
+    border-top:1px solid #334155;
+    box-shadow:0 -5px 18px rgba(15,23,42,.16);
+  }
+  .bottomnav button {
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+    height:68px;
+    min-width:0;
+    width:100%;
+    padding:4px 2px;
+    border-radius:12px;
+    font-size:12px;
+    line-height:1.2;
+    white-space:nowrap;
+    touch-action:manipulation;
+  }
+  .bottomnav button.active:not(.add-action){background:rgba(255,255,255,.08);color:#fff;}
+  .bottomnav .nav-icon {font-size:24px;line-height:1.15;}
+  .bottomnav button:focus-visible {outline:2px solid #93c5fd;outline-offset:-3px;}
+  .bottomnav .add-action {color:#fff;font-weight:700;}
+  .bottomnav .add-circle {
+    display:grid;
+    place-items:center;
+    height:46px;
+    width:46px;
+    flex-shrink:0;
+    border-radius:15px;
+    background:#2563eb;
+    color:#fff;
+    font-size:34px;
+    line-height:1;
+    box-shadow:0 3px 12px rgba(37,99,235,.3);
+  }
+  .bottomnav .add-action:active .add-circle {background:#1d4ed8;}
+  .toast {bottom:calc(104px + env(safe-area-inset-bottom));}
+}
+@media (max-width:360px) {
+  .bottomnav {gap:2px;padding-left:6px;padding-right:6px;}
+  .bottomnav button {font-size:11px;}
+}
 </style>
 </head>
 <body>
@@ -107,7 +162,12 @@
 </div>
 <div class="panel"><h2>Copias de seguridad</h2><p class="note">Tus registros se sincronizan con Firebase al entrar con Google. También puedes descargar una copia de seguridad en JSON.</p><div class="settings-list"><button class="btn primary" id="exportJson">⬇ Descargar copia JSON</button><label class="btn select-file">⬆ Restaurar copia JSON<input type="file" accept=".json,application/json" id="importJson"></label></div></div><div class="panel" style="margin-top:16px"><h2>Administración</h2><p class="note">Eliminar todos los registros no se puede deshacer. Antes puedes descargar una copia de seguridad.</p><button class="btn danger" id="deleteAll">Borrar todos los registros</button></div></section>
 </main></div>
-<nav class="bottomnav" hidden><button class="active" data-page="dashboard">📊<br>Resumen</button><button data-page="records">📅<br>Registros</button><button data-page="settings">⚙️<br>Ajustes</button></nav><div class="toast" id="toast" role="status"></div>
+<nav class="bottomnav" hidden aria-label="Navegación móvil">
+  <button type="button" class="active" data-page="dashboard" aria-label="Ir al resumen"><span class="nav-icon" aria-hidden="true">📊</span><span>Resumen</span></button>
+  <button type="button" data-page="records" aria-label="Ver ensayos y actos"><span class="nav-icon" aria-hidden="true">📅</span><span>Registros</span></button>
+  <button type="button" class="add-action" id="mobileAdd" aria-label="Añadir un ensayo o acto"><span class="add-circle" aria-hidden="true">+</span><span>Añadir</span></button>
+  <button type="button" data-page="settings" aria-label="Abrir ajustes"><span class="nav-icon" aria-hidden="true">⚙️</span><span>Ajustes</span></button>
+</nav><div class="toast" id="toast" role="status"></div>
 <script>
 (()=>{'use strict';
 const KEY='miBandaAsistencias_v1',monthNames=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
@@ -147,7 +207,12 @@ function download(content,name,mime){const blob=new Blob([content],{type:mime}),
 function csvCell(x){return '"'+String(x??'').replace(/"/g,'""')+'"'}
 $('recordForm').addEventListener('submit',e=>{e.preventDefault();const date=$('date').value,kind=$('kind').value,name=$('name').value.trim(),status=$('status').value,notes=$('notes').value.trim();if(!date||!/^\d{4}-\d{2}-\d{2}$/.test(date)||!name||!['Ensayo','Acto'].includes(kind)||!['yes','no'].includes(status))return;if(editing){const idx=records.findIndex(r=>r.id===editing);if(idx<0)return;records[idx]={id:editing,date,kind,name,status,notes}}else records.push({id:typeof crypto!=='undefined'&&crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random(),date,kind,name,status,notes});if(!save())return;filterYear=date.slice(0,4);filterMonth='all';render();resetForm();toast('Registro guardado correctamente')});
 $('rows').addEventListener('click',e=>{const edit=e.target.closest('[data-edit]'),del=e.target.closest('[data-delete]');if(edit){const r=records.find(r=>r.id===edit.dataset.edit);if(!r)return;editing=r.id;$('date').value=r.date;$('kind').value=r.kind;$('name').value=r.name;$('status').value=r.status==='just'?'no':r.status;$('notes').value=r.notes||'';$('saveBtn').textContent='Guardar cambios';$('formTitle').textContent='Editar registro';$('cancelEdit').hidden=false;$('formPanel').scrollIntoView({behavior:'smooth',block:'start'});$('name').focus({preventScroll:true})}if(del){const r=records.find(r=>r.id===del.dataset.delete);if(!r||!confirm(`¿Eliminar "${r.name}" del ${fmtDate(r.date)}?`))return;records=records.filter(x=>x.id!==r.id);if(editing===r.id)resetForm();if(save()){render();toast('Registro eliminado')}}});
-$('cancelEdit').addEventListener('click',resetForm);document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.page)));$('quickAdd').addEventListener('click',()=>{resetForm();show('records');$('formPanel').scrollIntoView({behavior:'smooth'})});$('viewAll').addEventListener('click',()=>show('records'));
+function openNewRecord(){resetForm();show('records');requestAnimationFrame(()=>$('formPanel').scrollIntoView({behavior:'smooth',block:'start'}))}
+$('cancelEdit').addEventListener('click',resetForm);
+document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.page)));
+$('quickAdd').addEventListener('click',openNewRecord);
+$('mobileAdd').addEventListener('click',openNewRecord);
+$('viewAll').addEventListener('click',()=>show('records'));
 $('year').addEventListener('change',()=>{filterYear=$('year').value;render()});$('month').addEventListener('change',()=>{filterMonth=$('month').value;render()});$('clearFilters').addEventListener('click',()=>{filterYear='all';filterMonth='all';render()});['search','typeFilter','statusFilter'].forEach(id=>$(id).addEventListener(id==='search'?'input':'change',renderTable));
 $('exportJson').addEventListener('click',()=>{download(JSON.stringify({version:1,records},null,2),`mi-banda-copia-${today()}.json`,'application/json');toast('Copia descargada')});
 $('exportCsv').addEventListener('click',()=>{const arr=filteredRecords(),lines=[['Fecha','Tipo','Actividad','Asistencia','Notas'],...arr.map(r=>[fmtDate(r.date),r.kind,r.name,labelStatus(r.status),r.notes||''])];download('\ufeff'+lines.map(row=>row.map(csvCell).join(';')).join('\r\n'),`mi-banda-registros-${today()}.csv`,'text/csv;charset=utf-8');toast('CSV descargado')});
