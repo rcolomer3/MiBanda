@@ -54,132 +54,92 @@
 .boot-spinner{width:25px;height:25px;border:3px solid #cbd5e1;border-top-color:#2563eb;border-radius:50%;animation:boot-spin .7s linear infinite;margin:18px auto 0}
 @keyframes boot-spin{to{transform:rotate(360deg)}}
 
-/* Menú inferior ampliado, con acceso directo a crear registros */
-@media (max-width:740px) {
-  body {padding-bottom:calc(110px + env(safe-area-inset-bottom));}
-  .bottomnav {
-    display:grid;
-    grid-template-columns:repeat(4,minmax(0,1fr));
-    align-items:center;
-    gap:6px;
-    width:100%;
-    height:calc(88px + env(safe-area-inset-bottom));
-    padding:8px 12px calc(8px + env(safe-area-inset-bottom));
-    border-top:1px solid #334155;
-    box-shadow:0 -5px 18px rgba(15,23,42,.16);
-  }
-  .bottomnav button {
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    gap:4px;
-    height:68px;
-    min-width:0;
-    width:100%;
-    padding:4px 2px;
-    border-radius:12px;
-    font-size:12px;
-    line-height:1.2;
-    white-space:nowrap;
-    touch-action:manipulation;
-  }
-  .bottomnav button.active:not(.add-action){background:rgba(255,255,255,.08);color:#fff;}
-  .bottomnav .nav-icon {font-size:24px;line-height:1.15;}
-  .bottomnav button:focus-visible {outline:2px solid #93c5fd;outline-offset:-3px;}
-  .bottomnav .add-action {color:#fff;font-weight:700;}
-  .bottomnav .add-circle {
-    display:grid;
-    place-items:center;
-    height:46px;
-    width:46px;
-    flex-shrink:0;
-    border-radius:15px;
-    background:#2563eb;
-    color:#fff;
-    font-size:34px;
-    line-height:1;
-    box-shadow:0 3px 12px rgba(37,99,235,.3);
-  }
-  .bottomnav .add-action:active .add-circle {background:#1d4ed8;}
-  .toast {bottom:calc(104px + env(safe-area-inset-bottom));}
-}
-@media (max-width:360px) {
-  .bottomnav {gap:2px;padding-left:6px;padding-right:6px;}
-  .bottomnav button {font-size:11px;}
-}
-
-/* El botón + del menú sustituye Añadir registro solo en móvil */
-@media(max-width:740px){#quickAdd{display:none!important}}
-
-/* Mi Banda | dock de navegación móvil */
+/* Dock móvil renovado: tres opciones centradas y botón + flotante al borde. */
 @media(max-width:740px){
-  body{background:#f6f8fc;padding-bottom:calc(128px + env(safe-area-inset-bottom,0px));}
-  .content{padding:18px 16px 38px;}
-  .head{margin-bottom:19px;gap:12px;}
-  .head h1{font-size:25px;letter-spacing:-.75px;font-weight:760;}
-  .head p{font-size:13px;line-height:1.45;}
-  .panel{border-radius:20px;border-color:#e5eaf2;box-shadow:0 5px 22px rgba(29,48,77,.035);}
-  .card{border-radius:19px;}
-  .account-bar{margin-bottom:19px;gap:8px;}
-  .account-pill{border-radius:17px;padding:8px 11px;border-color:#e6ebf4;box-shadow:0 3px 14px rgba(15,23,42,.025);}
-  .account-icon{background:#edf4ff;color:#2563eb;}
-  .account-logout{border-radius:12px;background:#fff;font-weight:650;}
-  .filters{gap:10px;}
-  .filters select{background:#fff;}
+  #quickAdd{display:none!important}
+  body{background:#f6f8fc;padding-bottom:0}
+  .app{display:block;min-height:100vh;min-height:100svh}
+  .sidebar{display:none}
+  .content{padding:18px 16px calc(103px + env(safe-area-inset-bottom,0px))}
+  .head{margin-bottom:19px;gap:12px}
+  .head h1{font-size:25px;letter-spacing:-.75px;font-weight:760}
+  .head p{font-size:13px;line-height:1.45}
+  .panel{border-radius:20px;border-color:#e5eaf2;box-shadow:0 5px 22px rgba(29,48,77,.035)}
+  .card{border-radius:19px}
+  .account-bar{margin-bottom:19px;gap:8px}
+  .account-pill{border-radius:17px;padding:8px 11px;border-color:#e6ebf4;box-shadow:0 3px 14px rgba(15,23,42,.025)}
+  .account-icon{background:#edf4ff;color:#2563eb}
+  .account-logout{border-radius:12px;background:#fff;font-weight:650}
+  .filters{gap:10px}
+  .filters select{background:#fff}
   .bottomnav{
     display:grid;
     position:fixed;
-    top:auto;left:12px;right:12px;
+    top:auto;
     bottom:calc(11px + env(safe-area-inset-bottom,0px));
-    width:auto;height:78px;min-height:78px;
-    grid-template-columns:repeat(4,minmax(0,1fr));
-    align-items:center;justify-items:stretch;justify-content:initial;
-    gap:3px;padding:7px 9px;
+    left:12px;right:12px;
+    width:auto;height:76px;min-height:76px;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    align-items:center;justify-items:center;
+    gap:3px;
+    padding:8px 76px 8px 10px;
     background:rgba(255,255,255,.97);
     border:1px solid rgba(226,233,243,.96);
     border-radius:24px;
-    box-shadow:0 16px 42px rgba(15,23,42,.16),0 2px 7px rgba(15,23,42,.035);
+    box-shadow:0 16px 42px rgba(15,23,42,.14),0 2px 7px rgba(15,23,42,.035);
     -webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);
-    z-index:15;isolation:isolate;
+    isolation:isolate;z-index:15;overflow:visible;
   }
   .bottomnav button{
     appearance:none;display:flex;flex-direction:column;
-    justify-content:center;align-items:center;gap:5px;
-    width:100%;min-width:0;height:64px;margin:0;padding:6px 1px;
-    border:0;border-radius:17px;background:transparent;
-    color:#8390a4;font-size:11px;font-weight:620;line-height:1.1;
-    letter-spacing:-.05px;white-space:nowrap;
+    justify-content:center;align-items:center;
+    gap:5px;margin:0;padding:6px 1px;
+    height:60px;width:100%;min-width:0;
+    border:0;border-radius:16px;
+    background:transparent;color:#8390a4;
+    font-size:11px;font-weight:630;line-height:1.1;
+    white-space:nowrap;
     -webkit-tap-highlight-color:transparent;touch-action:manipulation;
     transition:color .18s ease,background .18s ease,transform .18s ease;
   }
   .bottomnav button.active:not(.add-action){
     background:#eff5ff;color:#1767d7;font-weight:760;
   }
-  .bottomnav button:not(.add-action):active{transform:scale(.95);}
-  .bottomnav .dock-icon{display:block;width:24px;height:24px;flex-shrink:0;}
-  .bottomnav .dock-label{display:block;}
-  .bottomnav .add-action{color:#2370db;font-weight:760;gap:2px;padding:3px 1px 4px;}
-  .bottomnav .add-action .dock-label{font-size:11px;}
+  .bottomnav button:not(.add-action):active{transform:scale(.95)}
+  .bottomnav .dock-icon{display:block;width:24px;height:24px;flex-shrink:0}
+  .bottomnav .dock-label{display:block}
+  .bottomnav .add-action{
+    position:absolute;z-index:2;
+    top:-24px;right:10px;
+    width:64px;height:64px;min-height:64px;
+    padding:0;margin:0;display:grid;place-items:center;
+    border:0;border-radius:21px;
+    background:transparent;
+    color:#fff;
+  }
   .bottomnav .add-action .add-circle{
-    display:grid;place-items:center;width:45px;height:45px;flex-shrink:0;
-    border-radius:15px;border:1px solid #438fff;
-    background:linear-gradient(150deg,#409cff 0%,#216be4 62%,#145ac7 100%);
-    color:#fff;box-shadow:0 7px 15px rgba(37,99,235,.28),inset 0 1px 1px rgba(255,255,255,.3);
+    display:grid;place-items:center;
+    width:60px;height:60px;flex-shrink:0;
+    border-radius:20px;border:4px solid #fff;
+    background:linear-gradient(150deg,#459eff 0%,#2875ed 60%,#1454c7 100%);
+    color:#fff;
+    box-shadow:0 8px 20px rgba(37,99,235,.27),0 3px 10px rgba(15,23,42,.08),inset 0 1px 1px rgba(255,255,255,.22);
     transition:transform .18s ease,box-shadow .18s ease;
   }
-  .bottomnav .add-action .dock-plus-icon{width:24px;height:24px;stroke-width:2.7;}
-  .bottomnav .add-action:active .add-circle{transform:scale(.93);box-shadow:0 4px 9px rgba(37,99,235,.22);}
-  .bottomnav button:focus-visible{outline:2px solid #60a5fa;outline-offset:-3px;}
-  .toast{bottom:calc(104px + env(safe-area-inset-bottom,0px));left:16px;right:16px;border-radius:14px;}
+  .bottomnav .add-action .dock-plus-icon{width:27px;height:27px;stroke-width:2.55}
+  .bottomnav .add-action .dock-label{display:none}
+  .bottomnav .add-action:active .add-circle{transform:scale(.93)}
+  .bottomnav button:focus-visible{outline:2px solid #60a5fa;outline-offset:2px}
+  .toast{bottom:calc(106px + env(safe-area-inset-bottom,0px));left:16px;right:16px;border-radius:14px}
 }
 @media(max-width:360px){
-  .bottomnav{left:8px;right:8px;padding:7px 6px;gap:0;}
-  .bottomnav button{font-size:10.5px;}
-  .content{padding-left:12px;padding-right:12px;}
+  .bottomnav{left:8px;right:8px;padding-left:7px;padding-right:70px;gap:0}
+  .bottomnav button{font-size:10.5px}
+  .bottomnav .add-action{right:7px}
+  .content{padding-left:12px;padding-right:12px}
 }
 @media(prefers-reduced-motion:reduce){
-  .bottomnav button,.bottomnav .add-action .add-circle{transition:none;}
+  .bottomnav button,.bottomnav .add-action .add-circle{transition:none}
 }
 
 /* En móvil, Registros y + abren pantallas diferentes. */
@@ -187,8 +147,7 @@
   #records[data-mobile-view="history"] #formPanel{display:none;}
   #records[data-mobile-view="form"] #historyPanel{display:none;}
   .bottomnav .add-action.selected .add-circle{
-    border-color:#1d69e0;
-    box-shadow:0 8px 20px rgba(37,99,235,.35),0 0 0 3px rgba(37,99,235,.12);
+    box-shadow:0 8px 22px rgba(37,99,235,.35),0 0 0 3px rgba(37,99,235,.18);
   }
   #records[data-mobile-view="history"] #historyPanel{margin-top:0;}
   #records[data-mobile-view="form"] #formPanel{margin-top:0;}
@@ -336,6 +295,48 @@
   .graph-tooltip{width:210px;padding:12px 13px;border-radius:13px}
   .trend-month-hit{cursor:pointer}
 }
+
+/* El selector de fecha de Safari tiene anchura intrínseca: limitarlo desde
+   un marco propio evita que desborde la tarjeta incluso en iPhone pequeño. */
+#formPanel{margin-bottom:16px}
+#recordForm .date-input-frame{
+  box-sizing:border-box;display:block;
+  width:100%;max-width:100%;min-width:0;
+  inline-size:100%;max-inline-size:100%;min-inline-size:0;
+  border:1px solid #cbd5e1;border-radius:11px;
+  background:#fff;overflow:hidden;position:relative;
+}
+#recordForm .date-input-frame:focus-within{
+  outline:3px solid #93c5fd;outline-offset:1px;border-color:#60a5fa;
+}
+#recordForm .date-input-frame #date{
+  box-sizing:border-box;display:block;position:relative;
+  width:100%;min-width:0;max-width:100%;
+  inline-size:100%;min-inline-size:0;max-inline-size:100%;
+  height:46px;min-height:46px;margin:0;
+  padding:10px 12px;
+  border:0;border-radius:0;background:transparent;
+  font-size:16px;line-height:1.35;text-align:left;
+  -webkit-appearance:none;appearance:none;
+  overflow:hidden;
+}
+#recordForm .date-input-frame #date:focus-visible{outline:none}
+#recordForm .date-input-frame #date::-webkit-date-and-time-value{
+  min-width:0;max-width:100%;text-align:left;
+}
+#recordForm .date-input-frame #date::-webkit-datetime-edit{
+  min-width:0;max-width:100%;padding:0;
+}
+#recordForm .date-input-frame #date::-webkit-calendar-picker-indicator{
+  flex-shrink:0;margin:0;
+}
+@media(max-width:740px){
+  #records[data-mobile-view="form"] #formPanel{margin:0;padding-bottom:16px}
+  #records[data-mobile-view="form"] .form-actions{margin-top:15px;margin-bottom:0;padding-bottom:0}
+  #records[data-mobile-view="form"] #saveBtn{width:100%;min-height:47px}
+  #recordForm .form-grid{grid-template-columns:minmax(0,1fr)}
+  #recordForm .form-grid>*{min-width:0;max-width:100%}
+}
 </style>
 </head>
 <body>
@@ -398,7 +399,7 @@
 </div>
 </section>
 <section id="records" class="page" data-mobile-view="history"><div class="head"><div><h1 id="recordsHeading">Ensayos y actos</h1><p id="recordsIntro">Consulta tu historial o añade un ensayo o acto.</p></div></div>
-<div class="panel" id="formPanel" style="margin-bottom:16px"><div class="section-head"><h2 id="formTitle">Nuevo registro</h2></div><form id="recordForm"><div class="form-grid"><div class="field"><label for="date">Fecha *</label><input required id="date" type="date"></div><div class="field"><label for="kind">Tipo *</label><select id="kind"><option value="Ensayo">🎼 Ensayo</option><option value="Acto">🎺 Acto</option></select></div><div class="field"><label for="name">Nombre / descripción *</label><input id="name" maxlength="120" required placeholder="Ej.: Ensayo general"></div><div class="field"><label for="status">Asistencia *</label><select id="status"><option value="yes">✅ Asistí</option><option value="no">❌ No asistí</option></select></div><div class="field wide"><label for="notes">Notas (opcional)</label><textarea id="notes" rows="2" maxlength="500" placeholder="Lugar, repertorio, observaciones..."></textarea></div></div><div class="form-actions"><button class="btn primary" type="submit" id="saveBtn">Guardar registro</button><button class="btn" type="button" id="cancelEdit" hidden>Cancelar edición</button></div></form></div>
+<div class="panel" id="formPanel"><div class="section-head"><h2 id="formTitle">Nuevo registro</h2></div><form id="recordForm"><div class="form-grid"><div class="field"><label for="date">Fecha *</label><div class="date-input-frame"><input required id="date" type="date"></div></div><div class="field"><label for="kind">Tipo *</label><select id="kind"><option value="Ensayo">🎼 Ensayo</option><option value="Acto">🎺 Acto</option></select></div><div class="field"><label for="name">Nombre / descripción *</label><input id="name" maxlength="120" required placeholder="Ej.: Ensayo general"></div><div class="field"><label for="status">Asistencia *</label><select id="status"><option value="yes">✅ Asistí</option><option value="no">❌ No asistí</option></select></div><div class="field wide"><label for="notes">Notas (opcional)</label><textarea id="notes" rows="2" maxlength="500" placeholder="Lugar, repertorio, observaciones..."></textarea></div></div><div class="form-actions"><button class="btn primary" type="submit" id="saveBtn">Guardar registro</button><button class="btn" type="button" id="cancelEdit" hidden>Cancelar edición</button></div></form></div>
 <div class="panel" id="historyPanel">
   <div class="section-head"><h2>Historial <span id="recordCount" class="muted"></span></h2><button class="btn sm" id="exportCsv">Exportar CSV</button></div>
   <div class="record-kinds" role="group" aria-label="Ver registros por tipo">
