@@ -158,11 +158,19 @@ el("connectGoogle").addEventListener("click", async () => {
 });
 
 async function closeSession() {
+  const uid = auth.currentUser?.uid;
+  if (uid && localStorage.getItem(pendingKey) === uid) {
+    const proceed = confirm("Hay cambios pendientes de sincronizar. Si cierras sesión ahora, podrías perderlos. Es recomendable descargar una copia JSON en Ajustes. ¿Quieres cerrar sesión igualmente?");
+    if (!proceed) return;
+  }
   const buttons = [el("signOutBtn"), el("signOutHeader")];
   buttons.forEach(button => button.disabled = true);
   try {
     await signOut(auth);
     stopListening();
+    // Remove this user's cached records when signing out, not their Firestore data.
+    // Otherwise the "Continuar sin sincronización" option would reveal them.
+    ui.applyRecords([]);
     ui.showGate("Sesión cerrada. Entra con Google para recuperar tus registros sincronizados.", true);
   } catch (error) {
     ui.notify("No se ha podido cerrar sesión: " + friendlyError(error));
