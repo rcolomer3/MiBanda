@@ -38,10 +38,29 @@
 .account-details small{font-size:11px;color:var(--muted);overflow-wrap:anywhere}
 .account-logout{font-size:12px;padding:8px 12px;min-height:38px}
 @media(max-width:740px){.account-bar{justify-content:space-between;gap:8px;margin-bottom:17px}.account-pill{flex:1;padding:7px 9px}.account-logout{padding:8px 10px;white-space:nowrap}}
+
+/* Tarjetas de actividad */
+.stat-card{position:relative;overflow:hidden;box-shadow:0 6px 20px rgba(15,23,42,.035)}
+.stat-card .stat-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:9px}
+.stat-card .stat-top .label{margin-bottom:0;font-weight:700;color:inherit;font-size:13px}
+.stat-card .stat-icon{display:grid;place-items:center;width:42px;height:42px;flex-shrink:0;border-radius:13px;font-size:21px;background:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.9)}
+.stat-card .value{font-size:33px;margin-bottom:4px;font-variant-numeric:tabular-nums}
+.stat-card .detail{font-weight:500;color:inherit;opacity:.76}
+.stat-card.ensayos{background:linear-gradient(140deg,#eff6ff,#e6f0ff);border-color:#cfe3fd;color:#1d4ed8}
+.stat-card.asistidos{background:linear-gradient(140deg,#ecfdf5,#e2faee);border-color:#bcebd2;color:#15803d}
+.stat-card.actos{background:linear-gradient(140deg,#f5f3ff,#eeeafd);border-color:#ddd6fe;color:#6d28d9}
+.stat-card.porcentaje{background:linear-gradient(140deg,#fffbeb,#fff3d9);border-color:#fde68a;color:#b45309}
+@media(max-width:460px){.stat-card .stat-icon{width:36px;height:36px;font-size:19px;border-radius:10px}.stat-card .value{font-size:28px}.stat-card .stat-top .label{font-size:12px}}
+.boot-spinner{width:25px;height:25px;border:3px solid #cbd5e1;border-top-color:#2563eb;border-radius:50%;animation:boot-spin .7s linear infinite;margin:18px auto 0}
+@keyframes boot-spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
-<div id="authGate" class="auth-gate"><div class="auth-card">
+<div id="bootScreen" class="auth-gate" role="status" aria-live="polite">
+<div class="auth-card"><img class="brand-icon-image" src="./favicon.svg" alt="" width="78" height="78">
+<h1>Mi Banda</h1><p id="bootMessage">Recuperando tu sesión…</p><div class="boot-spinner" aria-hidden="true"></div>
+</div></div>
+<div id="authGate" class="auth-gate" hidden><div class="auth-card">
 <img class="brand-icon-image" src="./favicon.svg" alt="Icono de Mi Banda" width="78" height="78"><h1>Mi Banda</h1><p id="authMessage">Cargando Firebase…</p>
 <button class="btn primary" id="signInBtn" disabled>Entrar con Google</button>
 <p style="font-size:12px;margin-bottom:0">Accede con Google para consultar y sincronizar tus ensayos y actos.</p>
@@ -63,10 +82,10 @@
 <div class="head"><div><h1>Resumen de asistencias</h1><p>Consulta tu actividad en la banda de un vistazo.</p></div><button class="btn primary" id="quickAdd">＋ Añadir registro</button></div>
 <div class="filters"><div class="field"><label for="year">Año</label><select id="year"></select></div><div class="field"><label for="month">Mes</label><select id="month"><option value="all">Todo el año</option></select></div><button class="btn" id="clearFilters">Ver todo</button></div>
 <div class="stats">
-<div class="card"><div class="label">Ensayos registrados</div><div class="value blue" id="totalRehearsals">0</div><div class="detail" id="rehearsalDetail">0 asistencias</div></div>
-<div class="card"><div class="label">Ensayos asistidos</div><div class="value green" id="attendedRehearsals">0</div><div class="detail" id="missedDetail">0 faltas</div></div>
-<div class="card"><div class="label">Actos realizados</div><div class="value" id="actsAttended">0</div><div class="detail" id="actsDetail">0 actos registrados</div></div>
-<div class="card"><div class="label">Asistencia a ensayos</div><div class="value amber" id="attendanceRate">—</div><div class="detail">Sobre todos los ensayos registrados</div></div>
+<div class="card stat-card ensayos"><div class="stat-top"><div class="label">Ensayos registrados</div><span class="stat-icon" aria-hidden="true">🎼</span></div><div class="value" id="totalRehearsals">0</div><div class="detail" id="rehearsalDetail">0 asistencias</div></div>
+<div class="card stat-card asistidos"><div class="stat-top"><div class="label">Ensayos asistidos</div><span class="stat-icon" aria-hidden="true">✅</span></div><div class="value" id="attendedRehearsals">0</div><div class="detail" id="missedDetail">0 faltas</div></div>
+<div class="card stat-card actos"><div class="stat-top"><div class="label">Actos realizados</div><span class="stat-icon" aria-hidden="true">🎺</span></div><div class="value" id="actsAttended">0</div><div class="detail" id="actsDetail">0 actos registrados</div></div>
+<div class="card stat-card porcentaje"><div class="stat-top"><div class="label">Asistencia a ensayos</div><span class="stat-icon" aria-hidden="true">📈</span></div><div class="value" id="attendanceRate">—</div><div class="detail">Sobre todos los ensayos registrados</div></div>
 </div>
 <div class="layout"><div class="panel"><div class="section-head"><h2>Actividad por meses</h2><span id="chartYear"></span></div><div class="bars" id="chart"></div><div class="months" id="monthLabels"></div><div class="legend"><span><i style="background:#2563eb"></i> Ensayos asistidos</span><span><i style="background:#22a06b"></i> Actos realizados</span></div></div>
 <div class="panel"><div class="section-head"><h2>Detalle del periodo</h2></div><div class="summary-list"><div class="minirow"><span>Ensayos asistidos</span><strong id="progressCount">0 / 0</strong></div><div class="progress"><div id="progressFill" style="width:0"></div></div><div class="minirow"><span>Ensayos no asistidos</span><strong id="missed">0</strong></div></div><p class="note" style="margin-top:24px">El porcentaje cuenta los ensayos a los que asististe respecto al total de ensayos registrados.</p></div></div>
@@ -137,6 +156,13 @@ $('deleteAll').addEventListener('click',()=>{if(!records.length)return toast('No
 
 /* Bridge with the Firebase module: no remote data is displayed before sign-in. */
 window.miBandaUI={
+ showLoading:message=>{
+  $('bootMessage').textContent=message||'Recuperando tu sesión…';
+  $('bootScreen').hidden=false;
+  $('authGate').hidden=true;
+  document.querySelector('.app').hidden=true;
+  document.querySelector('.bottomnav').hidden=true;
+ },
  getLocalRecords:()=>records.map(r=>({...r})),
  applyRecords:next=>{
   if(!Array.isArray(next))return;
@@ -145,6 +171,7 @@ window.miBandaUI={
   resetForm();render();
  },
  showGate:(message,enabled)=>{
+  $('bootScreen').hidden=true;
   $('authMessage').textContent=message||'Accede con Google para sincronizar.';
   $('authGate').hidden=false;
   document.querySelector('.app').hidden=true;
@@ -152,6 +179,7 @@ window.miBandaUI={
   if(enabled!==undefined)$('signInBtn').disabled=!enabled;
  },
  showApp:(mode,account)=>{
+  $('bootScreen').hidden=true;
   $('authGate').hidden=true;
   document.querySelector('.app').hidden=false;
   document.querySelector('.bottomnav').hidden=false;
@@ -173,5 +201,5 @@ window.miBandaUI={
 monthNames.forEach((name,i)=>$('month').insertAdjacentHTML('beforeend',`<option value="${i+1}">${name}</option>`));resetForm();render();
 })();
 </script>
-<script type="module" src="./firebase-sync.js?v=20261020-logout2"></script>
+<script type="module" src="./firebase-sync.js?v=20261020-persist3"></script>
 </body></html>
