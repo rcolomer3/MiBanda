@@ -27,10 +27,11 @@ jobs:
         run: |
           mkdir -p sitio
           # Incluir el módulo de Firebase: el HTML lo carga por separado.
-          cp index.html firebase-sync.js sitio/
+          cp index.html firebase-sync.js favicon.svg apple-touch-icon.png site.webmanifest sitio/
           touch sitio/.nojekyll
-          test -s sitio/index.html
-          test -s sitio/firebase-sync.js
+          for file in index.html firebase-sync.js favicon.svg apple-touch-icon.png site.webmanifest; do
+            test -s "sitio/$file"
+          done
       - name: Configurar GitHub Pages
         uses: actions/configure-pages@v5
       - name: Subir archivos
