@@ -56,16 +56,16 @@ async function push(nextRecords) {
   const uid = currentUser.uid;
   const sequence = ++writeCounter;
   localStorage.setItem(pendingKey, uid);
-  ui.syncMessage("Guardando en Firebase…");
+  ui.syncMessage("Guardando en Firebase…", "working");
   try {
     await setDoc(currentRef, { records: nextRecords, updatedAt: serverTimestamp() });
     if (sequence === writeCounter && currentUser?.uid === uid) {
       localStorage.removeItem(pendingKey);
-      ui.syncMessage("Sincronizado con Firebase");
+      ui.syncMessage("Sincronizado con Firebase", "ok");
     }
   } catch (error) {
     if (currentUser?.uid === uid) {
-      ui.syncMessage("Error de sincronización · los cambios siguen guardados en este dispositivo");
+      ui.syncMessage("Error de sincronización · cambios guardados en este dispositivo", "error");
       ui.notify("No se pudo sincronizar: " + friendlyError(error));
     }
     throw error;
@@ -117,14 +117,32 @@ async function connect(user) {
     window.miBandaCloud.mode = "cloud";
     ui.showApp("cloud", { name: user.displayName || user.email || "Cuenta de Google", email: user.email || "" });
     ui.syncMessage("Sincronizado con Firebase");
-    unsubscribe = onSnapshot(ref, snapshot => {
-      // Local pending edits take precedence until the server acknowledges them.
-      if (!ready || localStorage.getItem(pendingKey) === user.uid || snapshot.metadata.hasPendingWrites) return;
+    // Firestore can deliver a cached snapshot first. With metadata updates
+    // enabled we also receive the later server confirmation even if the data
+    // is unchanged, so "Sin conexión" does not get stuck incorrectly.
+    let lastApplied = JSON.stringify(incoming);
+    unsubscribe = onSnapshot(ref, { includeMetadataChanges: true }, snapshot => {
+      if (!ready || auth.currentUser?.uid !== user.uid) return;
+      if (snapshot.metadata.hasPendingWrites || localStorage.getItem(pendingKey) === user.uid) {
+        ui.syncMessage("Guardando cambios en Firebase…", "working");
+        return;
+      }
       const fresh = snapshot.exists() && Array.isArray(snapshot.data()?.records) ? snapshot.data().records : [];
-      ui.applyRecords(fresh);
-      ui.syncMessage(snapshot.metadata.fromCache ? "Sin conexión · mostrando últimos datos" : "Sincronizado con Firebase");
+      const signature = JSON.stringify(fresh);
+      // Avoid resetting the current form for metadata-only updates.
+      if (signature !== lastApplied) {
+        lastApplied = signature;
+        ui.applyRecords(fresh);
+      }
+      if (snapshot.metadata.fromCache) {
+        ui.syncMessage(navigator.onLine === false
+          ? "Sin conexión a Internet · mostrando los últimos datos"
+          : "Comprobando sincronización con Firebase…", "working");
+      } else {
+        ui.syncMessage("Sincronizado con Firebase", "ok");
+      }
     }, error => {
-      ui.syncMessage("No se puede leer Firestore");
+      ui.syncMessage("No se puede comprobar la sincronización", "error");
       ui.notify("Error al recibir datos: " + friendlyError(error));
     });
   } catch (error) {
