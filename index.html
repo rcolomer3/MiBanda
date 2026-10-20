@@ -380,7 +380,7 @@
   <div class="trend-visual">
     <div class="trend-y-labels" aria-hidden="true"><span>100 %</span><span>50 %</span><span>0 %</span></div>
     <div class="trend-main">
-      <div id="trendPlot" class="trend-plot" role="img" aria-label="Gráfica de asistencia mensual de ensayos"></div>
+      <div id="trendPlot" class="trend-plot" role="group" aria-label="Gráfica de asistencia mensual de ensayos"></div>
       <div id="trendMonths" class="trend-months" aria-hidden="true"></div>
     </div>
   </div>
@@ -483,7 +483,7 @@ $('totalRehearsals').textContent=ensayos.length.toLocaleString('es-ES');$('atten
 $('progressCount').textContent=`${yes} / ${ensayos.length}`;$('progressFill').style.width=(pct??0)+'%';$('missed').textContent=no;
 hideGraphTooltip();
 const chartData=filterYear==='all'?data:records.filter(r=>r.date.slice(0,4)===filterYear);const buckets=Array.from({length:12},(_,m)=>{const list=chartData.filter(r=>Number(r.date.slice(5,7))===m+1);return {ensayos:list.filter(r=>r.kind==='Ensayo'&&r.status==='yes').length,actos:list.filter(r=>r.kind==='Acto'&&r.status==='yes').length}});const max=Math.max(1,...buckets.flatMap(b=>[b.ensayos,b.actos]));$('chartYear').textContent=filterYear==='all'?'Todos los años (agrupado por mes)':filterYear+(filterMonth==='all'?'':` · ${monthNames[Number(filterMonth)-1]} seleccionado`);
-$('chart').innerHTML=buckets.map((b,i)=>`<button type="button" class="bar-group graph-target" data-graph-point data-chart-type="activity" data-month-index="${i}" data-attended="${b.ensayos}" data-acts="${b.actos}" aria-label="${monthNames[i]}: ${b.ensayos} ensayos asistidos y ${b.actos} actos realizados" style="${filterMonth!=='all'&&Number(filterMonth)!==i+1?'opacity:.32;':''}"><span class="bar ensayo" style="height:${b.ensayos?Math.max(3,b.ensayos/max*100):0}%"></span><span class="bar acto" style="height:${b.actos?Math.max(3,b.actos/max*100):0}%"></span></button>`).join('');$('monthLabels').innerHTML=monthNames.map(n=>`<span>${n.slice(0,3)}</span>`).join('');
+$('chart').innerHTML=buckets.map((b,i)=>`<button type="button" class="bar-group graph-target" data-graph-point data-chart-type="activity" data-month-index="${i}" data-attended="${b.ensayos}" data-acts="${b.actos}" aria-label="${monthNames[i]}: ${b.ensayos} ${b.ensayos===1?'ensayo asistido':'ensayos asistidos'} y ${b.actos} ${b.actos===1?'acto realizado':'actos realizados'}" style="${filterMonth!=='all'&&Number(filterMonth)!==i+1?'opacity:.32;':''}"><span class="bar ensayo" style="height:${b.ensayos?Math.max(3,b.ensayos/max*100):0}%"></span><span class="bar acto" style="height:${b.actos?Math.max(3,b.actos/max*100):0}%"></span></button>`).join('');$('monthLabels').innerHTML=monthNames.map(n=>`<span>${n.slice(0,3)}</span>`).join('');
 renderTrend();
 const makeRecent=(kind,target)=>{
   const list=ordered(data.filter(r=>r.kind===kind)).slice(0,4);
