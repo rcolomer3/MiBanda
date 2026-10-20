@@ -620,15 +620,18 @@ window.miBandaUI={
   window.miBandaUI.syncMessage('Sincronizado con Firebase', 'ok');
   render();
  },
- syncMessage:(message,state)=>{
+ syncMessage:(message,state,confirmedAt)=>{
   const current=state||(message.includes('Sincronizado')?'ok':message.includes('Error')||message.includes('No se puede')?'error':'working');
   $('syncStatusText').textContent=message;
   $('syncStatus').dataset.state=current;
+  if(Number.isFinite(confirmedAt)&&confirmedAt>0)$('syncStatus').dataset.lastConfirmed=String(confirmedAt);
+  const lastConfirmed=Number($('syncStatus').dataset.lastConfirmed)||0;
+  const lastTime=lastConfirmed?new Date(lastConfirmed).toLocaleString('es-ES',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit',year:'numeric'}):'';
   $('syncHelp').textContent=current==='ok'
-    ?'Última comprobación del servidor: '+new Date().toLocaleString('es-ES',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit',year:'numeric'})+'.'
+    ?lastTime?'Última respuesta confirmada del servidor: '+lastTime+'.':'Conexión con Firebase activada.'
     :current==='error'
       ?'No se ha podido confirmar el acceso al servidor. Pulsa Comprobar conexión para reintentarlo.'
-      :'Consultando Firestore. Si tarda demasiado, pulsa Comprobar conexión.';
+      :lastTime?'Última respuesta del servidor: '+lastTime+'. Comprobando cambios nuevos…':'Consultando Firestore. Si tarda demasiado, pulsa Comprobar conexión.';
  },
  notify:message=>{toast(message);console.warn(message)}
 };
