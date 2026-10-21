@@ -1,4 +1,4 @@
-name: Publicar Mi Banda
+name: Publicar BandApp
 
 on:
   push:
@@ -24,13 +24,18 @@ jobs:
     steps:
       - name: Descargar archivos
         uses: actions/checkout@v4
-      - name: Preparar el sitio
+      - name: Preparar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Preparar sitio e iconos
         run: |
+          python -m pip install --quiet Pillow
           mkdir -p sitio
-          # Incluir el módulo de Firebase: el HTML lo carga por separado.
-          cp index.html firebase-sync.js favicon.svg apple-touch-icon.png site.webmanifest sitio/
+          cp index.html firebase-sync.js site.webmanifest sitio/
+          python scripts/generate_icons.py
           touch sitio/.nojekyll
-          for file in index.html firebase-sync.js favicon.svg apple-touch-icon.png site.webmanifest; do
+          for file in index.html firebase-sync.js site.webmanifest favicon.png apple-touch-icon.png icon-192.png icon-512.png; do
             test -s "sitio/$file"
           done
       - name: Configurar GitHub Pages
