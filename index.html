@@ -21,7 +21,17 @@
 .auth-card .brand-icon-image{width:78px;height:78px;border-radius:19px;object-fit:cover;margin:0 auto;display:block}
 /* Firebase: sesión y estado de sincronización */
 [hidden]{display:none!important}
-.auth-gate{min-height:100vh;display:grid;place-items:center;padding:25px;background:linear-gradient(135deg,#0f172a,#243f64)}
+/* Centrados en el área visible de Safari y en modo app (sin desplazar el login).
+   100vh es un respaldo para navegadores antiguos; dvh ajusta la barra de Safari. */
+.auth-gate{
+  min-height:100vh;
+  min-height:100svh;
+  min-height:100dvh;
+  display:grid;
+  place-items:center;
+  padding:25px;
+  background:linear-gradient(135deg,#0f172a,#243f64);
+}
 .auth-card{width:min(100%,440px);padding:32px;border-radius:22px;background:#fff;box-shadow:0 20px 65px rgba(0,0,0,.20);text-align:center}
 .auth-card .brandicon{font-size:48px}.auth-card h1{margin:12px 0;color:#0f172a;font-size:28px}
 .auth-card p{color:#64748b;line-height:1.65;font-size:14px;margin:10px 0 22px}
