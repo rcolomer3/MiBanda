@@ -49,18 +49,18 @@
 .account-logout{font-size:12px;padding:8px 12px;min-height:38px}
 @media(max-width:740px){.account-bar{justify-content:space-between;gap:8px;margin-bottom:17px}.account-pill{flex:1;padding:7px 9px}.account-logout{padding:8px 10px;white-space:nowrap}}
 
-/* Inicio: mini-widgets Apple con cuatro filas de altura fija.
-   Icono, titulo, cifra y detalle mantienen la misma alineación siempre. */
+/* Inicio: cuatro tarjetas alineadas por la base del título y la parte alta
+   del número. La separación no cambia si el título tiene una o dos líneas. */
 #dashboard .stats{gap:13px;margin:18px 0 22px;align-items:stretch}
 #dashboard .stat-card{
   --stat-accent:#3478e5;
   --stat-tint:#eef5ff;
   display:grid;
-  grid-template-rows:38px 36px 50px minmax(43px,auto);
+  grid-template-rows:38px 36px 42px minmax(43px,auto);
   align-content:start;
-  row-gap:6px;
+  row-gap:5px;
   min-width:0;
-  min-height:218px;
+  min-height:207px;
   padding:17px 17px 16px;
   border:1px solid #e3ebf5;
   border-radius:22px;
@@ -86,10 +86,10 @@
   margin:0;min-width:0;
   font-size:13px;font-weight:720;line-height:1.35;letter-spacing:-.2px;
   color:#626e81;
-  align-self:start;
+  align-self:end;
 }
 #dashboard .stat-card .value{
-  display:flex;align-items:end;min-width:0;
+  display:flex;align-items:flex-start;min-width:0;
   margin:0;
   font-size:39px;font-weight:790;line-height:1;letter-spacing:-1.5px;
   color:#1f2b3e;font-variant-numeric:tabular-nums;
@@ -109,8 +109,8 @@
 @media(max-width:740px){
   #dashboard .stats{gap:11px;margin:16px 0 19px}
   #dashboard .stat-card{
-    grid-template-rows:36px 36px 47px minmax(43px,auto);
-    min-height:209px;padding:15px;border-radius:20px;row-gap:6px;
+    grid-template-rows:36px 35px 41px minmax(43px,auto);
+    min-height:200px;padding:15px;border-radius:20px;row-gap:5px;
   }
   #dashboard .stat-card .stat-icon{width:36px;height:36px;border-radius:12px}
   #dashboard .stat-card .stat-icon svg{width:20px;height:20px}
@@ -121,8 +121,8 @@
 @media(max-width:380px){
   #dashboard .stats{gap:9px}
   #dashboard .stat-card{
-    grid-template-rows:34px 34px 44px minmax(46px,auto);
-    min-height:206px;padding:13px;row-gap:6px;border-radius:19px;
+    grid-template-rows:34px 33px 39px minmax(46px,auto);
+    min-height:190px;padding:13px;row-gap:4px;border-radius:19px;
   }
   #dashboard .stat-card .stat-icon{width:34px;height:34px;border-radius:11px}
   #dashboard .stat-card .stat-icon svg{width:19px;height:19px}
@@ -666,15 +666,8 @@ select{padding-right:25px;cursor:pointer}
 .select-file{display:inline-flex;align-items:center;justify-content:center;border-radius:13px}
 #deleteAll{box-shadow:none}
 /* Acceso, confirmaciones y notificaciones */
-/* Restauramos el arranque oscuro anterior al rediseño: coincide con el
-   theme-color del icono web del iPhone y evita el cambio brusco a blanco. */
-#bootScreen.auth-gate{
-  background:linear-gradient(135deg,#0f172a,#243f64);
-}
-#bootScreen .auth-card{
-  background:#fff;
-  -webkit-backdrop-filter:none;backdrop-filter:none;
-}
+/* El arranque, la restauración y el login usan la misma superficie.
+   Evita un salto de fondo al salir o entrar con Google. */
 .auth-gate{
   background:
     radial-gradient(circle at 15% 25%,rgba(167,206,255,.65),transparent 42%),
@@ -888,16 +881,16 @@ select{padding-right:25px;cursor:pointer}
 </head>
 <body>
 <div id="bootScreen" class="auth-gate" role="status" aria-live="polite">
-<div class="auth-card"><img class="brand-icon-image" src="./icon-512.png?v=3" alt="" width="78" height="78">
+<div class="auth-card"><img class="brand-icon-image" src="./icon-512.png?v=4" alt="" width="78" height="78">
 <h1>BandApp</h1><p id="bootMessage">Recuperando tu sesión…</p><div class="boot-spinner" aria-hidden="true"></div>
 </div></div>
 <div id="authGate" class="auth-gate" hidden><div class="auth-card">
-<img class="brand-icon-image" src="./icon-512.png?v=3" alt="Icono de BandApp" width="78" height="78"><h1>BandApp</h1><p id="authMessage">Cargando Firebase…</p>
+<img class="brand-icon-image" src="./icon-512.png?v=4" alt="Icono de BandApp" width="78" height="78"><h1>BandApp</h1><p id="authMessage">Cargando Firebase…</p>
 <button class="btn primary" id="signInBtn" disabled>Entrar con Google</button>
 <p style="font-size:12px;margin-bottom:0">Accede con Google para consultar y sincronizar tus ensayos y actos.</p>
 </div></div>
 <div class="app" hidden>
-<aside class="sidebar"><div class="brand"><img class="brand-logo" src="./icon-192.png?v=3" alt="" width="39" height="39"><span class="brand-copy">BandApp<small>Control de asistencias</small></span></div><nav class="nav" aria-label="Navegación principal"><button data-page="dashboard" class="active"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 21v-8h6v8"/></svg><span>Resumen</span></button><button data-page="records"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg><span>Ensayos y actos</span></button><button data-page="settings"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h4m4 0h10M3 12h10m4 0h4M3 18h4m4 0h10"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="9" cy="18" r="2"/></svg><span>Ajustes</span></button></nav><div class="sidebar-foot">BandApp · Tu actividad musical</div></aside>
+<aside class="sidebar"><div class="brand"><img class="brand-logo" src="./icon-192.png?v=4" alt="" width="39" height="39"><span class="brand-copy">BandApp<small>Control de asistencias</small></span></div><nav class="nav" aria-label="Navegación principal"><button data-page="dashboard" class="active"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 21v-8h6v8"/></svg><span>Resumen</span></button><button data-page="records"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg><span>Ensayos y actos</span></button><button data-page="settings"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h4m4 0h10M3 12h10m4 0h4M3 18h4m4 0h10"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="9" cy="18" r="2"/></svg><span>Ajustes</span></button></nav><div class="sidebar-foot">BandApp · Tu actividad musical</div></aside>
 <main class="content">
 <div class="account-bar" aria-label="Sesión de usuario">
   <div class="account-pill">
