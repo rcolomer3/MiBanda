@@ -436,6 +436,365 @@
 .delete-dialog-actions .btn{min-height:45px}
 .delete-dialog-actions .btn.danger{background:#dc2626;border-color:#dc2626;color:white}
 @media(max-width:460px){.delete-dialog-content{padding:24px 18px 20px}}
+
+/* ─────────────────────────────────────────────────────────────
+   BandApp · Apple/SwiftUI inspired visual system · Oct 2026
+   Solo estilos de presentación; lógica de negocio intacta.
+   ───────────────────────────────────────────────────────────── */
+:root{
+  color-scheme:light;
+  --bg:#f4f6fa;--panel:#fff;--text:#172237;--muted:#778398;
+  --line:rgba(203,215,232,.78);--nav:#17263e;--blue:#2678ec;
+  --shadow:0 8px 30px rgba(29,48,80,.055),0 1px 2px rgba(29,48,80,.025);
+  --ios-blue:#007aff;--ios-radius:22px;
+}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{
+  background:radial-gradient(ellipse 800px 480px at 75% -220px,rgba(199,221,255,.53),transparent 75%),#f4f6fa;
+  color:var(--text);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+}
+button,input,select,textarea{-webkit-tap-highlight-color:transparent}
+button:disabled{opacity:.58;cursor:not-allowed}
+[hidden]{display:none!important}
+.ui-icon{display:inline-block;vertical-align:middle;flex-shrink:0}
+.app{grid-template-columns:248px minmax(0,1fr);min-height:100vh;min-height:100dvh}
+.sidebar{
+  position:sticky;top:0;height:100vh;height:100dvh;min-width:0;
+  display:flex;flex-direction:column;
+  padding:28px 16px 22px;overflow-y:auto;
+  background:rgba(255,255,255,.8);
+  -webkit-backdrop-filter:blur(26px) saturate(1.3);
+  backdrop-filter:blur(26px) saturate(1.3);
+  border-right:1px solid rgba(214,225,241,.82);
+  box-shadow:6px 0 24px rgba(48,76,120,.02);color:#17263e;
+}
+.sidebar .brand{
+  display:flex;align-items:center;gap:11px;
+  padding:0 9px 29px;font-size:22px;font-weight:820;letter-spacing:-.85px;white-space:nowrap;
+}
+.sidebar .brand-logo{width:39px;height:39px;flex-shrink:0;border-radius:12px;margin:0;box-shadow:0 4px 12px rgba(42,96,177,.12)}
+.sidebar .brand-copy{min-width:0}
+.sidebar .brand small{font-size:11px;margin-top:3px;color:#8792a6;letter-spacing:0;font-weight:570}
+.sidebar .nav{gap:7px}
+.sidebar .nav button{
+  display:flex;align-items:center;gap:13px;
+  padding:13px 15px;border:1px solid transparent;border-radius:15px;
+  color:#627188;background:transparent;font-size:13px;font-weight:675;
+  transition:background .2s,color .2s,box-shadow .2s,transform .18s;
+}
+.sidebar .nav button .ui-icon{width:20px;height:20px}
+.sidebar .nav button.active{
+  background:linear-gradient(120deg,rgba(227,239,255,.97),rgba(238,246,255,.97));
+  color:#176be2;border-color:rgba(197,218,247,.7);
+  box-shadow:0 4px 13px rgba(33,102,204,.055);font-weight:770;
+}
+.sidebar .nav button:hover{background:#eef4fc;color:#1b67d1}
+.sidebar .nav button:active{transform:scale(.985)}
+.sidebar-foot{margin-top:auto;padding:22px 10px 0;font-size:10px;color:#a1aabb;letter-spacing:.15px}
+.content{width:100%;max-width:1280px;padding:34px clamp(20px,3vw,46px) 56px;margin:0 auto;min-width:0}
+.page>.head{margin-bottom:23px}
+.page>.head h1{color:#16243a;font-size:clamp(27px,2.5vw,34px);font-weight:820;letter-spacing:-1.25px;line-height:1.16}
+.page>.head p{margin-top:7px;color:#8a95a7;font-size:13px;line-height:1.5}
+.panel,.card{
+  background:rgba(255,255,255,.97);
+  border:1px solid rgba(215,225,238,.85);
+  border-radius:24px;
+  box-shadow:var(--shadow);
+}
+.panel{padding:23px}
+.section-head{gap:10px}
+.section-head h2,.panel h2{font-size:17px;font-weight:780;letter-spacing:-.4px;color:#25314a}
+.note{color:#8490a1;font-size:12px;line-height:1.6}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  border:1px solid rgba(215,225,237,.95);border-radius:13px;
+  min-height:42px;padding:10px 15px;
+  background:linear-gradient(180deg,#fff,#f7f9fd);
+  color:#324763;font-size:13px;font-weight:720;
+  box-shadow:0 2px 7px rgba(24,54,91,.03);
+  transition:transform .15s,background .18s,box-shadow .18s,border-color .18s;
+}
+.btn:hover{filter:none;background:#f0f5fc;border-color:#c7d8f1}
+.btn:active:not(:disabled){transform:scale(.97)}
+.btn.primary{
+  background:linear-gradient(160deg,#4395ff,#1169e8);
+  border-color:#267bea;color:white;
+  box-shadow:0 6px 15px rgba(30,112,231,.17),inset 0 1px 0 rgba(255,255,255,.26);
+}
+.btn.primary:hover{background:linear-gradient(160deg,#56a2ff,#1672f6);border-color:#267bea}
+.btn.sm{min-height:33px;padding:7px 12px;border-radius:11px;font-size:11.5px}
+.btn.danger{background:#fff3f4;color:#bf3347;border-color:#f8dce1}
+.btn.danger:hover{background:#ffebef;border-color:#f4bfc8}
+.btn:focus-visible,.kind-tab:focus-visible,.sidebar button:focus-visible{
+  outline:3px solid rgba(0,122,255,.48);outline-offset:2px;
+}
+.account-bar{margin-bottom:27px}
+.account-pill{
+  padding:8px 13px 8px 9px;border-radius:17px;
+  background:rgba(255,255,255,.84);border-color:rgba(214,224,238,.83);
+  box-shadow:0 3px 14px rgba(29,48,80,.04);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+}
+.account-icon{width:36px;height:36px;border-radius:12px;color:#2481f2;background:linear-gradient(135deg,#e5f1ff,#f2f7ff);font-size:inherit}
+.account-details strong{color:#2b3850;font-weight:740}
+.account-details small{color:#8b98ab}
+.account-logout{border-radius:12px;background:rgba(255,255,255,.86);font-size:12px}
+.filters{gap:11px;margin-bottom:18px}
+.field label{font-weight:750;font-size:11px;color:#78869c;letter-spacing:.12px}
+input,select,textarea{
+  color:#20314b;min-height:46px;background:#f9fbff;
+  border:1px solid #dbe4f0;border-radius:13px;
+  padding:11px 13px;font-size:13px;line-height:1.35;
+  box-shadow:inset 0 1px 1px rgba(17,40,75,.015);
+  transition:border-color .18s,box-shadow .18s,background .18s;
+}
+input::placeholder,textarea::placeholder{color:#a1acbd}
+input:hover,select:hover,textarea:hover{border-color:#c8d7eb;background:#fff}
+input:focus,select:focus,textarea:focus{
+  outline:none;border-color:#77b4fd;background:#fff;
+  box-shadow:0 0 0 3px rgba(0,122,255,.12);
+}
+select{padding-right:25px;cursor:pointer}
+.filters select{background:#fff}
+.filters .btn{min-width:92px}
+#dashboard .stat-card{box-shadow:0 10px 29px rgba(29,48,80,.065),inset 0 1px 0 rgba(255,255,255,.95)}
+#dashboard .stat-card .value{font-weight:810}
+.layout{gap:17px}
+.layout .panel,.attendance-trend,.recent-split .panel{border-radius:24px}
+.bars{border-bottom-color:#e3ebf7}
+.months{color:#9aa7b9}
+.legend{color:#77869a;gap:18px}
+.legend i{border-radius:50%;width:9px;height:9px;vertical-align:middle}
+.bar.ensayo{background:linear-gradient(180deg,#63abff,#3178ed)}
+.bar.acto{background:linear-gradient(180deg,#64d1a3,#21a97f)}
+.trend-period{background:#eaf3ff;border:1px solid #dceafd;color:#1970dc;border-radius:999px}
+.trend-summary{
+  background:linear-gradient(110deg,#f1f7ff,#f7faff);
+  border:1px solid #e6effd;border-radius:15px;color:#587394;
+}
+.recent-split{gap:17px}
+.recent-split .recent{padding:21px}
+.recent-split .section-head h2{font-size:17px}
+.recent-item{padding:14px 0;border-bottom-color:#edf2f7}
+.recent-item strong{font-weight:730;color:#253650}
+.recent-item small{color:#98a3b5}
+.recent-item .emoji{
+  width:43px;height:43px;border-radius:14px;
+  background:linear-gradient(135deg,#eaf3ff,#f4f8ff);
+  box-shadow:inset 0 0 0 1px rgba(204,222,246,.65);
+}
+.pill{border-radius:999px;font-size:10.5px;padding:6px 10px;font-weight:760}
+.pill.yes{color:#11855d;background:#e9f9f1}
+.pill.no{color:#c73e51;background:#fff0f2}
+/* Formularios de registro */
+#formPanel,#historyPanel{border-radius:25px}
+#formPanel .section-head,#historyPanel .section-head{margin-bottom:20px}
+#recordForm .form-grid{gap:16px}
+#recordForm .field{min-width:0}
+#recordForm .field input,#recordForm .field select,#recordForm .field textarea{font-size:14px;min-height:47px}
+#recordForm .date-input-frame{
+  border-color:#dbe4f0;background:#f9fbff;border-radius:13px;
+  box-shadow:inset 0 1px 1px rgba(17,40,75,.015);
+}
+#recordForm .date-input-frame:focus-within{
+  outline:none;border-color:#77b4fd;
+  box-shadow:0 0 0 3px rgba(0,122,255,.12);
+}
+#recordForm .date-input-frame #date{height:47px;min-height:47px;font-size:16px}
+#recordForm textarea{resize:vertical;min-height:80px}
+#recordForm .form-actions{margin-top:19px;gap:10px}
+#recordForm .form-actions .btn{min-height:46px}
+#historyPanel .section-head h2{font-size:19px}
+.record-kinds{
+  background:#f0f3f9;border-color:#e2e8f1;
+  padding:5px;gap:5px;border-radius:16px;margin:15px 0 18px;
+}
+.kind-tab{
+  min-height:45px;border-radius:12px;color:#77869d;font-size:12px;
+  transition:background .2s,box-shadow .2s,color .2s,transform .15s;
+}
+.kind-tab.active{
+  background:#fff;color:#146fdf;border-color:#e8edf6;
+  box-shadow:0 2px 8px rgba(22,51,91,.09),0 1px 2px rgba(22,51,91,.045);
+}
+.kind-tab:active{transform:scale(.98)}
+.kind-tab-count{background:#e4e9f1;color:#70839b;min-width:24px;padding:4px 6px}
+.kind-tab.active .kind-tab-count{background:#e7f1ff;color:#186bd2}
+#historyPanel .toolbar{gap:10px}
+#historyPanel .toolbar #search,#historyPanel .toolbar #statusFilter{background-color:#fbfcff}
+.history-period{margin:0 0 16px}
+.history-period .note{color:#93a0b3}
+#historyPanel table{border-collapse:separate;border-spacing:0;font-size:13px}
+#historyPanel th{
+  padding:13px 12px;background:#f7f9fd;
+  color:#8490a5;border-bottom:1px solid #e8eef6;font-size:11px;font-weight:720;
+}
+#historyPanel th:first-child{border-radius:11px 0 0 0}
+#historyPanel th:last-child{border-radius:0 11px 0 0}
+#historyPanel td{padding:14px 12px;border-color:#edf1f7;color:#3e4c63}
+#historyPanel td strong{color:#273850}
+#historyPanel tbody tr:hover td{background:#fafcff}
+#historyPanel .row-actions{gap:7px}
+/* Ajustes y bloques de administración */
+#settings>.panel{margin-bottom:16px;padding:24px}
+#settings>.panel h2{font-size:17px;letter-spacing:-.4px}
+#settings>.panel .note{max-width:760px;margin:11px 0;color:#8390a3}
+.settings-heading{display:flex;align-items:center;gap:10px}
+.settings-heading .ui-icon{
+  width:38px;height:38px;padding:9px;flex-shrink:0;
+  border:1px solid #e3ecf8;border-radius:13px;background:#edf5ff;color:#277dea;
+}
+#settings>.panel:nth-of-type(2) .settings-heading .ui-icon{background:#edf9f3;border-color:#dcefe5;color:#20976b}
+#settings>.panel:nth-of-type(3) .settings-heading .ui-icon{background:#fff3f3;border-color:#fae6e7;color:#d15a68}
+.settings-list{gap:10px;margin-top:20px}
+.settings-list .btn,.select-file{min-height:44px}
+.sync-state{font-size:13px;border-radius:13px;padding:13px 15px;background:#f5f8fc;border:1px solid #e9eff6}
+.sync-state[data-state="ok"]{background:#f0faf4;border-color:#daf0e4;color:#23835e}
+.sync-state[data-state="working"]{background:#fffaf0;border-color:#f7e8c8;color:#99721d}
+.sync-state[data-state="error"]{background:#fff3f5;border-color:#f7dce1;color:#bb3f55}
+.sync-help{padding-left:2px;color:#91a0b1}
+.select-file{display:inline-flex;align-items:center;justify-content:center;border-radius:13px}
+#deleteAll{box-shadow:none}
+/* Acceso, confirmaciones y notificaciones */
+.auth-gate{
+  background:
+    radial-gradient(circle at 15% 25%,rgba(167,206,255,.65),transparent 42%),
+    radial-gradient(circle at 90% 72%,rgba(215,201,255,.54),transparent 39%),
+    linear-gradient(135deg,#e5effb,#f8faff 55%,#edf1fa);
+  padding:max(22px,env(safe-area-inset-top,0px)) 20px max(22px,env(safe-area-inset-bottom,0px));
+}
+.auth-card{
+  position:relative;
+  border:1px solid rgba(255,255,255,.88);
+  background:rgba(255,255,255,.88);
+  -webkit-backdrop-filter:blur(24px) saturate(1.2);
+  backdrop-filter:blur(24px) saturate(1.2);
+  border-radius:28px;padding:36px 32px;
+  box-shadow:0 25px 80px rgba(43,83,147,.14),0 2px 10px rgba(43,83,147,.045);
+}
+.auth-card .brand-icon-image{border-radius:20px;box-shadow:0 10px 22px rgba(32,94,189,.13)}
+.auth-card h1{color:#1e2f49;letter-spacing:-1.05px;font-size:29px;font-weight:820;margin:15px 0}
+.auth-card p{color:#7b8a9f}
+.auth-card .btn{min-height:48px}
+.boot-spinner{border-top-color:#007aff}
+.delete-dialog{
+  background:rgba(255,255,255,.98);border-color:rgba(226,234,244,.95);
+  border-radius:27px;box-shadow:0 28px 80px rgba(20,38,69,.23);
+}
+.delete-dialog-icon{border-radius:17px}
+.delete-dialog-record{background:#f7f9fd;border-color:#e6ecf5}
+.delete-dialog-actions .btn{border-radius:13px}
+.toast{
+  background:rgba(27,40,61,.94);border:1px solid rgba(255,255,255,.16);
+  -webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);
+  border-radius:15px;box-shadow:0 13px 35px rgba(20,35,60,.2);
+  font-weight:660;text-align:center;
+}
+.graph-tooltip{
+  background:rgba(24,37,57,.96);border:1px solid rgba(255,255,255,.1);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  box-shadow:0 17px 40px rgba(18,35,59,.22);border-radius:16px;
+}
+/* iPhone: glass dock, tarjetas y controles compactos sin perder legibilidad */
+@media(max-width:1100px){
+ .app{grid-template-columns:224px minmax(0,1fr)}
+ .content{padding:26px 23px 42px}
+}
+@media(max-width:740px){
+ body{background:radial-gradient(ellipse 500px 300px at 90% -50px,rgba(214,229,255,.43),transparent 85%),#f4f6fa;padding-bottom:0}
+ .app{display:block;min-height:100vh;min-height:100dvh}
+ .sidebar{display:none}
+ .content{padding:19px 15px calc(111px + env(safe-area-inset-bottom,0px));max-width:650px}
+ .account-bar{margin:0 0 19px;gap:9px}
+ .account-pill{min-width:0;flex:1;padding:7px 9px}
+ .account-details{flex:1}
+ .account-logout{min-height:40px;padding:8px 10px}
+ .page>.head{margin:0 0 18px}
+ .page>.head h1{font-size:27px;font-weight:820;letter-spacing:-1px}
+ .page>.head p{font-size:12.5px}
+ .panel{padding:18px;border-radius:22px}
+ .panel h2,.section-head h2{font-size:16px}
+ .filters{gap:9px;margin-bottom:15px}
+ .filters .field{flex:1 1 128px;min-width:0}
+ .filters select{min-width:0;width:100%;font-size:14px;height:46px}
+ .filters .btn{min-height:46px;border-radius:13px}
+ .recent-split{gap:13px}
+ .recent-split .recent{padding:18px}
+ #records[data-mobile-view="history"] #historyPanel{padding:17px;margin:0}
+ #records[data-mobile-view="form"] #formPanel{padding:18px;margin:0}
+ #formPanel .section-head,#historyPanel .section-head{margin-bottom:15px}
+ #recordForm .form-grid{gap:15px}
+ #recordForm input,#recordForm select,#recordForm textarea{font-size:16px}
+ .record-kinds{border-radius:15px;margin:13px 0 15px;gap:3px}
+ .kind-tab{font-size:12px;min-height:46px;gap:5px;padding:8px 4px}
+ .kind-tab-count{font-size:10px}
+ #historyPanel .toolbar{grid-template-columns:minmax(0,1fr);gap:10px}
+ #historyPanel .mobile-record-list{gap:12px;margin-top:14px}
+ .mobile-record-card{
+   background:linear-gradient(140deg,#fff,#fbfdff);
+   border:1px solid #e2eaf4;border-radius:19px;
+   box-shadow:0 5px 16px rgba(29,48,80,.04);
+   padding:14px;gap:12px;
+ }
+ .mobile-record-card.kind-ensayo{border-left:1px solid #e2eaf4}
+ .mobile-record-card.kind-acto{border-left:1px solid #e2eaf4}
+ .mobile-record-card.kind-ensayo .mobile-record-date{background:linear-gradient(140deg,#e8f2ff,#f2f8ff);color:#276dc6}
+ .mobile-record-card.kind-acto .mobile-record-date{background:linear-gradient(140deg,#f2edff,#f8f5ff);color:#7e58b9}
+ .mobile-record-date{width:53px;min-height:66px;border-radius:14px}
+ .mobile-record-name{color:#26354b;font-weight:760}
+ .mobile-record-actions{border-top-color:#edf1f7;gap:9px}
+ .mobile-record-actions .btn{border-radius:12px;min-height:39px;padding:8px 11px;background:#f5f8fd}
+ .mobile-record-actions .btn.danger{background:#fff1f3}
+ .bottomnav{
+   bottom:calc(12px + env(safe-area-inset-bottom,0px));
+   left:12px;right:12px;
+   height:74px;min-height:74px;
+   padding:7px 75px 7px 9px;border-radius:25px;
+   background:rgba(250,252,255,.77);
+   border:1px solid rgba(255,255,255,.86);
+   box-shadow:0 13px 41px rgba(30,52,85,.16),inset 0 1px 0 rgba(255,255,255,.8);
+   -webkit-backdrop-filter:blur(28px) saturate(1.65);
+   backdrop-filter:blur(28px) saturate(1.65);
+ }
+ .bottomnav button{height:58px;min-width:0;gap:4px;border-radius:17px;color:#8a96a7;font-weight:650}
+ .bottomnav button.active:not(.add-action){
+   background:rgba(225,238,255,.78);color:#0877f6;
+   box-shadow:inset 0 0 0 1px rgba(201,220,248,.53);
+ }
+ .bottomnav .dock-icon{width:23px;height:23px}
+ .bottomnav .add-action{top:-24px;right:9px}
+ .bottomnav .add-action .add-circle{
+   background:linear-gradient(160deg,#58aaff 0%,#1680f5 63%,#1264df 100%);
+   border:4px solid #f9fbff;border-radius:21px;
+   box-shadow:0 9px 23px rgba(20,102,232,.30),0 3px 10px rgba(20,43,85,.08),inset 0 1px 1px rgba(255,255,255,.45);
+ }
+ .toast{bottom:calc(106px + env(safe-area-inset-bottom,0px));left:16px;right:16px}
+ #settings>.panel{padding:19px;margin-bottom:13px}
+ .settings-list{gap:9px}
+ .settings-list .btn,.settings-list .select-file{font-size:12px}
+}
+@media(max-width:380px){
+ .content{padding-left:12px;padding-right:12px}
+ .page>.head h1{font-size:25px}
+ .panel{padding:15px}
+ .filters .field{flex:1 1 115px}
+ .bottomnav{left:8px;right:8px;padding-left:7px;padding-right:74px}
+ .bottomnav .add-action{right:7px}
+ .kind-tab{font-size:11px}
+ .mobile-record-card{padding:12px}
+}
+@media(prefers-reduced-motion:reduce){
+ html{scroll-behavior:auto}
+ .btn,.kind-tab,.sidebar .nav button,input,select,textarea{transition:none!important}
+}
+@media(prefers-contrast:more){
+ .panel,.card,.mobile-record-card,input,select,textarea{border-color:#bac9db}
+ .bottomnav{border-color:#9aaec6}
+}
+@media(prefers-reduced-transparency:reduce){
+ .sidebar,.bottomnav,.auth-card,.account-pill{background:#fff;-webkit-backdrop-filter:none;backdrop-filter:none}
+}
+
 </style>
 </head>
 <body>
@@ -449,11 +808,11 @@
 <p style="font-size:12px;margin-bottom:0">Accede con Google para consultar y sincronizar tus ensayos y actos.</p>
 </div></div>
 <div class="app" hidden>
-<aside class="sidebar"><div class="brand"><img class="brand-logo" src="./icon-192.png?v=3" alt="" width="31" height="31">BandApp<small>Control de asistencias</small></div><nav class="nav"><button data-page="dashboard" class="active">📊 Resumen</button><button data-page="records">📅 Ensayos y actos</button><button data-page="settings">⚙️ Ajustes</button></nav></aside>
+<aside class="sidebar"><div class="brand"><img class="brand-logo" src="./icon-192.png?v=3" alt="" width="39" height="39"><span class="brand-copy">BandApp<small>Control de asistencias</small></span></div><nav class="nav" aria-label="Navegación principal"><button data-page="dashboard" class="active"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 21v-8h6v8"/></svg><span>Resumen</span></button><button data-page="records"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg><span>Ensayos y actos</span></button><button data-page="settings"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h4m4 0h10M3 12h10m4 0h4M3 18h4m4 0h10"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="9" cy="18" r="2"/></svg><span>Ajustes</span></button></nav><div class="sidebar-foot">BandApp · Tu actividad musical</div></aside>
 <main class="content">
 <div class="account-bar" aria-label="Sesión de usuario">
   <div class="account-pill">
-    <span class="account-icon" aria-hidden="true">👤</span>
+    <span class="account-icon" aria-hidden="true"><svg class="ui-icon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.7"/><path d="M4.8 20c.3-4.1 3.1-6.3 7.2-6.3s6.9 2.2 7.2 6.3"/></svg></span>
     <div class="account-details">
       <strong id="accountName">Modo local</strong>
       <small id="accountEmail">Sin sincronización</small>
@@ -462,7 +821,7 @@
   <button class="btn account-logout" id="signOutHeader" type="button" hidden>Cerrar sesión</button>
 </div>
 <section id="dashboard" class="page active">
-<div class="head"><div><h1>Resumen de asistencias</h1><p>Consulta tu actividad en la banda de un vistazo.</p></div><button class="btn primary" id="quickAdd">＋ Añadir registro</button></div>
+<div class="head"><div><h1>Resumen de asistencias</h1><p>Consulta tu actividad en la banda de un vistazo.</p></div><button class="btn primary" id="quickAdd"><svg class="ui-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>Añadir registro</span></button></div>
 <div class="filters"><div class="field"><label for="year">Año</label><select id="year"></select></div><div class="field"><label for="month">Mes</label><select id="month"><option value="all">Todo el año</option></select></div><button class="btn" id="clearFilters">Ver todo</button></div>
 <div class="stats">
 <div class="card stat-card ensayos"><div class="stat-top"><div class="label">Ensayos registrados</div><span class="stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="16" rx="3"/><path d="M7.5 3.5v3M16.5 3.5v3M3.5 9.5h17M8 13.5h3M8 17h7"/></svg></span></div><div class="value" id="totalRehearsals">0</div><div class="detail" id="rehearsalDetail">Sin ensayos en el periodo</div></div>
@@ -512,7 +871,7 @@
 </section>
 <section id="settings" class="page"><div class="head"><div><h1>Ajustes</h1><p>Sincronización y copias de seguridad.</p></div></div>
 <div class="panel sync-panel">
-<h2>Cuenta y sincronización</h2>
+<h2 class="settings-heading"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5 20 6v5.5c0 4.5-3.2 7.9-8 10-4.8-2.1-8-5.5-8-10V6l8-3.5z"/><path d="m9 12 2 2 4-4"/></svg><span>Cuenta y sincronización</span></h2>
 <p id="syncStatus" class="sync-state" role="status" data-state="working"><span class="sync-dot" aria-hidden="true"></span><span id="syncStatusText">Comprobando conexión con Firebase…</span></p>
 <p id="syncHelp" class="sync-help">El estado se actualizará cuando Firebase confirme la conexión.</p>
 <p id="syncAccount" class="note"></p>
@@ -522,7 +881,7 @@
 <button class="btn" id="signOutBtn" hidden>Cerrar sesión</button>
 </div>
 </div>
-<div class="panel"><h2>Copias de seguridad</h2><p class="note">Tus registros se sincronizan con Firebase al entrar con Google. También puedes descargar una copia de seguridad en JSON.</p><div class="settings-list"><button class="btn primary" id="exportJson">⬇ Descargar copia JSON</button><label class="btn select-file">⬆ Restaurar copia JSON<input type="file" accept=".json,application/json" id="importJson"></label></div></div><div class="panel" style="margin-top:16px"><h2>Administración</h2><p class="note">Eliminar todos los registros no se puede deshacer. Antes puedes descargar una copia de seguridad.</p><button class="btn danger" id="deleteAll">Borrar todos los registros</button></div></section>
+<div class="panel"><h2 class="settings-heading"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M8 12.5l2.8 2.8 5.6-6"/></svg><span>Copias de seguridad</span></h2><p class="note">Tus registros se sincronizan con Firebase al entrar con Google. También puedes descargar una copia de seguridad en JSON.</p><div class="settings-list"><button class="btn primary" id="exportJson">⬇ Descargar copia JSON</button><label class="btn select-file">⬆ Restaurar copia JSON<input type="file" accept=".json,application/json" id="importJson"></label></div></div><div class="panel" style="margin-top:16px"><h2 class="settings-heading"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="5" rx="1.5"/><path d="M5.5 9v10a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V9M10 13h4"/></svg><span>Administración</span></h2><p class="note">Eliminar todos los registros no se puede deshacer. Antes puedes descargar una copia de seguridad.</p><button class="btn danger" id="deleteAll">Borrar todos los registros</button></div></section>
 </main></div>
 <nav class="bottomnav" hidden aria-label="Navegación móvil">
   <button type="button" class="active" data-page="dashboard" aria-label="Ir al resumen" aria-current="page"><svg class="dock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 21v-8h6v8"/></svg><span class="dock-label">Inicio</span></button>
