@@ -49,58 +49,56 @@
 .account-logout{font-size:12px;padding:8px 12px;min-height:38px}
 @media(max-width:740px){.account-bar{justify-content:space-between;gap:8px;margin-bottom:17px}.account-pill{flex:1;padding:7px 9px}.account-logout{padding:8px 10px;white-space:nowrap}}
 
-/* Inicio: cuatro tarjetas alineadas por la base del título y la parte alta
-   del número. La separación no cambia si el título tiene una o dos líneas. */
+/* Inicio · tarjetas compactas al estilo de widgets iOS.
+   Cabecera con icono integrado y titulo alineado por abajo:
+   su ultima linea, el numero y el detalle ocupan las mismas posiciones. */
 #dashboard .stats{gap:13px;margin:18px 0 22px;align-items:stretch}
 #dashboard .stat-card{
   --stat-accent:#3478e5;
   --stat-tint:#eef5ff;
   display:grid;
-  grid-template-rows:38px 36px 42px minmax(43px,auto);
+  grid-template-rows:44px 44px minmax(39px,auto);
   align-content:start;
-  row-gap:5px;
-  min-width:0;
-  min-height:207px;
-  padding:17px 17px 16px;
-  border:1px solid #e3ebf5;
-  border-radius:22px;
-  background:#fff;
-  color:#1d2c43;
-  box-shadow:0 4px 19px rgba(27,49,82,.047),0 1px 2px rgba(27,49,82,.016);
+  row-gap:10px;
+  min-width:0;min-height:186px;
+  padding:17px;
+  border:1px solid #e4eaf3;border-radius:21px;
+  background:#fff;color:#1d2c43;
+  box-shadow:0 5px 20px rgba(27,49,82,.045);
 }
 #dashboard .stat-card::before{display:none}
-#dashboard .stat-card .stat-top{display:flex;align-items:flex-start;justify-content:flex-start;margin:0;min-width:0}
+#dashboard .stat-card .stat-top{
+  display:flex;align-items:flex-end;justify-content:flex-start;
+  gap:10px;min-height:0;min-width:0;margin:0;
+}
 #dashboard .stat-card .stat-icon{
   display:grid;place-items:center;
-  width:38px;height:38px;flex-shrink:0;
-  border-radius:12px;
-  background:var(--stat-tint);color:var(--stat-accent);
-  border:1px solid rgba(255,255,255,.8);
-  box-shadow:none;
+  width:32px;height:32px;flex:0 0 32px;
+  border-radius:11px;background:var(--stat-tint);
+  color:var(--stat-accent);border:0;box-shadow:none;
 }
 #dashboard .stat-card .stat-icon svg{
-  display:block;width:21px;height:21px;stroke:currentColor;
+  display:block;width:18px;height:18px;stroke:currentColor;
   stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;fill:none;
 }
 #dashboard .stat-card .stat-label{
-  margin:0;min-width:0;
-  font-size:13px;font-weight:720;line-height:1.35;letter-spacing:-.2px;
-  color:#626e81;
-  align-self:end;
+  min-width:0;margin:0;align-self:flex-end;
+  font-size:13px;font-weight:710;line-height:1.28;
+  letter-spacing:-.18px;color:#58677e;
+  overflow-wrap:normal;
 }
 #dashboard .stat-card .value{
   display:flex;align-items:flex-start;min-width:0;
-  margin:0;
-  font-size:39px;font-weight:790;line-height:1;letter-spacing:-1.5px;
-  color:#1f2b3e;font-variant-numeric:tabular-nums;
+  margin:0;color:#1f2b3e;
+  font-size:39px;font-weight:790;
+  line-height:1.06;letter-spacing:-1.45px;
+  font-variant-numeric:tabular-nums;
 }
 #dashboard .stat-card .detail{
-  display:block;align-self:start;
-  margin:0;min-height:43px;
-  border-top:0;
-  padding-top:8px;
-  font-size:11px;font-weight:530;line-height:1.35;
-  color:#8491a3;opacity:1;overflow-wrap:anywhere;
+  display:block;align-self:start;margin:0;
+  padding:0;border:0;min-height:38px;
+  font-size:11px;font-weight:530;line-height:1.4;
+  color:#8390a2;opacity:1;overflow-wrap:anywhere;
 }
 #dashboard .stat-card.ensayos{--stat-accent:#3478e5;--stat-tint:#eaf3ff}
 #dashboard .stat-card.asistidos{--stat-accent:#15966e;--stat-tint:#e9f8f1}
@@ -109,26 +107,30 @@
 @media(max-width:740px){
   #dashboard .stats{gap:11px;margin:16px 0 19px}
   #dashboard .stat-card{
-    grid-template-rows:36px 35px 41px minmax(43px,auto);
-    min-height:200px;padding:15px;border-radius:20px;row-gap:5px;
+    grid-template-rows:43px 41px minmax(42px,auto);
+    row-gap:9px;min-height:183px;
+    padding:14px;border-radius:19px;
   }
-  #dashboard .stat-card .stat-icon{width:36px;height:36px;border-radius:12px}
-  #dashboard .stat-card .stat-icon svg{width:20px;height:20px}
-  #dashboard .stat-card .stat-label{font-size:12.5px;line-height:1.35}
-  #dashboard .stat-card .value{font-size:37px}
-  #dashboard .stat-card .detail{font-size:10.8px;line-height:1.35;padding-top:8px}
+  #dashboard .stat-card .stat-top{gap:8px}
+  #dashboard .stat-card .stat-icon{width:30px;height:30px;flex-basis:30px;border-radius:10px}
+  #dashboard .stat-card .stat-icon svg{width:17px;height:17px}
+  #dashboard .stat-card .stat-label{font-size:12px;line-height:1.25;letter-spacing:-.18px}
+  #dashboard .stat-card .value{font-size:36px;line-height:1.06}
+  #dashboard .stat-card .detail{font-size:10.8px;line-height:1.38;padding:0}
 }
 @media(max-width:380px){
   #dashboard .stats{gap:9px}
   #dashboard .stat-card{
-    grid-template-rows:34px 33px 39px minmax(46px,auto);
-    min-height:190px;padding:13px;row-gap:4px;border-radius:19px;
+    grid-template-rows:43px 39px minmax(44px,auto);
+    row-gap:8px;min-height:176px;
+    padding:12px;border-radius:18px;
   }
-  #dashboard .stat-card .stat-icon{width:34px;height:34px;border-radius:11px}
-  #dashboard .stat-card .stat-icon svg{width:19px;height:19px}
-  #dashboard .stat-card .stat-label{font-size:11.7px}
+  #dashboard .stat-card .stat-top{gap:7px}
+  #dashboard .stat-card .stat-icon{width:28px;height:28px;flex-basis:28px;border-radius:9px}
+  #dashboard .stat-card .stat-icon svg{width:16px;height:16px}
+  #dashboard .stat-card .stat-label{font-size:11.3px;line-height:1.26}
   #dashboard .stat-card .value{font-size:34px;letter-spacing:-1px}
-  #dashboard .stat-card .detail{font-size:10.3px}
+  #dashboard .stat-card .detail{font-size:10.2px}
 }
 .boot-spinner{width:25px;height:25px;border:3px solid #cbd5e1;border-top-color:#2563eb;border-radius:50%;animation:boot-spin .7s linear infinite;margin:18px auto 0}
 @keyframes boot-spin{to{transform:rotate(360deg)}}
@@ -906,10 +908,10 @@ select{padding-right:25px;cursor:pointer}
 <div class="head"><div><h1>BandApp</h1><p>Consulta tu actividad en la banda de un vistazo.</p></div><button class="btn primary" id="quickAdd"><svg class="ui-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>Añadir registro</span></button></div>
 <div class="filters"><div class="field"><label for="year">Año</label><select id="year"></select></div><div class="field"><label for="month">Mes</label><select id="month"><option value="all">Todo el año</option></select></div><button class="btn" id="clearFilters">Ver todo</button></div>
 <div class="stats">
-<div class="card stat-card ensayos"><div class="stat-top"><span class="stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="16" rx="3"/><path d="M7.5 3.5v3M16.5 3.5v3M3.5 9.5h17M8 13.5h3M8 17h7"/></svg></span></div><div class="stat-label">Ensayos registrados</div><div class="value" id="totalRehearsals">0</div><div class="detail" id="rehearsalDetail">Sin ensayos en el periodo</div></div>
-<div class="card stat-card asistidos"><div class="stat-top"><span class="stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="m8.2 12.2 2.6 2.6 5.2-5.5"/></svg></span></div><div class="stat-label">Ensayos asistidos</div><div class="value" id="attendedRehearsals">0</div><div class="detail" id="missedDetail">0 faltas</div></div>
-<div class="card stat-card actos"><div class="stat-top"><span class="stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 18V5l11-2v12M9 8l11-2"/><ellipse cx="6" cy="18" rx="3" ry="2.1"/><ellipse cx="17" cy="15" rx="3" ry="2.1"/></svg></span></div><div class="stat-label">Actos realizados</div><div class="value" id="actsAttended">0</div><div class="detail" id="actsDetail">0 actos registrados</div></div>
-<div class="card stat-card porcentaje"><div class="stat-top"><span class="stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="m8.3 15.7 7.4-7.4"/><circle cx="8.3" cy="8.3" r="1.25" fill="currentColor" stroke="none"/><circle cx="15.7" cy="15.7" r="1.25" fill="currentColor" stroke="none"/></svg></span></div><div class="stat-label">Asistencia a ensayos</div><div class="value" id="attendanceRate">—</div><div class="detail">Sobre todos los ensayos registrados</div></div>
+<div class="card stat-card ensayos"><div class="stat-top"><span class="stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="15" rx="3"/><path d="M7.5 3.5v4M16.5 3.5v4M3.5 10h17M8 14h4"/></svg></span><span class="stat-label">Ensayos registrados</span></div><div class="value" id="totalRehearsals">0</div><div class="detail" id="rehearsalDetail">Sin ensayos en el periodo</div></div>
+<div class="card stat-card asistidos"><div class="stat-top"><span class="stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="m8 12.3 2.7 2.7 5.5-5.8"/></svg></span><span class="stat-label">Ensayos asistidos</span></div><div class="value" id="attendedRehearsals">0</div><div class="detail" id="missedDetail">0 faltas</div></div>
+<div class="card stat-card actos"><div class="stat-top"><span class="stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 18V5l11-2v12M9 9l11-2"/><ellipse cx="6" cy="18" rx="3" ry="2"/><ellipse cx="17" cy="15" rx="3" ry="2"/></svg></span><span class="stat-label">Actos realizados</span></div><div class="value" id="actsAttended">0</div><div class="detail" id="actsDetail">0 actos registrados</div></div>
+<div class="card stat-card porcentaje"><div class="stat-top"><span class="stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 17 17 7"/><circle cx="7.5" cy="7.5" r="2"/><circle cx="16.5" cy="16.5" r="2"/></svg></span><span class="stat-label">Asistencia a ensayos</span></div><div class="value" id="attendanceRate">—</div><div class="detail">Sobre todos los ensayos registrados</div></div>
 </div>
 <div class="layout"><div class="panel"><div class="section-head"><h2>Actividad por meses</h2><span id="chartYear"></span></div><div class="bars" id="chart"></div><div class="months" id="monthLabels"></div><div class="legend"><span><i style="background:#2563eb"></i> Ensayos asistidos</span><span><i style="background:#22a06b"></i> Actos realizados</span></div></div>
 </div>
