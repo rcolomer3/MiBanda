@@ -6,9 +6,9 @@
 <meta name="application-name" content="BandApp">
 <meta name="apple-mobile-web-app-title" content="BandApp">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<link rel="icon" type="image/png" sizes="32x32" href="./favicon.png?v=2">
-<link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png?v=2">
-<link rel="manifest" href="./site.webmanifest?v=3">
+<link rel="icon" type="image/png" sizes="32x32" href="./favicon.png?v=4">
+<link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png?v=4">
+<link rel="manifest" href="./site.webmanifest?v=4">
 <title>BandApp</title>
 <style>
 :root{--bg:#f4f6f8;--panel:white;--text:#17202a;--muted:#64748b;--line:#e2e8f0;--nav:#0f172a;--blue:#2563eb;--green:#15803d;--red:#dc2626;--amber:#b45309;--shadow:0 8px 24px rgba(15,23,42,.05)}
@@ -97,8 +97,8 @@
 #dashboard .stat-card .detail{
   display:block;align-self:start;
   margin:0;min-height:43px;
-  border-top:1px solid #edf1f7;
-  padding-top:9px;
+  border-top:0;
+  padding-top:0;
   font-size:11px;font-weight:530;line-height:1.35;
   color:#8491a3;opacity:1;overflow-wrap:anywhere;
 }
@@ -116,7 +116,7 @@
   #dashboard .stat-card .stat-icon svg{width:20px;height:20px}
   #dashboard .stat-card .stat-label{font-size:12.5px;line-height:1.35}
   #dashboard .stat-card .value{font-size:37px}
-  #dashboard .stat-card .detail{font-size:10.8px;line-height:1.35;padding-top:8px}
+  #dashboard .stat-card .detail{font-size:10.8px;line-height:1.35;padding-top:0}
 }
 @media(max-width:380px){
   #dashboard .stats{gap:9px}
@@ -847,10 +847,11 @@ select{padding-right:25px;cursor:pointer}
 .recent-split .recent-item:last-child{border-bottom:0;padding-bottom:4px}
 .recent-split .recent-item:first-child{padding-top:3px}
 .recent-split .recent-item .record-glance-head{align-items:center}
+.recent-split .recent-item .record-glance-body{gap:2px;justify-content:center}
 .recent-split .recent-item .date-tile{flex-basis:53px;width:53px;min-height:60px;border-radius:14px}
 .recent-split .recent-item .date-tile strong{font-size:22px}
 .recent-split .recent-item .record-glance-name{
-  font-size:13px;line-height:1.32;min-height:2.64em;
+  font-size:13px;line-height:1.27;min-height:0;
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
   overflow:hidden;
 }
