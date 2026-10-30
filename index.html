@@ -350,6 +350,33 @@
   #recordForm .form-grid{grid-template-columns:minmax(0,1fr)}
   #recordForm .form-grid>*{min-width:0;max-width:100%}
 }
+/* Confirmación de borrado: modal propio, legible en iPhone y escritorio. */
+.delete-dialog{
+  border:1px solid #e2e8f0;
+  border-radius:22px;
+  padding:0;
+  width:min(430px,calc(100% - 32px));
+  max-height:calc(100dvh - 32px);
+  background:#fff;
+  color:#17202a;
+  box-shadow:0 24px 75px rgba(15,23,42,.25);
+  overflow:auto;
+}
+.delete-dialog::backdrop{
+  background:rgba(15,23,42,.54);
+  -webkit-backdrop-filter:blur(5px);
+  backdrop-filter:blur(5px);
+}
+.delete-dialog-content{padding:26px 24px 22px;text-align:center}
+.delete-dialog-icon{width:54px;height:54px;display:grid;place-items:center;margin:0 auto 14px;border-radius:17px;background:#fff1f2;color:#be123c}
+.delete-dialog-icon svg{width:27px;height:27px}
+.delete-dialog h2{margin:0 0 10px;font-size:21px;letter-spacing:-.4px}
+.delete-dialog p{margin:0;color:#64748b;font-size:14px;line-height:1.5}
+.delete-dialog-record{margin-top:17px;padding:12px;border:1px solid #e2e8f0;border-radius:12px;background:#f8fafc;font-size:14px;font-weight:700;overflow-wrap:anywhere}
+.delete-dialog-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:20px}
+.delete-dialog-actions .btn{min-height:45px}
+.delete-dialog-actions .btn.danger{background:#dc2626;border-color:#dc2626;color:white}
+@media(max-width:460px){.delete-dialog-content{padding:24px 18px 20px}}
 </style>
 </head>
 <body>
@@ -444,6 +471,18 @@
   <button type="button" class="add-action" id="mobileAdd" aria-label="Registrar un ensayo o acto"><span class="add-circle" aria-hidden="true"><svg class="dock-icon dock-plus-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span><span class="dock-label">Añadir</span></button>
   <button type="button" data-page="settings" aria-label="Abrir ajustes"><svg class="dock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h4m4 0h10M3 12h10m4 0h4M3 18h4m4 0h10"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="9" cy="18" r="2"/></svg><span class="dock-label">Ajustes</span></button>
 </nav><div class="graph-tooltip" id="graphTooltip" role="tooltip" hidden></div><div class="toast" id="toast" role="status"></div>
+<dialog class="delete-dialog" id="deleteRecordDialog" aria-labelledby="deleteDialogTitle" aria-describedby="deleteDialogDescription">
+  <div class="delete-dialog-content">
+    <div class="delete-dialog-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M9 6V4h6v2M6 6l1 14h10l1-14M10 10v6M14 10v6"/></svg></div>
+    <h2 id="deleteDialogTitle">¿Eliminar este registro?</h2>
+    <p id="deleteDialogDescription">Esta acción no se puede deshacer.</p>
+    <div class="delete-dialog-record" id="deleteDialogRecord"></div>
+    <div class="delete-dialog-actions">
+      <button type="button" class="btn" id="cancelDeleteRecord">Cancelar</button>
+      <button type="button" class="btn danger" id="confirmDeleteRecord">Sí, eliminar</button>
+    </div>
+  </div>
+</dialog>
 <script>
 (()=>{'use strict';
 const KEY='miBandaAsistencias_v1',monthNames=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
@@ -626,6 +665,39 @@ function resetForm(){$('recordForm').reset();$('date').value=today();editing=nul
 function download(content,name,mime){const blob=new Blob([content],{type:mime}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000)}
 function csvCell(x){return '"'+String(x??'').replace(/"/g,'""')+'"'}
 $('recordForm').addEventListener('submit',e=>{e.preventDefault();const date=$('date').value,kind=$('kind').value,name=$('name').value.trim(),status=$('status').value,notes=$('notes').value.trim();if(!date||!/^\d{4}-\d{2}-\d{2}$/.test(date)||!name||!['Ensayo','Acto'].includes(kind)||!['yes','no'].includes(status))return;if(editing){const idx=records.findIndex(r=>r.id===editing);if(idx<0)return;records[idx]={id:editing,date,kind,name,status,notes}}else records.push({id:typeof crypto!=='undefined'&&crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random(),date,kind,name,status,notes});if(!save('Guardado correctamente'))return;filterYear=date.slice(0,4);filterMonth='all';render();resetForm();if(window.matchMedia('(max-width:740px)').matches){setMobileRecordsView('history');scrollTo({top:0,behavior:'smooth'})}});
+let pendingDeleteId=null, deleteRecordTrigger=null;
+function openDeleteConfirmation(record,trigger){
+  pendingDeleteId=record.id;
+  deleteRecordTrigger=trigger;
+  $('deleteDialogTitle').textContent=record.kind==='Ensayo'?'¿Eliminar este ensayo?':'¿Eliminar este acto?';
+  $('deleteDialogRecord').textContent=`${record.name} · ${fmtDate(record.date)}`;
+  $('deleteRecordDialog').showModal();
+  $('cancelDeleteRecord').focus();
+}
+$('cancelDeleteRecord').addEventListener('click',()=>$('deleteRecordDialog').close());
+$('deleteRecordDialog').addEventListener('click',e=>{
+  if(e.target===$('deleteRecordDialog'))$('deleteRecordDialog').close();
+});
+$('deleteRecordDialog').addEventListener('close',()=>{
+  pendingDeleteId=null;
+  if(deleteRecordTrigger?.isConnected)deleteRecordTrigger.focus({preventScroll:true});
+  deleteRecordTrigger=null;
+});
+$('confirmDeleteRecord').addEventListener('click',()=>{
+  const id=pendingDeleteId;
+  if(!id)return;
+  $('deleteRecordDialog').close();
+  if(!records.some(r=>r.id===id))return;
+  const previous=records;
+  records=records.filter(r=>r.id!==id);
+  if(save('Registro eliminado correctamente')){
+    if(editing===id)resetForm();
+    render();
+  }else{
+    records=previous;
+    render();
+  }
+});
 function handleRecordAction(e){
   const edit=e.target.closest('[data-edit]'),del=e.target.closest('[data-delete]');
   if(edit){
@@ -645,10 +717,7 @@ function handleRecordAction(e){
   }
   if(del){
     const r=records.find(r=>r.id===del.dataset.delete);
-    if(!r||!confirm(`¿Eliminar "${r.name}" del ${fmtDate(r.date)}?`))return;
-    records=records.filter(x=>x.id!==r.id);
-    if(editing===r.id)resetForm();
-    if(save('Registro eliminado correctamente'))render()
+    if(r)openDeleteConfirmation(r,del);
   }
 }
 $('rows').addEventListener('click',handleRecordAction);
