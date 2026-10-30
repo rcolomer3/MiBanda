@@ -54,17 +54,20 @@
    entre las cuatro tarjetas, aunque las descripciones ocupen varias líneas. */
 #dashboard .stats{gap:13px;margin:18px 0 22px;align-items:stretch}
 #dashboard .stat-card{
-  --stat-accent:#3478e5;
-  --stat-tint:#eaf3ff;
+  --stat-tint:#EDF5FF;
+  --stat-border:#D9E7FA;
+  --stat-heading:#476C9D;
+  --stat-value:#1D4F8F;
+  --stat-caption:#476C9D;
   display:grid;
   grid-template-rows:27px 44px auto;
   align-content:start;
   row-gap:11px;
   min-width:0;min-height:0;
   padding:17px 17px 16px;
-  border:1px solid #e4ebf5;border-radius:21px;
-  background:linear-gradient(145deg,#fff 55%,var(--stat-tint) 180%);
-  color:#1d2c43;
+  border:1px solid var(--stat-border);border-radius:21px;
+  background:var(--stat-tint);
+  color:var(--stat-value);
   box-shadow:0 5px 19px rgba(27,49,82,.047);
 }
 #dashboard .stat-card::before{display:none}
@@ -74,13 +77,13 @@
 }
 #dashboard .stat-card .stat-label{
   display:block;min-width:0;align-self:flex-end;
-  margin:0;color:#617187;
+  margin:0;color:var(--stat-heading);
   font-size:13px;font-weight:690;line-height:1.3;
   letter-spacing:-.14px;
 }
 #dashboard .stat-card .value{
   display:flex;align-items:center;min-width:0;
-  margin:0;color:#1c2a40;
+  margin:0;color:var(--stat-value);
   font-size:39px;font-weight:800;line-height:1.05;
   letter-spacing:-1.5px;font-variant-numeric:tabular-nums;
 }
@@ -88,12 +91,12 @@
   display:block;align-self:start;min-height:0;
   padding:0;margin:0;border:0;
   font-size:11.2px;font-weight:500;line-height:1.4;
-  color:#8794a6;opacity:1;overflow-wrap:anywhere;
+  color:var(--stat-caption);opacity:1;overflow-wrap:anywhere;
 }
-#dashboard .stat-card.ensayos{--stat-accent:#3478e5;--stat-tint:#eaf3ff}
-#dashboard .stat-card.asistidos{--stat-accent:#15966e;--stat-tint:#e9f8f1}
-#dashboard .stat-card.actos{--stat-accent:#8b5bd6;--stat-tint:#f3eeff}
-#dashboard .stat-card.porcentaje{--stat-accent:#d58d21;--stat-tint:#fff6e7}
+#dashboard .stat-card.ensayos{--stat-tint:#EDF5FF;--stat-border:#D9E7FA;--stat-heading:#476C9D;--stat-value:#1D4F8F;--stat-caption:#476C9D}
+#dashboard .stat-card.asistidos{--stat-tint:#EAF8F1;--stat-border:#D3EDDF;--stat-heading:#367A5E;--stat-value:#20734F;--stat-caption:#486E5D}
+#dashboard .stat-card.actos{--stat-tint:#F3EEFF;--stat-border:#E5D9FB;--stat-heading:#7355A1;--stat-value:#67459B;--stat-caption:#785E9D}
+#dashboard .stat-card.porcentaje{--stat-tint:#FFF5E5;--stat-border:#F4E1C7;--stat-heading:#836020;--stat-value:#94621E;--stat-caption:#826531}
 @media(max-width:740px){
   #dashboard .stats{gap:11px;margin:16px 0 19px}
   #dashboard .stat-card{
