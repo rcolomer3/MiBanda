@@ -414,7 +414,7 @@
 <section id="records" class="page" data-mobile-view="history"><div class="head"><div><h1 id="recordsHeading">Ensayos y actos</h1><p id="recordsIntro">Consulta tu historial o añade un ensayo o acto.</p></div></div>
 <div class="panel" id="formPanel"><div class="section-head"><h2 id="formTitle">Nuevo registro</h2></div><form id="recordForm"><div class="form-grid"><div class="field"><label for="date">Fecha *</label><div class="date-input-frame"><input required id="date" type="date"></div></div><div class="field"><label for="kind">Tipo *</label><select id="kind"><option value="Ensayo">🎼 Ensayo</option><option value="Acto">🎺 Acto</option></select></div><div class="field"><label for="name">Nombre / descripción *</label><input id="name" maxlength="120" required placeholder="Ej.: Ensayo general"></div><div class="field"><label for="status">Asistencia *</label><select id="status"><option value="yes">✅ Asistí</option><option value="no">❌ No asistí</option></select></div><div class="field wide"><label for="notes">Notas (opcional)</label><textarea id="notes" rows="2" maxlength="500" placeholder="Lugar, repertorio, observaciones..."></textarea></div></div><div class="form-actions"><button class="btn primary" type="submit" id="saveBtn">Guardar registro</button><button class="btn" type="button" id="cancelEdit" hidden>Cancelar edición</button></div></form></div>
 <div class="panel" id="historyPanel">
-  <div class="section-head"><h2>Historial <span id="recordCount" class="muted"></span></h2><button class="btn sm" id="exportCsv">Exportar CSV</button></div>
+  <div class="section-head"><h2>Historial</h2><button class="btn sm" id="exportCsv">Exportar CSV</button></div>
   <div class="record-kinds" role="group" aria-label="Ver registros por tipo">
     <button type="button" class="kind-tab active" data-kind-tab="all" aria-pressed="true"><span>Todos</span><span class="kind-tab-count" id="countAll">0</span></button>
     <button type="button" class="kind-tab" data-kind-tab="Ensayo" aria-pressed="false"><span>Ensayos</span><span class="kind-tab-count" id="countEnsayos">0</span></button>
@@ -590,7 +590,6 @@ function filteredRecords(){
 function renderTable(){
   const available=historyCandidates();
   const list=filteredRecords();
-  $('recordCount').textContent=`(${list.length})`;
   $('countAll').textContent=available.length.toLocaleString('es-ES');
   $('countEnsayos').textContent=available.filter(r=>r.kind==='Ensayo').length.toLocaleString('es-ES');
   $('countActos').textContent=available.filter(r=>r.kind==='Acto').length.toLocaleString('es-ES');
