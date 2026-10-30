@@ -17,7 +17,8 @@ def icon_without_white_corners(image: Image.Image) -> Image.Image:
 
     def is_blue(pixel: tuple[int, int, int]) -> bool:
         red, green, blue = pixel
-        return blue >= 28 and blue > red + 12 and blue > green + 4
+        # Excluir tonos casi blancos de la compresión JPEG / Lanczos.
+        return red < 170 and blue >= 27 and blue > red + 18 and blue > green + 6
 
     for y in range(height):
         # Hallar el primer y último píxel del fondo azul en cada línea.
@@ -50,6 +51,9 @@ for size, filename in (
     (512, "icon-512.png"),
 ):
     icon = full_bleed.resize((size, size), Image.Resampling.LANCZOS)
+    # Lanzcos puede reintroducir un halo blanco al reducir el JPG.
+    # Repetir la corrección sobre la versión final, en especial 32/180px.
+    icon = icon_without_white_corners(icon)
     # PNG totalmente opaco y sin márgenes blancos: iOS aplica su máscara.
     assert icon.mode == "RGB" and icon.size == (size, size)
     for corner in ((0, 0), (size - 1, 0), (0, size - 1), (size - 1, size - 1)):
