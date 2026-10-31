@@ -893,12 +893,12 @@ html[data-theme="dark"] .auth-gate{background:radial-gradient(circle at 15% 25%,
 html[data-theme="dark"] .boot-spinner{border-color:var(--line);border-top-color:var(--blue)}
 html[data-theme="dark"] .delete-dialog-record{background:var(--bg);border-color:var(--line)}
 html[data-theme="dark"] :is(.toast,.graph-tooltip){background:#223149;border-color:#526781}
-/* Menú móvil: cuatro destinos alineados, con Añadir dentro de la barra. */
+/* Tres destinos a todo el ancho y acción flotante separada de la barra. */
 @media(max-width:740px){
-  .content{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+  .content{padding-bottom:calc(164px + env(safe-area-inset-bottom,0px))}
   .bottomnav{
     display:grid;position:fixed;inset:auto 0 0;z-index:15;
-    grid-template-columns:repeat(4,minmax(0,1fr));align-items:center;gap:4px;
+    grid-template-columns:repeat(3,minmax(0,1fr));align-items:center;gap:4px;
     height:calc(72px + env(safe-area-inset-bottom,0px));
     padding:6px max(10px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(10px,env(safe-area-inset-left,0px));
     background:rgba(250,252,255,.97);border:0;border-top:1px solid #d5deeb;
@@ -916,13 +916,24 @@ html[data-theme="dark"] :is(.toast,.graph-tooltip){background:#223149;border-col
   .bottomnav .dock-icon{display:block;width:23px;height:23px;flex-shrink:0}
   .bottomnav .dock-label{display:block}
   .bottomnav button:hover{background:#edf2f8}
-  .bottomnav button[aria-current="page"]{background:#e6effa;border-color:#bdd3ed;color:#185fb8;font-weight:750}
+  .bottomnav button:not(.add-action)[aria-current="page"]{background:#e6effa;border-color:#bdd3ed;color:#185fb8;font-weight:750}
   .bottomnav button:focus-visible{outline:2px solid #2678ec;outline-offset:1px}
-  .toast{bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+  .bottomnav .add-action{
+    position:absolute;bottom:calc(100% + 16px);right:max(20px,env(safe-area-inset-right,0px));
+    width:56px;height:56px;padding:0;gap:0;border-radius:18px;
+    background:#1669da;border:1px solid #1669da;color:#fff;
+    box-shadow:0 6px 18px rgba(19,71,140,.25);
+  }
+  .bottomnav .add-action .dock-icon{width:27px;height:27px;stroke-width:2.2}
+  .bottomnav .add-action .dock-label{display:none}
+  .bottomnav .add-action:hover{background:#115bbf;border-color:#115bbf}
+  .toast{bottom:calc(156px + env(safe-area-inset-bottom,0px))}
   html[data-theme="dark"] .bottomnav{background:rgba(25,35,51,.97);border-color:var(--line);box-shadow:0 -4px 20px rgba(0,0,0,.15)}
   html[data-theme="dark"] .bottomnav button{color:#c3ccda}
   html[data-theme="dark"] .bottomnav button:hover{background:var(--control)}
-  html[data-theme="dark"] .bottomnav button[aria-current="page"]{background:var(--selected);border-color:var(--selection-border);color:var(--on-selected)}
+  html[data-theme="dark"] .bottomnav button:not(.add-action)[aria-current="page"]{background:var(--selected);border-color:var(--selection-border);color:var(--on-selected)}
+  html[data-theme="dark"] .bottomnav .add-action{background:var(--primary);border-color:#6a98d1;color:#fff;box-shadow:0 6px 18px rgba(0,0,0,.3)}
+  html[data-theme="dark"] .bottomnav .add-action:hover{background:var(--primary-hover);border-color:#8bb5e8}
   html[data-theme="dark"] .bottomnav button:focus-visible{outline-color:#89baff}
 }
 @media(prefers-reduced-motion:reduce){.bottomnav button{transition:none}}
@@ -1025,7 +1036,7 @@ html[data-theme="dark"] :is(.toast,.graph-tooltip){background:#223149;border-col
 <nav class="bottomnav" hidden aria-label="Navegación móvil">
   <button type="button" class="active" data-page="dashboard" aria-label="Ir al inicio" aria-current="page"><svg class="dock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 21v-8h6v8"/></svg><span class="dock-label">Inicio</span></button>
   <button type="button" data-page="records" aria-label="Ver registros de ensayos y actos"><svg class="dock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg><span class="dock-label">Registros</span></button>
-  <button type="button" class="add-action" id="mobileAdd" aria-label="Añadir un ensayo o acto"><svg class="dock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="M12 8v8M8 12h8"/></svg><span class="dock-label">Añadir</span></button>
+  <button type="button" class="add-action" id="mobileAdd" aria-label="Añadir un ensayo o acto" aria-controls="formPanel"><svg class="dock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span class="dock-label">Añadir</span></button>
   <button type="button" data-page="settings" aria-label="Abrir ajustes"><svg class="dock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h4m4 0h10M3 12h10m4 0h4M3 18h4m4 0h10"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="9" cy="18" r="2"/></svg><span class="dock-label">Ajustes</span></button>
 </nav><div class="graph-tooltip" id="graphTooltip" role="tooltip" hidden></div><div class="toast" id="toast" role="status"></div>
 <dialog class="delete-dialog" id="deleteRecordDialog" aria-labelledby="deleteDialogTitle" aria-describedby="deleteDialogDescription">
@@ -1089,10 +1100,12 @@ function setMobileRecordsView(view){
   const isForm=mobile&&view==='form'&&page.classList.contains('active');
   const recordTab=document.querySelector('.bottomnav [data-page="records"]');
   const addTab=$('mobileAdd');
-  addTab.classList.toggle('selected',isForm);
-  recordTab.classList.toggle('active',page.classList.contains('active')&&!isForm);
-  if(isForm){recordTab.removeAttribute('aria-current');addTab.setAttribute('aria-current','page')}
-  else{addTab.removeAttribute('aria-current');if(page.classList.contains('active'))recordTab.setAttribute('aria-current','page');else recordTab.removeAttribute('aria-current')}
+  // Al redactar ya no hace falta Añadir: se oculta para no tapar el formulario.
+  addTab.hidden=isForm;
+  addTab.removeAttribute('aria-current');
+  recordTab.classList.toggle('active',page.classList.contains('active'));
+  if(page.classList.contains('active'))recordTab.setAttribute('aria-current','page');
+  else recordTab.removeAttribute('aria-current');
 }
 function show(page){
   document.querySelectorAll('.page').forEach(e=>e.classList.toggle('active',e.id===page));
