@@ -138,7 +138,7 @@ async function connect(user) {
       // Avoid resetting the current form for metadata-only updates.
       if (signature !== lastApplied) {
         lastApplied = signature;
-        ui.applyRecords(fresh);
+        ui.applyRecords(fresh,{preserveDraft:true});
       }
       if (snapshot.metadata.fromCache) {
         // The direct server read at sign-in already proved connectivity.

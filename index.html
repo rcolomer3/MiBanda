@@ -1047,6 +1047,31 @@ const KEY='miBandaAsistencias_v1',monthNames=['Enero','Febrero','Marzo','Abril',
 const $=id=>document.getElementById(id);const today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
 let records=[];try{const data=JSON.parse(localStorage.getItem(KEY)||'[]');if(Array.isArray(data))records=data.filter(isValidRecord).map(r=>r.status==='just'?{...r,status:'no'}:r)}catch(e){console.warn('Error leyendo datos almacenados',e)}
 let editing=null;let filterYear=new Date().getFullYear().toString();let filterMonth='all';let toastTimeout,loadingTimeout;
+const formFields=['date','kind','name','status','notes'];
+let formBaseline='',formDirty=false;
+function formState(){return JSON.stringify(formFields.map(id=>$(id).value))}
+function hasUnsavedFormChanges(){return formState()!==formBaseline}
+function warnBeforeUnload(event){
+  if(!hasUnsavedFormChanges())return;
+  event.preventDefault();
+  event.returnValue='';
+}
+function updateFormGuard(){
+  const dirty=hasUnsavedFormChanges();
+  if(dirty===formDirty)return;
+  formDirty=dirty;
+  if(dirty)window.addEventListener('beforeunload',warnBeforeUnload);
+  else window.removeEventListener('beforeunload',warnBeforeUnload);
+}
+function markFormClean(){formBaseline=formState();updateFormGuard()}
+function confirmDiscardForm(){
+  if(!hasUnsavedFormChanges())return true;
+  if(!confirm('Tienes cambios sin guardar. Si sales ahora, los perderás. ¿Quieres descartarlos?'))return false;
+  resetForm();
+  return true;
+}
+$('recordForm').addEventListener('input',updateFormGuard);
+$('recordForm').addEventListener('change',updateFormGuard);
 function isValidRecord(r){return r&&typeof r.id==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(r.date)&&['Ensayo','Acto'].includes(r.kind)&&typeof r.name==='string'&&['yes','no','just'].includes(r.status)&&(!r.notes||typeof r.notes==='string')}
 let latestSaveRequest=0;
 function save(successMessage='Guardado correctamente'){
@@ -1098,6 +1123,9 @@ function setMobileRecordsView(view){
   else recordTab.removeAttribute('aria-current');
 }
 function show(page){
+  const recordsPage=$('records');
+  const leavesForm=recordsPage.classList.contains('active')&&(page!=='records'||(window.matchMedia('(max-width:740px)').matches&&recordsPage.dataset.mobileView==='form'));
+  if(leavesForm&&!confirmDiscardForm())return false;
   document.querySelectorAll('.page').forEach(e=>e.classList.toggle('active',e.id===page));
   document.querySelectorAll('[data-page]').forEach(e=>{
     const active=e.dataset.page===page;
@@ -1238,7 +1266,7 @@ function renderTable(){
   $('emptyRecords').hidden=list.length>0;
 }
 function render(){renderDashboard();renderTable()}
-function resetForm(){$('recordForm').reset();$('date').value=today();editing=null;$('saveBtn').textContent='Guardar registro';$('formTitle').textContent='Nuevo registro';$('cancelEdit').hidden=true}
+function resetForm(){$('recordForm').reset();$('date').value=today();editing=null;$('saveBtn').textContent='Guardar registro';$('formTitle').textContent='Nuevo registro';$('cancelEdit').hidden=true;markFormClean()}
 function download(content,name,mime){const blob=new Blob([content],{type:mime}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000)}
 function csvCell(x){return '"'+String(x??'').replace(/"/g,'""')+'"'}
 $('recordForm').addEventListener('submit',e=>{e.preventDefault();const date=$('date').value,kind=$('kind').value,name=$('name').value.trim(),status=$('status').value,notes=$('notes').value.trim();if(!date||!/^\d{4}-\d{2}-\d{2}$/.test(date)||!name||!['Ensayo','Acto'].includes(kind)||!['yes','no'].includes(status))return;if(editing){const idx=records.findIndex(r=>r.id===editing);if(idx<0)return;records[idx]={id:editing,date,kind,name,status,notes}}else records.push({id:typeof crypto!=='undefined'&&crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random(),date,kind,name,status,notes});if(!save('Guardado correctamente'))return;filterYear=date.slice(0,4);filterMonth='all';render();resetForm();if(window.matchMedia('(max-width:740px)').matches){setMobileRecordsView('history');scrollTo({top:0,behavior:'smooth'})}});
@@ -1280,12 +1308,14 @@ function handleRecordAction(e){
   if(edit){
     const r=records.find(r=>r.id===edit.dataset.edit);
     if(!r)return;
+    if(!confirmDiscardForm())return;
     editing=r.id;
     $('date').value=r.date;$('kind').value=r.kind;$('name').value=r.name;
     $('status').value=r.status==='just'?'no':r.status;
     $('notes').value=r.notes||'';
     $('saveBtn').textContent='Guardar cambios';$('formTitle').textContent='Editar registro';
     $('cancelEdit').hidden=false;
+    markFormClean();
     setMobileRecordsView('form');
     requestAnimationFrame(()=>{
       $('formPanel').scrollIntoView({behavior:'smooth',block:'start'});
@@ -1299,12 +1329,12 @@ function handleRecordAction(e){
 }
 $('rows').addEventListener('click',handleRecordAction);
 $('mobileRecords').addEventListener('click',handleRecordAction);
-function openNewRecord(){resetForm();show('records');setMobileRecordsView('form');requestAnimationFrame(()=>$('formPanel').scrollIntoView({behavior:'smooth',block:'start'}))}
-$('cancelEdit').addEventListener('click',()=>{resetForm();if(window.matchMedia('(max-width:740px)').matches){setMobileRecordsView('history');scrollTo({top:0,behavior:'smooth'})}});
+function openNewRecord(){if(!confirmDiscardForm())return;resetForm();show('records');setMobileRecordsView('form');requestAnimationFrame(()=>$('formPanel').scrollIntoView({behavior:'smooth',block:'start'}))}
+$('cancelEdit').addEventListener('click',()=>{if(!confirmDiscardForm())return;resetForm();if(window.matchMedia('(max-width:740px)').matches){setMobileRecordsView('history');scrollTo({top:0,behavior:'smooth'})}});
 document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.page)));
 $('quickAdd').addEventListener('click',openNewRecord);
 $('mobileAdd').addEventListener('click',openNewRecord);
-window.addEventListener('resize',()=>{if($('records').classList.contains('active'))setMobileRecordsView($('records').dataset.mobileView||'history')});
+window.addEventListener('resize',()=>{if($('records').classList.contains('active'))setMobileRecordsView(hasUnsavedFormChanges()?'form':$('records').dataset.mobileView||'history')});
 document.querySelectorAll('[data-kind-tab]').forEach(button=>button.addEventListener('click',()=>{
   $('typeFilter').value=button.dataset.kindTab;
   renderTable();
@@ -1412,11 +1442,12 @@ window.miBandaUI={
   document.querySelector('.bottomnav').hidden=true;
  },
  getLocalRecords:()=>records.map(r=>({...r})),
- applyRecords:next=>{
+ applyRecords:(next,{preserveDraft=false}={})=>{
   if(!Array.isArray(next))return;
   records=next.filter(isValidRecord).map(r=>({...r,status:r.status==='just'?'no':r.status,notes:r.notes||''}));
   try{localStorage.setItem(KEY,JSON.stringify(records))}catch(e){console.warn('No se pudo guardar la copia local',e)}
-  resetForm();render();
+  if(!preserveDraft||!hasUnsavedFormChanges())resetForm();
+  render();
  },
  showGate:(message,enabled)=>{
   clearTimeout(loadingTimeout);
