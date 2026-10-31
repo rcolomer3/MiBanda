@@ -245,7 +245,7 @@ async function closeSession(event) {
   }
 
   loggingOut = true;
-  const buttons = [el("signOutBtn"), el("signOutHeader")];
+  const buttons = [el("signOutBtn")];
   buttons.forEach(button => {
     button.disabled = true;
     button.textContent = "Cerrando sesión…";
@@ -272,7 +272,6 @@ async function closeSession(event) {
 }
 
 el("signOutBtn").addEventListener("click", closeSession);
-el("signOutHeader").addEventListener("click", closeSession);
 
 async function initializeAuth() {
   // Persist Google sign-in across reloads and browser restarts.

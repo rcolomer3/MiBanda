@@ -959,16 +959,6 @@ html[data-theme="dark"] :is(.toast,.graph-tooltip){background:#223149;border-col
 <div class="app" hidden>
 <aside class="sidebar"><div class="brand"><img class="brand-logo" src="./icon-192.png?v=4" alt="" width="39" height="39"><span class="brand-copy">BandApp<small>Control de asistencias</small></span></div><nav class="nav" aria-label="Navegación principal"><button data-page="dashboard" class="active"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 21v-8h6v8"/></svg><span>Resumen</span></button><button data-page="records"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg><span>Ensayos y actos</span></button><button data-page="settings"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h4m4 0h10M3 12h10m4 0h4M3 18h4m4 0h10"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="9" cy="18" r="2"/></svg><span>Ajustes</span></button></nav><div class="sidebar-foot">BandApp · Tu actividad musical</div></aside>
 <main class="content">
-<div class="account-bar" aria-label="Sesión de usuario">
-  <div class="account-pill">
-    <span class="account-icon" aria-hidden="true"><svg class="ui-icon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.7"/><path d="M4.8 20c.3-4.1 3.1-6.3 7.2-6.3s6.9 2.2 7.2 6.3"/></svg></span>
-    <div class="account-details">
-      <strong id="accountName">Modo local</strong>
-      <small id="accountEmail">Sin sincronización</small>
-    </div>
-  </div>
-  <button class="btn account-logout" id="signOutHeader" type="button" hidden>Cerrar sesión</button>
-</div>
 <section id="dashboard" class="page active">
 <div class="head"><div><h1>BandApp</h1><p>Consulta tu actividad en la banda de un vistazo.</p></div><button class="btn primary" id="quickAdd"><svg class="ui-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>Añadir registro</span></button></div>
 <div class="filters"><div class="field"><label for="year">Año</label><select id="year"></select></div><div class="field"><label for="month">Mes</label><select id="month"><option value="all">Todo el año</option></select></div><button class="btn" id="clearFilters">Ver todo</button></div>
@@ -1449,12 +1439,9 @@ window.miBandaUI={
   if(window.miBandaCloud)window.miBandaCloud.mode='cloud';
   $('connectGoogle').hidden=true;
   $('signOutBtn').hidden=false;
-  $('signOutHeader').hidden=false;
   $('checkConnectionBtn').hidden=false;
   const userName=typeof account==='object'?(account.name||account.email||'Google'):(account||'Google');
   const userEmail=typeof account==='object'?(account.email||''):'';
-  $('accountName').textContent=userName;
-  $('accountEmail').textContent=userEmail||'Conectado con Google';
   $('syncAccount').textContent='Cuenta: '+userName+(userEmail&&userEmail!==userName?' · '+userEmail:'');
   window.miBandaUI.syncMessage('Sincronizado con Firebase', 'ok');
   render();
