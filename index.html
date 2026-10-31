@@ -896,6 +896,7 @@ html[data-theme="dark"] :is(.toast,.graph-tooltip){background:#223149;border-col
 /* Tres destinos a todo el ancho y acción flotante separada de la barra. */
 @media(max-width:740px){
   .content{padding-bottom:calc(164px + env(safe-area-inset-bottom,0px))}
+  .content.record-form-open{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
   .bottomnav{
     display:grid;position:fixed;inset:auto 0 0;z-index:15;
     grid-template-columns:repeat(3,minmax(0,1fr));align-items:center;gap:4px;
@@ -1113,6 +1114,7 @@ function setMobileRecordsView(view){
   $('recordsHeading').textContent=mobile?(view==='form'?(editing?'Editar registro':'Nuevo registro'):'Mis registros'):'Ensayos y actos';
   $('recordsIntro').textContent=mobile?(view==='form'?'Registra un ensayo o acto y marca tu asistencia.':'Consulta los ensayos y actos que has registrado.'):'Consulta tu historial o añade un ensayo o acto.';
   const isForm=mobile&&view==='form'&&page.classList.contains('active');
+  document.querySelector('.content').classList.toggle('record-form-open',isForm);
   const recordTab=document.querySelector('.bottomnav [data-page="records"]');
   const addTab=$('mobileAdd');
   // Al redactar ya no hace falta Añadir: se oculta para no tapar el formulario.
@@ -1318,7 +1320,7 @@ function handleRecordAction(e){
     markFormClean();
     setMobileRecordsView('form');
     requestAnimationFrame(()=>{
-      $('formPanel').scrollIntoView({behavior:'smooth',block:'start'});
+      scrollToRecordForm();
       $('name').focus({preventScroll:true});
     });
   }
@@ -1329,7 +1331,11 @@ function handleRecordAction(e){
 }
 $('rows').addEventListener('click',handleRecordAction);
 $('mobileRecords').addEventListener('click',handleRecordAction);
-function openNewRecord(){if(!confirmDiscardForm())return;resetForm();show('records');setMobileRecordsView('form');requestAnimationFrame(()=>$('formPanel').scrollIntoView({behavior:'smooth',block:'start'}))}
+function scrollToRecordForm(){
+  if(window.matchMedia('(max-width:740px)').matches)scrollTo({top:0,behavior:'instant'});
+  else $('formPanel').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function openNewRecord(){if(!confirmDiscardForm())return;resetForm();show('records');setMobileRecordsView('form');requestAnimationFrame(scrollToRecordForm)}
 $('cancelEdit').addEventListener('click',()=>{if(!confirmDiscardForm())return;resetForm();if(window.matchMedia('(max-width:740px)').matches){setMobileRecordsView('history');scrollTo({top:0,behavior:'smooth'})}});
 document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.page)));
 $('quickAdd').addEventListener('click',openNewRecord);
