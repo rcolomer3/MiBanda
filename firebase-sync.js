@@ -212,7 +212,7 @@ export async function signIn() {
     }
   } catch (error) {
     if (error?.code === "auth/popup-blocked" || error?.code === "auth/operation-not-supported-in-this-environment") {
-      ui.showGate('Permite las ventanas emergentes para entrar con Google. Si estás dentro de ChatGPT, abre el enlace de BandApp en tu navegador habitual.',true);
+      ui.showGate('Permite las ventanas emergentes para entrar con Google. Si estás dentro de ChatGPT, abre BandApp en tu navegador habitual.',true);
       return;
     }
     ui.showGate(friendlyError(error), true);
