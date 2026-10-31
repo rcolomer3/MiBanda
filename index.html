@@ -10,6 +10,37 @@
 <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png?v=4">
 <link rel="manifest" href="./site.webmanifest?v=4">
 <title>BandApp</title>
+<script>
+// Aplicar el tema antes de pintar la página evita un destello claro al abrirla.
+(()=>{'use strict';
+  const key='miBandaTheme',system=window.matchMedia('(prefers-color-scheme: dark)');
+  const valid=value=>['system','light','dark'].includes(value);
+  let preference='system';
+  try{const saved=localStorage.getItem(key);if(valid(saved))preference=saved}catch(e){}
+  function applyTheme(){
+    const dark=preference==='dark'||(preference==='system'&&system.matches);
+    document.documentElement.dataset.theme=dark?'dark':'light';
+    document.querySelector('meta[name="theme-color"]').content=dark?'#101722':'#f4f6fa';
+    document.querySelectorAll('[data-theme-control]').forEach(control=>{control.value=preference});
+  }
+  applyTheme();
+  system.addEventListener('change',applyTheme);
+  window.addEventListener('storage',event=>{
+    if(event.key===key||event.key===null){preference=valid(event.newValue)?event.newValue:'system';applyTheme()}
+  });
+  document.addEventListener('DOMContentLoaded',()=>{
+    document.querySelectorAll('[data-theme-control]').forEach(control=>{
+      control.addEventListener('change',()=>{
+        if(!valid(control.value))return;
+        preference=control.value;
+        try{localStorage.setItem(key,preference)}catch(e){}
+        applyTheme();
+      });
+    });
+    applyTheme();
+  });
+})();
+</script>
 <style>
 :root{--bg:#f4f6f8;--panel:white;--text:#17202a;--muted:#64748b;--line:#e2e8f0;--nav:#0f172a;--blue:#2563eb;--green:#15803d;--red:#dc2626;--amber:#b45309;--shadow:0 8px 24px rgba(15,23,42,.05)}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}.app{display:grid;grid-template-columns:228px minmax(0,1fr);min-height:100vh}.sidebar{position:sticky;top:0;height:100vh;background:var(--nav);padding:25px 15px;color:white}.brand{font-weight:800;font-size:23px;padding:0 10px 27px}.brand small{display:block;font-size:12px;font-weight:500;color:#94a3b8;margin-top:6px}.nav{display:grid;gap:7px}.nav button{background:transparent;color:#cbd5e1;border:0;padding:13px;text-align:left;border-radius:11px;font-weight:650}.nav button.active,.nav button:hover{background:#1e293b;color:white}.content{padding:29px;max-width:1550px;width:100%;min-width:0}.page{display:none}.page.active{display:block}.head{display:flex;justify-content:space-between;gap:15px;align-items:center;margin-bottom:22px;flex-wrap:wrap}.head h1{font-size:29px;margin:0 0 6px;letter-spacing:-.7px}.head p{margin:0;color:var(--muted);font-size:14px}.btn{border:1px solid var(--line);padding:11px 16px;border-radius:11px;font-weight:700;min-height:41px;background:#f1f5f9;color:#1e293b}.btn.primary{background:var(--nav);border-color:var(--nav);color:#fff}.btn:hover{filter:brightness(.96)}.btn:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #93c5fd;outline-offset:1px}.btn.danger{color:#b91c1c;background:#fff1f2;border-color:#ffe4e6}.btn.sm{font-size:12px;padding:7px 10px;min-height:32px}.panel,.card{background:var(--panel);border:1px solid var(--line);border-radius:17px;box-shadow:var(--shadow)}.panel{padding:21px}.card{padding:20px}.filters{display:flex;flex-wrap:wrap;align-items:end;gap:12px;margin-bottom:17px}.field{display:flex;flex-direction:column;gap:7px}.field label{font-size:12px;font-weight:650;color:var(--muted)}input,select,textarea{border:1px solid #cbd5e1;border-radius:10px;padding:10px 12px;background:white;color:var(--text);width:100%;min-height:42px}.filters select{min-width:154px}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin:16px 0}.label{font-size:13px;color:var(--muted);margin-bottom:8px}.value{font-weight:800;font-size:30px;letter-spacing:-.7px}.detail{font-size:12px;color:var(--muted);margin-top:8px}.green{color:var(--green)}.blue{color:var(--blue)}.amber{color:var(--amber)}.layout{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;margin-top:16px}.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:16px}.section-head h2,.panel h2{font-size:18px;margin:0}.section-head span{color:var(--muted);font-size:12px}.bars{height:235px;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:9px;align-items:end;border-bottom:1px solid var(--line);padding-top:14px}.bar-group{height:100%;display:flex;align-items:end;justify-content:center;gap:3px;position:relative}.bar{width:min(17px,44%);min-height:0;border-radius:5px 5px 0 0;background:#94a3b8;transition:height .15s}.bar.ensayo{background:#2563eb}.bar.acto{background:#22a06b}.months{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:9px;padding-top:11px;font-size:11px;color:var(--muted);text-align:center}.legend{display:flex;flex-wrap:wrap;gap:15px;margin-top:17px;color:var(--muted);font-size:12px}.legend i{width:10px;height:10px;display:inline-block;border-radius:3px;margin-right:6px}.recent{margin-top:16px}.recent-item{display:grid;grid-template-columns:46px minmax(0,1fr) auto;align-items:center;gap:11px;padding:13px 0;border-bottom:1px solid var(--line)}.recent-item:last-child{border-bottom:0}.emoji{background:#f1f5f9;border-radius:12px;width:44px;height:44px;display:grid;place-items:center;font-size:19px}.recent-item strong{display:block;font-size:14px}.muted{color:var(--muted)}.recent-item small{color:var(--muted);font-size:12px}.pill{font-weight:750;font-size:11px;border-radius:100px;padding:6px 9px;white-space:nowrap}.pill.yes{background:#dcfce7;color:#166534}.pill.no{background:#fee2e2;color:#991b1b}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}.form-grid .wide{grid-column:1/-1}.form-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}.toolbar{display:grid;grid-template-columns:minmax(180px,2fr) repeat(2,minmax(130px,1fr));gap:10px;margin-bottom:15px}.tablewrap{overflow:auto}table{width:100%;border-collapse:collapse;font-size:14px;min-width:620px}th{text-align:left;color:var(--muted);font-size:12px;padding:13px 10px;border-bottom:1px solid var(--line)}td{padding:13px 10px;border-bottom:1px solid var(--line)}tr:last-child td{border-bottom:none}.row-actions{display:flex;gap:6px}.empty{padding:30px;text-align:center;color:var(--muted);font-size:14px}.settings-list{display:flex;flex-wrap:wrap;gap:10px;margin-top:17px}.note{line-height:1.7;color:var(--muted);font-size:13px}.bottomnav{display:none}.toast{position:fixed;bottom:24px;right:24px;background:#0f172a;color:white;padding:12px 18px;border-radius:12px;box-shadow:var(--shadow);z-index:6;font-size:14px;display:none}.toast.on{display:block}.select-file{position:relative;overflow:hidden}.select-file input{position:absolute;inset:0;opacity:0;cursor:pointer}
@@ -641,8 +672,8 @@ select{padding-right:25px;cursor:pointer}
   width:38px;height:38px;padding:9px;flex-shrink:0;
   border:1px solid #e3ecf8;border-radius:13px;background:#edf5ff;color:#277dea;
 }
-#settings>.panel:nth-of-type(3) .settings-heading .ui-icon{background:#edf9f3;border-color:#dcefe5;color:#20976b}
-#settings>.panel:nth-of-type(4) .settings-heading .ui-icon{background:#fff3f3;border-color:#fae6e7;color:#d15a68}
+#settings .sync-panel+.panel .settings-heading .ui-icon{background:#edf9f3;border-color:#dcefe5;color:#20976b}
+#settings>.panel:last-child .settings-heading .ui-icon{background:#fff3f3;border-color:#fae6e7;color:#d15a68}
 .settings-list{gap:10px;margin-top:20px}
 .settings-list .btn,.select-file{min-height:44px}
 .sync-state{font-size:13px;border-radius:13px;padding:13px 15px;background:#f5f8fc;border:1px solid #e9eff6}
@@ -864,6 +895,101 @@ select{padding-right:25px;cursor:pointer}
  .recent-split .recent-item .record-glance-head{gap:10px}
 }
 
+/* Apariencia: superficies azul noche y acentos suaves, también en móvil. */
+.theme-field{max-width:320px;margin-top:16px}
+.auth-card .browser-help{font-size:12px;margin:20px 0 8px}
+.auth-card .browser-link{display:block;color:var(--blue);font-size:12px;overflow-wrap:anywhere;text-underline-offset:3px}
+html[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#101722;--panel:#192333;--text:#e7edf6;--muted:#a5b3c8;
+  --line:#33435a;--nav:#101b2d;--blue:#89baff;--green:#75d6ac;--red:#ff9aaa;--amber:#f3cc87;
+  --shadow:0 8px 30px rgba(0,0,0,.16);
+  --dark-raised:#223149;--dark-blue:#1d3554;--dark-green:#183b33;--dark-red:#442633;--dark-purple:#302947;
+}
+html[data-theme="dark"] body{background:radial-gradient(ellipse 800px 480px at 75% -220px,#203453,transparent 75%),var(--bg)}
+html[data-theme="dark"] :is(.panel,.card,.account-pill,.auth-card,.delete-dialog){background:var(--panel);border-color:var(--line);color:var(--text)}
+html[data-theme="dark"] .sidebar{background:rgba(20,29,44,.95);border-color:var(--line);color:var(--text)}
+html[data-theme="dark"] .sidebar .nav button{color:var(--muted)}
+html[data-theme="dark"] .sidebar .nav :is(button.active,button:hover){background:var(--dark-blue);border-color:var(--line);color:var(--blue)}
+html[data-theme="dark"] :is(.sidebar-foot,.brand small){color:var(--muted)}
+html[data-theme="dark"] :is(.page>.head h1,.section-head h2,.panel h2,.account-details strong,.auth-card h1,.record-glance-name){color:var(--text)}
+html[data-theme="dark"] :is(.page>.head p,.note,.field label,.account-details small,.auth-card p,.sync-help,.record-glance-meta,.record-glance-notes,.legend,.months,.trend-y-labels,.trend-months span,.trend-plot .trend-empty,.delete-dialog p){color:var(--muted)}
+html[data-theme="dark"] #settings>.panel .note{color:var(--muted)}
+html[data-theme="dark"] :is(input,select,textarea),
+html[data-theme="dark"] #recordForm .date-input-frame,
+html[data-theme="dark"] #historyPanel .toolbar :is(#search,#statusFilter){background:var(--bg);border-color:var(--line);color:var(--text)}
+html[data-theme="dark"] :is(input,textarea)::placeholder{color:#99a9bf;opacity:1}
+html[data-theme="dark"] :is(input,select,textarea):focus{border-color:#89baff;box-shadow:0 0 0 3px rgba(137,186,255,.18)}
+html[data-theme="dark"] .btn{background:var(--dark-raised);color:var(--text);border-color:var(--line);box-shadow:none}
+html[data-theme="dark"] .btn:hover{background:#2c405d;border-color:#647e9f}
+html[data-theme="dark"] .btn.primary{background:linear-gradient(160deg,#236ac9,#154f9f);border-color:#4388e2;color:#fff}
+html[data-theme="dark"] .btn.primary:hover{background:#236ac9}
+html[data-theme="dark"] .btn.danger{background:var(--dark-red);border-color:#704051;color:var(--red)}
+html[data-theme="dark"] .btn.danger:hover{background:#583042}
+html[data-theme="dark"] :is(.btn,.kind-tab,.sidebar button):focus-visible{outline-color:#89baff}
+html[data-theme="dark"] .account-icon{background:var(--dark-blue);color:var(--blue)}
+html[data-theme="dark"] #dashboard .stat-card{box-shadow:var(--shadow)}
+html[data-theme="dark"] #dashboard .stat-card.ensayos{--stat-tint:#1b2d46;--stat-border:#304a6a;--stat-heading:#a2c5f3;--stat-value:#a2caff;--stat-caption:#a2b9d7}
+html[data-theme="dark"] #dashboard .stat-card.asistidos{--stat-tint:#19352f;--stat-border:#2e5347;--stat-heading:#97d4b8;--stat-value:#7fe0b1;--stat-caption:#9fbdaf}
+html[data-theme="dark"] #dashboard .stat-card.actos{--stat-tint:#2e2843;--stat-border:#4b3e65;--stat-heading:#cbb5ed;--stat-value:#c9adff;--stat-caption:#bbadce}
+html[data-theme="dark"] #dashboard .stat-card.porcentaje{--stat-tint:#382e21;--stat-border:#594932;--stat-heading:#e1c28e;--stat-value:#f3cc87;--stat-caption:#caba9d}
+html[data-theme="dark"] :is(.bars,.recent-split .recent-item){border-color:var(--line)}
+html[data-theme="dark"] .trend-plot .trend-gridline{stroke:var(--line)}
+html[data-theme="dark"] .trend-plot .trend-stroke{stroke:var(--blue)}
+html[data-theme="dark"] .trend-plot .trend-point{background:var(--panel);border-color:var(--blue)}
+html[data-theme="dark"] .trend-plot .trend-point.selected{background:var(--blue);border-color:var(--panel);box-shadow:0 0 0 2px var(--blue)}
+html[data-theme="dark"] .trend-plot .trend-area{opacity:.22}
+html[data-theme="dark"] :is(.trend-period,.trend-summary){background:var(--dark-blue);border-color:var(--line);color:#b7d3f4}
+html[data-theme="dark"] .trend-summary::before{color:var(--blue)}
+html[data-theme="dark"] .trend-months :is(.with-data,.highlight){color:#b7d3f4}
+html[data-theme="dark"] .date-tile{background:var(--dark-blue);border-color:#304a6a;color:#a2caff}
+html[data-theme="dark"] .date-tile strong{color:inherit}
+html[data-theme="dark"] .date-tile small{color:#a2b9d7}
+html[data-theme="dark"] .kind-acto .date-tile{background:var(--dark-purple);border-color:#4b3e65;color:#c9adff}
+html[data-theme="dark"] .kind-acto .date-tile small{color:#bbadce}
+html[data-theme="dark"] :is(.record-status-icon,.pill.yes){background:var(--dark-green);color:var(--green)}
+html[data-theme="dark"] :is(.record-status-icon.no,.pill.no,.delete-dialog-icon){background:var(--dark-red);color:var(--red)}
+html[data-theme="dark"] .record-status-icon.acto{background:var(--dark-purple);color:#c9adff}
+html[data-theme="dark"] .recent-split .recent .recent-more{color:var(--blue)}
+html[data-theme="dark"] .recent-split .recent .recent-more:hover{background:var(--dark-blue)}
+html[data-theme="dark"] .record-kinds{background:var(--bg);border-color:var(--line)}
+html[data-theme="dark"] .kind-tab{color:var(--muted)}
+html[data-theme="dark"] .kind-tab.active{background:var(--dark-raised);border-color:var(--line);color:var(--blue)}
+html[data-theme="dark"] .kind-tab-count{background:var(--dark-raised);color:var(--muted)}
+html[data-theme="dark"] .kind-tab.active .kind-tab-count{background:var(--dark-blue);color:var(--blue)}
+html[data-theme="dark"] #historyPanel th{background:var(--bg);color:var(--muted);border-color:var(--line)}
+html[data-theme="dark"] #historyPanel td{color:var(--text);border-color:var(--line)}
+html[data-theme="dark"] #historyPanel td strong{color:var(--text)}
+html[data-theme="dark"] #historyPanel tbody tr:hover td{background:var(--dark-raised)}
+html[data-theme="dark"] #historyPanel .mobile-record-card{background:var(--panel);border-color:var(--line)}
+html[data-theme="dark"] #historyPanel .mobile-record-actions{border-color:var(--line)}
+html[data-theme="dark"] #historyPanel .mobile-record-actions .btn{background:var(--dark-raised);border-color:var(--line);color:var(--blue)}
+html[data-theme="dark"] #historyPanel .mobile-record-actions .btn.danger{background:var(--dark-red);border-color:#704051;color:var(--red)}
+html[data-theme="dark"] #settings .settings-heading .ui-icon{background:var(--dark-blue);border-color:var(--line);color:var(--blue)}
+html[data-theme="dark"] #settings .sync-panel+.panel .settings-heading .ui-icon{background:var(--dark-green);border-color:#2e5347;color:var(--green)}
+html[data-theme="dark"] #settings>.panel:last-child .settings-heading .ui-icon{background:var(--dark-red);border-color:#704051;color:var(--red)}
+html[data-theme="dark"] .sync-state[data-state="ok"]{background:var(--dark-green);border-color:#2e5347;color:var(--green)}
+html[data-theme="dark"] .sync-state[data-state="working"]{background:#382e21;border-color:#594932;color:var(--amber)}
+html[data-theme="dark"] .sync-state[data-state="error"]{background:var(--dark-red);border-color:#704051;color:var(--red)}
+html[data-theme="dark"] .sync-dot{box-shadow:0 0 0 4px rgba(243,204,135,.13)}
+html[data-theme="dark"] .sync-state[data-state="ok"] .sync-dot{box-shadow:0 0 0 4px rgba(117,214,172,.13)}
+html[data-theme="dark"] .sync-state[data-state="error"] .sync-dot{box-shadow:0 0 0 4px rgba(255,154,170,.13)}
+html[data-theme="dark"] .auth-gate{background:radial-gradient(circle at 15% 25%,#203b60,transparent 48%),radial-gradient(circle at 90% 72%,#302947,transparent 45%),var(--bg)}
+html[data-theme="dark"] .boot-spinner{border-color:var(--line);border-top-color:var(--blue)}
+html[data-theme="dark"] .delete-dialog-record{background:var(--bg);border-color:var(--line)}
+html[data-theme="dark"] :is(.toast,.graph-tooltip){background:#223149;border-color:#526781}
+@media(max-width:740px){
+  html[data-theme="dark"] .bottomnav{background:rgba(25,35,51,.94);border-color:var(--line);box-shadow:0 13px 37px rgba(0,0,0,.3)}
+  html[data-theme="dark"] .bottomnav button{color:var(--muted)}
+  html[data-theme="dark"] .bottomnav button.active:not(.add-action){background:var(--dark-blue);color:var(--blue);box-shadow:none}
+  html[data-theme="dark"] .bottomnav .add-action .add-circle{border-color:var(--panel)}
+}
+@media(prefers-contrast:more){
+  html[data-theme="dark"]{--line:#71849e;--muted:#c1ccdc}
+}
+@media(prefers-reduced-transparency:reduce){
+  html[data-theme="dark"] :is(.sidebar,.bottomnav,.auth-card,.account-pill){background:var(--panel)}
+}
 </style>
 </head>
 <body>
@@ -873,8 +999,10 @@ select{padding-right:25px;cursor:pointer}
 </div></div>
 <div id="authGate" class="auth-gate" hidden><div class="auth-card">
 <img class="brand-icon-image" src="./icon-512.png?v=4" alt="Icono de BandApp" width="78" height="78"><h1>BandApp</h1><p id="authMessage">Cargando Firebase…</p>
-<button class="btn primary" id="signInBtn" disabled>Entrar con Google</button>
-<p style="font-size:12px;margin-bottom:0">Accede con Google para consultar y sincronizar tus ensayos y actos.</p>
+<button class="btn primary" id="signInBtn" type="button">Entrar con Google</button>
+<button class="btn" id="retryConnection" type="button" hidden>Reintentar conexión</button>
+<p class="browser-help">Si estás dentro de ChatGPT, abre este enlace en Safari, Chrome o tu navegador habitual para entrar con Google.</p>
+<a class="browser-link" href="https://rcolomer3.github.io/MiBanda/" target="_blank" rel="noopener noreferrer">https://rcolomer3.github.io/MiBanda/</a>
 </div></div>
 <div class="app" hidden>
 <aside class="sidebar"><div class="brand"><img class="brand-logo" src="./icon-192.png?v=4" alt="" width="39" height="39"><span class="brand-copy">BandApp<small>Control de asistencias</small></span></div><nav class="nav" aria-label="Navegación principal"><button data-page="dashboard" class="active"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 21v-8h6v8"/></svg><span>Resumen</span></button><button data-page="records"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg><span>Ensayos y actos</span></button><button data-page="settings"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h4m4 0h10M3 12h10m4 0h4M3 18h4m4 0h10"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="9" cy="18" r="2"/></svg><span>Ajustes</span></button></nav><div class="sidebar-foot">BandApp · Tu actividad musical</div></aside>
@@ -938,7 +1066,8 @@ select{padding-right:25px;cursor:pointer}
     <select id="typeFilter" hidden aria-label="Filtro interno por tipo"><option value="all">Todos los tipos</option><option value="Ensayo">Solo ensayos</option><option value="Acto">Solo actos</option></select>
     <select id="statusFilter" aria-label="Filtrar asistencia"><option value="all">Todas las asistencias</option><option value="yes">Asistí</option><option value="no">No asistí</option></select></div><div class="history-period"><p class="note" id="recordFilterDescription"></p><button type="button" class="btn sm" id="clearHistoryFilters" hidden>Ver todos</button></div><div class="tablewrap"><table><thead><tr><th>Fecha</th><th>Actividad</th><th>Nombre</th><th>Asistencia</th><th>Acciones</th></tr></thead><tbody id="rows"></tbody></table></div><div id="mobileRecords" class="mobile-record-list" aria-label="Lista de ensayos y actos"></div><div class="empty" id="emptyRecords" hidden>No hay registros con estos filtros.</div></div>
 </section>
-<section id="settings" class="page"><div class="head"><div><h1>Ajustes</h1><p>Sincronización y copias de seguridad.</p></div></div>
+<section id="settings" class="page"><div class="head"><div><h1>Ajustes</h1><p>Apariencia, sincronización y copias de seguridad.</p></div></div>
+<div class="panel"><h2>Apariencia</h2><p class="note">Elige cómo quieres ver BandApp. Tu preferencia se guarda en este dispositivo.</p><div class="field theme-field"><label for="appTheme">Tema de la aplicación</label><select id="appTheme" data-theme-control><option value="system">Según el dispositivo</option><option value="light">Claro</option><option value="dark">Oscuro</option></select></div></div>
 <div class="panel sync-panel">
 <h2 class="settings-heading"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5 20 6v5.5c0 4.5-3.2 7.9-8 10-4.8-2.1-8-5.5-8-10V6l8-3.5z"/><path d="m9 12 2 2 4-4"/></svg><span>Cuenta y sincronización</span></h2>
 <p id="syncStatus" class="sync-state" role="status" data-state="working"><span class="sync-dot" aria-hidden="true"></span><span id="syncStatusText">Comprobando conexión con Firebase…</span></p>
@@ -975,7 +1104,7 @@ select{padding-right:25px;cursor:pointer}
 const KEY='miBandaAsistencias_v1',monthNames=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 const $=id=>document.getElementById(id);const today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
 let records=[];try{const data=JSON.parse(localStorage.getItem(KEY)||'[]');if(Array.isArray(data))records=data.filter(isValidRecord).map(r=>r.status==='just'?{...r,status:'no'}:r)}catch(e){console.warn('Error leyendo datos almacenados',e)}
-let editing=null;let filterYear=new Date().getFullYear().toString();let filterMonth='all';let toastTimeout;
+let editing=null;let filterYear=new Date().getFullYear().toString();let filterMonth='all';let toastTimeout,loadingTimeout;
 function isValidRecord(r){return r&&typeof r.id==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(r.date)&&['Ensayo','Acto'].includes(r.kind)&&typeof r.name==='string'&&['yes','no','just'].includes(r.status)&&(!r.notes||typeof r.notes==='string')}
 let latestSaveRequest=0;
 function save(successMessage='Guardado correctamente'){
@@ -1326,7 +1455,12 @@ $('deleteAll').addEventListener('click',()=>{if(!records.length)return toast('No
 
 /* Bridge with the Firebase module: no remote data is displayed before sign-in. */
 window.miBandaUI={
+ embedded:window.self!==window.top||/ChatGPT/i.test(navigator.userAgent),
  showLoading:message=>{
+  clearTimeout(loadingTimeout);
+  loadingTimeout=setTimeout(()=>{
+    window.miBandaUI.showGate('La conexión está tardando demasiado. Comprueba tu conexión a Internet y vuelve a intentarlo. Si has abierto BandApp en una vista previa, ábrela en el navegador para iniciar sesión con Google.',false);
+  },15000);
   $('bootMessage').textContent=message||'Recuperando tu sesión…';
   $('bootScreen').hidden=false;
   $('authGate').hidden=true;
@@ -1341,14 +1475,19 @@ window.miBandaUI={
   resetForm();render();
  },
  showGate:(message,enabled)=>{
+  clearTimeout(loadingTimeout);
   $('bootScreen').hidden=true;
   $('authMessage').textContent=message||'Accede con Google para sincronizar.';
   $('authGate').hidden=false;
   document.querySelector('.app').hidden=true;
   document.querySelector('.bottomnav').hidden=true;
-  if(enabled!==undefined)$('signInBtn').disabled=!enabled;
+  // El controlador de acceso puede recargar Firebase si la primera carga falló.
+  $('signInBtn').disabled=false;
+  $('signInBtn').hidden=window.miBandaUI.embedded;
+  $('retryConnection').hidden=window.miBandaUI.embedded||enabled!==false;
  },
  showApp:(mode,account)=>{
+  clearTimeout(loadingTimeout);
   $('bootScreen').hidden=true;
   $('authGate').hidden=true;
   document.querySelector('.app').hidden=false;
@@ -1384,5 +1523,66 @@ window.miBandaUI={
 monthNames.forEach((name,i)=>$('month').insertAdjacentHTML('beforeend',`<option value="${i+1}">${name}</option>`));resetForm();render();
 })();
 </script>
-<script type="module" src="./firebase-sync.js?v=20261020-connection5"></script>
+<script>
+// Capturar también fallos en las importaciones remotas del módulo de Firebase.
+// Un <script type="module" src="…"> fallido dejaba el arranque esperando sin fin.
+(()=>{
+const ui=window.miBandaUI,button=document.getElementById('signInBtn'),retry=document.getElementById('retryConnection');
+let loading=null,attempt=0,signingIn=false,retrying=false;
+if(ui.embedded){
+  ui.showGate('Para iniciar sesión con Google, abre BandApp en tu navegador habitual usando el enlace de abajo.',false);
+  return;
+}
+function withConnectionTimeout(task){
+  let timeout;
+  return Promise.race([
+    task,
+    new Promise((_,reject)=>{timeout=setTimeout(()=>reject(new Error('Firebase loading timed out')),15000)})
+  ]).finally(()=>clearTimeout(timeout));
+}
+function loadFirebase(){
+  if(!loading){
+    const current=import('./firebase-sync.js?v=20261031-login2&attempt='+attempt++);
+    loading=current;
+    current.catch(()=>{if(loading===current)loading=null});
+  }
+  return loading;
+}
+function showConnectionError(error){
+  console.error('No se pudo conectar con Firebase:',error);
+  const message=window.location.protocol==='file:'
+    ?'Abre BandApp desde un servidor web para conectar con Firebase. No puede iniciarse abriendo directamente el archivo HTML.'
+    :'No se ha podido conectar con Firebase. Comprueba tu conexión a Internet. Si estás en una vista previa, abre la aplicación en el navegador y vuelve a intentarlo.';
+  ui.showGate(message,false);
+}
+button.addEventListener('click',async()=>{
+  if(signingIn||retrying)return;
+  signingIn=true;
+  button.disabled=true;
+  button.textContent='Conectando con Google…';
+  document.getElementById('authMessage').textContent='Preparando el acceso con Google…';
+  try{
+    const firebase=await withConnectionTimeout(loadFirebase());
+    await firebase.signIn();
+  }catch(error){showConnectionError(error)}
+  finally{
+    signingIn=false;
+    button.disabled=false;
+    button.textContent='Entrar con Google';
+  }
+});
+retry.addEventListener('click',async()=>{
+  if(retrying||signingIn)return;
+  retrying=true;
+  retry.disabled=true;
+  ui.showLoading('Reconectando con Firebase…');
+  try{
+    await withConnectionTimeout(loadFirebase().then(firebase=>firebase.restoreSession()));
+  }catch(error){showConnectionError(error)}
+  finally{retrying=false;retry.disabled=false}
+});
+ui.showLoading();
+loadFirebase().catch(showConnectionError);
+})();
+</script>
 </body></html>

@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import {
   getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup,
-  signInWithRedirect, signOut, setPersistence, browserLocalPersistence
+  signOut, setPersistence, browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 import {
   getFirestore, doc, getDocFromServer, onSnapshot, setDoc, serverTimestamp
@@ -41,6 +41,7 @@ function friendlyError(error) {
   if (code === "failed-precondition" || code === "not-found") return "Comprueba que has creado la base de datos Cloud Firestore en Firebase.";
   if (code === "unavailable") return "No hay conexión con Firestore. Revisa Internet e inténtalo de nuevo.";
   if (code === "auth/popup-closed-by-user" || code === "auth/cancelled-popup-request") return "No has terminado el inicio de sesión.";
+  if (code === "auth/network-request-failed" || code === "auth/internal-error") return "No se ha podido conectar con Google. Comprueba tu conexión y, si estás en una vista previa, abre la aplicación en el navegador.";
   return (error?.message || "Error desconocido") + (code ? " (" + code + ")" : "");
 }
 
@@ -198,8 +199,11 @@ async function verifyConnection() {
 }
 el("checkConnectionBtn").addEventListener("click", verifyConnection);
 
-el("signInBtn").addEventListener("click", async () => {
-  el("signInBtn").disabled = true;
+export async function signIn() {
+  if(ui.embedded){
+    ui.showGate('Abre BandApp en Safari, Chrome o tu navegador habitual para iniciar sesión con Google.',false);
+    return;
+  }
   try {
     if (auth.currentUser) {
       await connect(auth.currentUser);
@@ -208,14 +212,19 @@ el("signInBtn").addEventListener("click", async () => {
     }
   } catch (error) {
     if (error?.code === "auth/popup-blocked" || error?.code === "auth/operation-not-supported-in-this-environment") {
-      try { await signInWithRedirect(auth, provider); return; }
-      catch (redirectError) { error = redirectError; }
+      ui.showGate('Permite las ventanas emergentes para entrar con Google. Si estás dentro de ChatGPT, abre el enlace de BandApp en tu navegador habitual.',true);
+      return;
     }
     ui.showGate(friendlyError(error), true);
-  } finally {
-    el("signInBtn").disabled = false;
   }
-});
+}
+
+// Reintentar no navega ni vuelve a registrar los listeners de autenticación.
+export async function restoreSession() {
+  await auth.authStateReady();
+  if(auth.currentUser)await connect(auth.currentUser);
+  else ui.showGate('Inicia sesión con Google para ver tus ensayos y actos.',true);
+}
 
 el("connectGoogle").addEventListener("click", async () => {
   if (auth.currentUser) await connect(auth.currentUser);
@@ -285,4 +294,4 @@ async function initializeAuth() {
     }
   }, error => ui.showGate("Error al restaurar sesión: " + friendlyError(error), true));
 }
-initializeAuth();
+await initializeAuth();
