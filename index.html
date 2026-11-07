@@ -203,26 +203,7 @@
 .mobile-record-list{display:none}
 @media(max-width:740px){
   #historyPanel .tablewrap{display:none}
-  #historyPanel .mobile-record-list{display:grid;gap:11px;margin-top:15px}
-  .mobile-record-card{display:flex;align-items:stretch;gap:12px;min-width:0;padding:14px;background:#fff;border:1px solid #e6ebf3;border-radius:17px;box-shadow:0 3px 12px rgba(24,43,77,.035)}
-  .mobile-record-card.kind-ensayo{border-left:3px solid #60a5fa}
-  .mobile-record-card.kind-acto{border-left:3px solid #a78bfa}
-  .mobile-record-date{display:flex;flex-direction:column;align-items:center;justify-content:center;align-self:flex-start;flex-shrink:0;width:51px;min-height:66px;padding:7px 3px;background:#f1f5fb;border-radius:12px;color:#334155}
-  .mobile-record-date .day{font-size:23px;font-weight:800;letter-spacing:-.8px;line-height:1.05;font-variant-numeric:tabular-nums}
-  .mobile-record-date .month{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.45px;margin-top:4px}
-  .mobile-record-date .year{font-size:10px;color:#64748b;margin-top:2px}
-  .mobile-record-body{min-width:0;flex:1}
-  .mobile-record-meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin-bottom:8px}
-  .mobile-record-kind{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:750;color:#4b6590}
-  .mobile-record-card.kind-acto .mobile-record-kind{color:#7c3aed}
-  .mobile-record-meta .pill{font-size:10px;padding:5px 8px}
-  .mobile-record-name{display:block;color:#192638;font-size:14px;font-weight:770;line-height:1.38;overflow-wrap:anywhere}
-  .mobile-record-notes{display:block;margin-top:5px;font-size:12px;line-height:1.45;color:#64748b;overflow-wrap:anywhere;white-space:pre-wrap}
-  .mobile-record-actions{display:flex;gap:8px;margin-top:12px;padding-top:10px;border-top:1px solid #f0f3f8}
-  .mobile-record-actions .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:37px;padding:8px 12px;font-size:12px;border-radius:11px;font-weight:750;background:#f6f8fc}
-  .mobile-record-actions .btn:first-child{color:#1d5dbe}
-  .mobile-record-actions .btn.danger{background:#fff3f4;color:#b42336;border-color:#ffe2e5}
-  .mobile-record-actions .action-icon{width:15px;height:15px;flex-shrink:0}
+  #historyPanel .mobile-record-list{display:grid}
   #historyPanel .empty{padding:25px 12px}
 }
 
@@ -695,22 +676,6 @@ select{padding-right:25px;cursor:pointer}
  .kind-tab{font-size:12px;min-height:46px;gap:5px;padding:8px 4px}
  .kind-tab-count{font-size:10px}
  #historyPanel .toolbar{grid-template-columns:minmax(0,1fr);gap:10px}
- #historyPanel .mobile-record-list{gap:12px;margin-top:14px}
- .mobile-record-card{
-   background:linear-gradient(140deg,#fff,#fbfdff);
-   border:1px solid #e2eaf4;border-radius:19px;
-   box-shadow:0 5px 16px rgba(29,48,80,.04);
-   padding:14px;gap:12px;
- }
- .mobile-record-card.kind-ensayo{border-left:1px solid #e2eaf4}
- .mobile-record-card.kind-acto{border-left:1px solid #e2eaf4}
- .mobile-record-card.kind-ensayo .mobile-record-date{background:linear-gradient(140deg,#e8f2ff,#f2f8ff);color:#276dc6}
- .mobile-record-card.kind-acto .mobile-record-date{background:linear-gradient(140deg,#f2edff,#f8f5ff);color:#7e58b9}
- .mobile-record-date{width:53px;min-height:66px;border-radius:14px}
- .mobile-record-name{color:#26354b;font-weight:760}
- .mobile-record-actions{border-top-color:#edf1f7;gap:9px}
- .mobile-record-actions .btn{border-radius:12px;min-height:39px;padding:8px 11px;background:#f5f8fd}
- .mobile-record-actions .btn.danger{background:#fff1f3}
 
  .toast{bottom:calc(106px + env(safe-area-inset-bottom,0px));left:16px;right:16px}
  #settings>.panel{padding:19px;margin-bottom:13px}
@@ -724,14 +689,13 @@ select{padding-right:25px;cursor:pointer}
  .filters .field{flex:1 1 115px}
 
  .kind-tab{font-size:11px}
- .mobile-record-card{padding:12px}
 }
 @media(prefers-reduced-motion:reduce){
  html{scroll-behavior:auto}
  .btn,.kind-tab,.sidebar .nav button,input,select,textarea{transition:none!important}
 }
 @media(prefers-contrast:more){
- .panel,.card,.mobile-record-card,input,select,textarea{border-color:#bac9db}
+ .panel,.card,.record-stack,.history-controls,input,select,textarea{border-color:#bac9db}
 
 }
 @media(prefers-reduced-transparency:reduce){
@@ -781,28 +745,12 @@ select{padding-right:25px;cursor:pointer}
 .recent-split .recent-item .record-status-icon{flex-basis:30px;width:30px;height:30px}
 .recent-split .recent-item .record-status-icon svg{width:18px;height:18px}
 @media(max-width:740px){
- #historyPanel .mobile-record-list{display:grid;gap:11px;margin-top:14px}
- #historyPanel .mobile-record-card{display:block;padding:13px;background:linear-gradient(140deg,#fff,#fcfdff);border:1px solid #e2eaf5;border-radius:19px;box-shadow:0 4px 16px rgba(25,55,100,.038)}
- .mobile-record-card .record-glance-head{gap:11px}
- .mobile-record-card .date-tile{flex-basis:55px;width:55px;min-height:65px}
- .mobile-record-card .record-glance-name{font-size:14px}
- .mobile-record-card .record-glance-meta{font-size:11.5px}
- .mobile-record-card .record-status-icon{flex-basis:32px;width:32px;height:32px}
- #historyPanel .mobile-record-card .mobile-record-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:13px;padding-top:12px;border-top:1px solid #edf1f7}
- #historyPanel .mobile-record-actions .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:39px;padding:8px 12px;border-radius:12px;font-size:12px;color:#236fc9;background:#f3f7fc;border-color:#e6eef8;box-shadow:none}
- #historyPanel .mobile-record-actions .btn.danger{background:#fff1f3;border-color:#ffe3e8;color:#c64457}
- #historyPanel .mobile-record-actions .action-icon{width:15px;height:15px}
  .recent-split .recent{padding:18px}
  .recent-split .recent-item{padding:13px 0}
  .recent-split .recent-item:first-child{padding-top:3px}
  .recent-split .recent-item:last-child{padding-bottom:3px}
 }
 @media(max-width:380px){
- #historyPanel .mobile-record-card{padding:11px}
- .mobile-record-card .record-glance-head{gap:9px}
- .mobile-record-card .date-tile{flex-basis:51px;width:51px;min-height:61px;padding:6px 3px}
- .mobile-record-card .date-tile strong{font-size:22px}
- .mobile-record-card .record-status-icon{flex-basis:29px;width:29px;height:29px}
  .recent-split .recent-item .record-glance-head{gap:10px}
 }
 
@@ -874,12 +822,6 @@ html[data-theme="dark"] #historyPanel th{background:var(--bg);color:var(--muted)
 html[data-theme="dark"] #historyPanel td{color:var(--text);border-color:var(--line)}
 html[data-theme="dark"] #historyPanel td strong{color:var(--text)}
 html[data-theme="dark"] #historyPanel tbody tr:hover td{background:var(--dark-raised)}
-html[data-theme="dark"] #historyPanel .mobile-record-card{background:var(--panel);border-color:var(--line)}
-html[data-theme="dark"] #historyPanel .mobile-record-actions{border-color:var(--line)}
-html[data-theme="dark"] #historyPanel .mobile-record-actions .btn{background:var(--control);border-color:var(--control-border);color:#f0f5ff}
-html[data-theme="dark"] #historyPanel .mobile-record-actions .btn:hover{background:#31435d}
-html[data-theme="dark"] #historyPanel .mobile-record-actions .btn.danger{background:#442633;border-color:#aa6175;color:#ffc0cb}
-html[data-theme="dark"] #historyPanel .mobile-record-actions .btn.danger:hover{background:#583042}
 html[data-theme="dark"] #settings .settings-heading .ui-icon{background:var(--dark-blue);border-color:var(--line);color:var(--blue)}
 html[data-theme="dark"] #settings .sync-panel+.panel .settings-heading .ui-icon{background:var(--dark-green);border-color:#2e5347;color:var(--green)}
 html[data-theme="dark"] #settings>.panel:last-child .settings-heading .ui-icon{background:var(--dark-red);border-color:#704051;color:var(--red)}
@@ -946,6 +888,111 @@ html[data-theme="dark"] :is(.toast,.graph-tooltip){background:#223149;border-col
 @media(prefers-reduced-transparency:reduce){
   html[data-theme="dark"] :is(.sidebar,.bottomnav,.auth-card,.account-pill){background:var(--panel)}
 }
+/* Inicio e Historial en móvil */
+#attendanceProgress,.mobile-recent,.history-add,.history-count,.history-mobile-title{display:none}
+#historyPanel .section-head h2 span{color:inherit;font:inherit}
+@media(max-width:740px){
+  html[data-theme="dark"]{
+    --bg:#0e1321;--panel:#1b2434;--line:#293548;--text:#f0f4fa;
+    --green:#4ade80;--red:#ff8088;
+  }
+  html[data-theme="dark"] body{background:var(--bg)}
+  @media(prefers-contrast:more){html[data-theme="dark"]{--line:#71849e}}
+  .content,.content.record-form-open{padding-bottom:calc(90px + env(safe-area-inset-bottom,0px))}
+  :is(#dashboard,#records)>.head h1{font-size:30px}
+  :is(#dashboard,#records)>.head p{font-size:14px}
+
+  #dashboard .filters{
+    display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr) auto;gap:8px;
+  }
+  #dashboard .filters select{padding-inline:9px}
+  #dashboard #clearFilters{padding-inline:10px}
+  #dashboard .stats{margin:0 0 12px;gap:10px}
+  #dashboard .stat-card{
+    display:grid;grid-template-rows:auto;gap:5px;min-height:0;padding:12px 14px;border-radius:17px;
+    background:var(--panel);border-color:var(--line);box-shadow:none;
+  }
+  html[data-theme="dark"] #dashboard .stat-card{box-shadow:none}
+  #dashboard .stat-card :is(.stat-label,.detail){color:var(--muted)}
+  #dashboard .stat-card .value{font-size:26px;color:var(--text)}
+  #dashboard .stat-card.actos .value{color:var(--green)}
+  #dashboard .stat-card.ensayos{display:none}
+  #dashboard .stat-card.porcentaje{
+    grid-column:1/-1;grid-row:1;padding:16px;
+    background:linear-gradient(135deg,#e6f0ff,var(--panel) 85%);
+  }
+  html[data-theme="dark"] #dashboard .stat-card.porcentaje{
+    background:linear-gradient(135deg,#1d3658,#1a2437 85%);border-color:#304762;
+  }
+  #dashboard .stat-card.porcentaje .value{font-size:45px;letter-spacing:-1.7px}
+  #attendanceProgress:not([hidden]){
+    display:block;width:100%;height:6px;margin:4px 0;appearance:none;
+    border:0;border-radius:10px;background:var(--line);accent-color:var(--blue);
+  }
+  #attendanceProgress::-webkit-progress-bar{background:var(--line);border-radius:10px}
+  #attendanceProgress::-webkit-progress-value{background:var(--blue);border-radius:10px}
+  #attendanceProgress::-moz-progress-bar{background:var(--blue);border-radius:10px}
+  #dashboard .attendance-trend{margin:0}
+  #dashboard .recent-split{display:none}
+  .mobile-recent{display:block;margin-top:18px}
+  .mobile-recent h2{font-size:17px;margin:0 3px 10px}
+
+  #records[data-mobile-view="history"]>.head{align-items:stretch;flex-direction:column}
+  #records[data-mobile-view="history"] .history-add{display:block;width:100%;border-radius:12px}
+  html[data-theme="dark"] #records .history-add{background:#e0e6ef;color:#101727;border-color:#e0e6ef}
+  #records[data-mobile-view="history"] #historyPanel{padding:0;background:none;border:0;box-shadow:none}
+  .history-controls,.record-stack{border:1px solid var(--line);border-radius:17px;background:var(--panel)}
+  .history-controls{padding:14px}
+  html[data-theme="dark"] .history-controls,html[data-theme="dark"] #dashboard .attendance-trend{background:#151d2d}
+  #historyPanel .history-controls .section-head{margin:0 0 10px}
+  .history-desktop-title{display:none}
+  .history-mobile-title{display:inline}
+  #historyPanel .record-kinds{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px;padding:0;background:none;border:0}
+  #historyPanel .kind-tab{flex:0 1 auto;min-height:40px;padding:6px 10px;border-radius:20px}
+  #historyPanel .toolbar{margin:0;gap:8px}
+  #historyPanel .toolbar input{font-size:16px}
+  #historyPanel .history-period{margin:8px 0 0}
+  .history-count{display:block;font-size:17px;font-weight:750;margin:18px 3px 0}
+  #historyPanel .mobile-record-list{gap:14px;margin-top:10px}
+  .record-group h3{margin:0 4px 7px;color:var(--muted);font-size:12px;font-weight:750}
+  .record-stack{overflow:hidden}
+  .record-stack .empty{margin:0}
+  .compact-record{
+    display:grid;grid-template-columns:36px minmax(0,1fr) auto 9px;gap:9px;align-items:center;
+    width:100%;min-height:62px;padding:10px 11px;border:0;background:none;color:var(--text);
+    text-align:left;touch-action:manipulation;
+  }
+  .compact-record+.compact-record{border-top:1px solid var(--line)}
+  .compact-record:hover{background:var(--bg)}
+  .compact-record:focus-visible{outline:2px solid var(--blue);outline-offset:-3px}
+  .compact-icon{
+    display:grid;place-items:center;width:36px;height:36px;border-radius:50%;
+    background:#e8f2ff;color:#276dc6;
+  }
+  .compact-record.is-act .compact-icon{background:#f2edff;color:#7047a8}
+  html[data-theme="dark"] .compact-icon{background:#233b5b;color:#67afff}
+  html[data-theme="dark"] .compact-record.is-act .compact-icon{background:#383051;color:#c4a4ff}
+  .compact-icon svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .compact-description strong{display:block;font-size:14px;overflow-wrap:anywhere}
+  .compact-description small{display:block;margin-top:3px;color:var(--muted);font-size:12px}
+  .compact-status{font-size:12px;font-weight:750}
+  .compact-status.absent{color:var(--red)}
+  .compact-arrow{color:var(--muted);font-size:19px}
+
+  .bottomnav{
+    inset:auto max(8px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px));
+    grid-template-columns:repeat(2,minmax(0,1fr)) 58px minmax(0,1fr);
+    height:63px;padding:4px 7px;border:1px solid var(--line);border-radius:36px;
+  }
+  .bottomnav button{height:52px;border-radius:26px;gap:3px}
+  .bottomnav .add-action{position:static;justify-self:center;width:46px;height:46px;border-radius:50%}
+  html[data-theme="dark"] .bottomnav{background:#171f30;border-color:#3c4a62}
+  html[data-theme="dark"] .bottomnav button:not(.add-action)[aria-current="page"]{background:#2a3345;border-color:#3b4454;color:#fff}
+  html[data-theme="dark"] .bottomnav .add-action{background:#2563eb;border-color:#2563eb}
+  html[data-theme="dark"] .bottomnav .add-action:hover{background:#1d4ed8;border-color:#1d4ed8}
+  .bottomnav .add-action:disabled{opacity:.45;cursor:default}
+  .toast{bottom:calc(82px + env(safe-area-inset-bottom,0px))}
+}
 </style>
 </head>
 <body>
@@ -962,15 +1009,13 @@ html[data-theme="dark"] :is(.toast,.graph-tooltip){background:#223149;border-col
 <aside class="sidebar"><div class="brand"><img class="brand-logo" src="./icon-192.png?v=4" alt="" width="39" height="39"><span class="brand-copy">BandApp<small>Control de asistencias</small></span></div><nav class="nav" aria-label="Navegación principal"><button data-page="dashboard" class="active"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 21v-8h6v8"/></svg><span>Resumen</span></button><button data-page="records"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg><span>Ensayos y actos</span></button><button data-page="settings"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h4m4 0h10M3 12h10m4 0h4M3 18h4m4 0h10"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="9" cy="18" r="2"/></svg><span>Ajustes</span></button></nav><div class="sidebar-foot">BandApp · Tu actividad musical</div></aside>
 <main class="content">
 <section id="dashboard" class="page active">
-<div class="head"><div><h1>BandApp</h1><p>Consulta tu actividad en la banda de un vistazo.</p></div><button class="btn primary" id="quickAdd"><svg class="ui-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>Añadir registro</span></button></div>
+<div class="head"><div><h1>Inicio</h1><p>Tu actividad en la banda de un vistazo.</p></div><button class="btn primary" id="quickAdd"><svg class="ui-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>Añadir registro</span></button></div>
 <div class="filters"><div class="field"><label for="year">Año</label><select id="year"></select></div><div class="field"><label for="month">Mes</label><select id="month"><option value="all">Todo el año</option></select></div><button class="btn" id="clearFilters">Ver todo</button></div>
 <div class="stats">
 <div class="card stat-card ensayos"><div class="stat-top"><span class="stat-label">Ensayos registrados</span></div><div class="value" id="totalRehearsals">0</div><div class="detail" id="rehearsalDetail">Sin ensayos en el periodo</div></div>
 <div class="card stat-card asistidos"><div class="stat-top"><span class="stat-label">Ensayos asistidos</span></div><div class="value" id="attendedRehearsals">0</div><div class="detail" id="missedDetail">0 faltas</div></div>
 <div class="card stat-card actos"><div class="stat-top"><span class="stat-label">Actos realizados</span></div><div class="value" id="actsAttended">0</div><div class="detail" id="actsDetail">0 actos registrados</div></div>
-<div class="card stat-card porcentaje"><div class="stat-top"><span class="stat-label">Asistencia a ensayos</span></div><div class="value" id="attendanceRate">—</div><div class="detail">Sobre todos los ensayos registrados</div></div>
-</div>
-<div class="layout"><div class="panel"><div class="section-head"><h2>Actividad por meses</h2><span id="chartYear"></span></div><div class="bars" id="chart"></div><div class="months" id="monthLabels"></div><div class="legend"><span><i style="background:#2563eb"></i> Ensayos asistidos</span><span><i style="background:#22a06b"></i> Actos realizados</span></div></div>
+<div class="card stat-card porcentaje"><div class="stat-top"><span class="stat-label">Asistencia a ensayos</span></div><div class="value" id="attendanceRate">—</div><progress id="attendanceProgress" max="100" aria-label="Asistencia a ensayos" hidden></progress><div class="detail" id="attendanceDetail">Sin ensayos en el periodo</div></div>
 </div>
 <div class="panel attendance-trend">
   <div class="section-head trend-heading">
@@ -986,6 +1031,10 @@ html[data-theme="dark"] :is(.toast,.graph-tooltip){background:#223149;border-col
   </div>
   <p id="trendSummary" class="trend-summary" role="status"></p>
 </div>
+<div class="mobile-recent">
+  <h2>Actividad reciente</h2>
+  <div id="mobileRecentRecords" class="record-stack"></div>
+</div>
 <div class="recent-split">
   <div class="panel recent">
     <div class="section-head"><h2>Últimos ensayos</h2><button type="button" class="btn sm recent-more" data-recent-kind="Ensayo" aria-label="Ver todos los ensayos">Ver todos <svg class="ui-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button></div>
@@ -996,19 +1045,21 @@ html[data-theme="dark"] :is(.toast,.graph-tooltip){background:#223149;border-col
     <div id="recentActos"></div>
   </div>
 </div>
+<div class="layout"><div class="panel"><div class="section-head"><h2>Actividad por meses</h2><span id="chartYear"></span></div><div class="bars" id="chart"></div><div class="months" id="monthLabels"></div><div class="legend"><span><i style="background:#2563eb"></i> Ensayos asistidos</span><span><i style="background:#22a06b"></i> Actos realizados</span></div></div>
+</div>
 </section>
-<section id="records" class="page" data-mobile-view="history"><div class="head"><div><h1 id="recordsHeading">Ensayos y actos</h1><p id="recordsIntro">Consulta tu historial o añade un ensayo o acto.</p></div></div>
-<div class="panel" id="formPanel"><div class="section-head"><h2 id="formTitle">Nuevo registro</h2></div><form id="recordForm"><div class="form-grid"><div class="field"><label for="date">Fecha *</label><div class="date-input-frame"><input required id="date" type="date"></div></div><div class="field"><label for="kind">Tipo *</label><select id="kind"><option value="Ensayo">Ensayo</option><option value="Acto">Acto</option></select></div><div class="field"><label for="name">Nombre / descripción *</label><input id="name" maxlength="120" required placeholder="Ej.: Ensayo general"></div><div class="field"><label for="status">Asistencia *</label><select id="status"><option value="yes">✅ Asistí</option><option value="no">❌ No asistí</option></select></div><div class="field wide"><label for="notes">Notas (opcional)</label><textarea id="notes" rows="2" maxlength="500" placeholder="Lugar, repertorio, observaciones..."></textarea></div></div><div class="form-actions"><button class="btn primary" type="submit" id="saveBtn">Guardar registro</button><button class="btn" type="button" id="cancelEdit" hidden>Cancelar edición</button></div></form></div>
+<section id="records" class="page" data-mobile-view="history"><div class="head"><div><h1 id="recordsHeading">Ensayos y actos</h1><p id="recordsIntro">Consulta tu historial o añade un ensayo o acto.</p></div><button type="button" class="btn history-add" id="historyAdd">+ Añadir registro</button></div>
+<div class="panel" id="formPanel"><div class="section-head"><h2 id="formTitle">Nuevo registro</h2></div><form id="recordForm"><div class="form-grid"><div class="field"><label for="date">Fecha *</label><div class="date-input-frame"><input required id="date" type="date"></div></div><div class="field"><label for="kind">Tipo *</label><select id="kind"><option value="Ensayo">Ensayo</option><option value="Acto">Acto</option></select></div><div class="field"><label for="name">Nombre / descripción *</label><input id="name" maxlength="120" required placeholder="Ej.: Ensayo general"></div><div class="field"><label for="status">Asistencia *</label><select id="status"><option value="yes">✅ Asistí</option><option value="no">❌ No asistí</option></select></div><div class="field wide"><label for="notes">Notas (opcional)</label><textarea id="notes" rows="2" maxlength="500" placeholder="Lugar, repertorio, observaciones..."></textarea></div></div><div class="form-actions"><button class="btn primary" type="submit" id="saveBtn">Guardar registro</button><button class="btn" type="button" id="cancelEdit" hidden>Cancelar edición</button><button type="button" class="btn danger" id="deleteEdited" hidden>Eliminar registro</button></div></form></div>
 <div class="panel" id="historyPanel">
-  <div class="section-head"><h2>Historial</h2><button class="btn sm" id="exportCsv">Exportar CSV</button></div>
+  <div class="history-controls"><div class="section-head"><h2><span class="history-desktop-title">Historial</span><span class="history-mobile-title">Buscar y filtrar</span></h2><button class="btn sm" id="exportCsv">Exportar CSV</button></div>
   <div class="record-kinds" role="group" aria-label="Ver registros por tipo">
     <button type="button" class="kind-tab active" data-kind-tab="all" aria-pressed="true"><span>Todos</span><span class="kind-tab-count" id="countAll">0</span></button>
     <button type="button" class="kind-tab" data-kind-tab="Ensayo" aria-pressed="false"><span>Ensayos</span><span class="kind-tab-count" id="countEnsayos">0</span></button>
     <button type="button" class="kind-tab" data-kind-tab="Acto" aria-pressed="false"><span>Actos</span><span class="kind-tab-count" id="countActos">0</span></button>
   </div>
-  <div class="toolbar"><input id="search" placeholder="Buscar ensayo, acto o notas..." aria-label="Buscar">
+  <div class="toolbar"><input id="search" type="search" placeholder="Buscar por nombre, tipo o notas" aria-label="Buscar">
     <select id="typeFilter" hidden aria-label="Filtro interno por tipo"><option value="all">Todos los tipos</option><option value="Ensayo">Solo ensayos</option><option value="Acto">Solo actos</option></select>
-    <select id="statusFilter" aria-label="Filtrar asistencia"><option value="all">Todas las asistencias</option><option value="yes">Asistí</option><option value="no">No asistí</option></select></div><div class="history-period"><p class="note" id="recordFilterDescription"></p><button type="button" class="btn sm" id="clearHistoryFilters" hidden>Ver todos</button></div><div class="tablewrap"><table><thead><tr><th>Fecha</th><th>Actividad</th><th>Nombre</th><th>Asistencia</th><th>Acciones</th></tr></thead><tbody id="rows"></tbody></table></div><div id="mobileRecords" class="mobile-record-list" aria-label="Lista de ensayos y actos"></div><div class="empty" id="emptyRecords" hidden>No hay registros con estos filtros.</div></div>
+    <select id="statusFilter" aria-label="Filtrar asistencia"><option value="all">Todas las asistencias</option><option value="yes">Asistí</option><option value="no">No asistí</option></select></div><div class="history-period"><p class="note" id="recordFilterDescription"></p><button type="button" class="btn sm" id="clearHistoryFilters" hidden>Ver todos</button></div></div><p class="history-count" id="historyCount" role="status"></p><div class="tablewrap"><table><thead><tr><th>Fecha</th><th>Actividad</th><th>Nombre</th><th>Asistencia</th><th>Acciones</th></tr></thead><tbody id="rows"></tbody></table></div><div id="mobileRecords" class="mobile-record-list" aria-label="Lista de ensayos y actos"></div><div class="empty" id="emptyRecords" hidden>No hay registros con estos filtros.</div></div>
 </section>
 <section id="settings" class="page"><div class="head"><div><h1>Ajustes</h1><p>Apariencia, sincronización y copias de seguridad.</p></div></div>
 <div class="panel"><h2>Apariencia</h2><p class="note">Elige cómo quieres ver BandApp. Tu preferencia se guarda en este dispositivo.</p><div class="field theme-field"><label for="appTheme">Tema de la aplicación</label><select id="appTheme" data-theme-control><option value="system">Según el dispositivo</option><option value="light">Claro</option><option value="dark">Oscuro</option></select></div></div>
@@ -1027,7 +1078,7 @@ html[data-theme="dark"] :is(.toast,.graph-tooltip){background:#223149;border-col
 </main></div>
 <nav class="bottomnav" hidden aria-label="Navegación móvil">
   <button type="button" class="active" data-page="dashboard" aria-label="Ir al inicio" aria-current="page"><svg class="dock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 21v-8h6v8"/></svg><span class="dock-label">Inicio</span></button>
-  <button type="button" data-page="records" aria-label="Ver registros de ensayos y actos"><svg class="dock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg><span class="dock-label">Registros</span></button>
+  <button type="button" data-page="records" aria-label="Ver registros de ensayos y actos"><svg class="dock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg><span class="dock-label">Historial</span></button>
   <button type="button" class="add-action" id="mobileAdd" aria-label="Añadir un ensayo o acto" aria-controls="formPanel"><svg class="dock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span class="dock-label">Añadir</span></button>
   <button type="button" data-page="settings" aria-label="Abrir ajustes"><svg class="dock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h4m4 0h10M3 12h10m4 0h4M3 18h4m4 0h10"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="9" cy="18" r="2"/></svg><span class="dock-label">Ajustes</span></button>
 </nav><div class="graph-tooltip" id="graphTooltip" role="tooltip" hidden></div><div class="toast" id="toast" role="status"></div>
@@ -1112,14 +1163,14 @@ function setMobileRecordsView(view){
   const mobile=window.matchMedia('(max-width:740px)').matches;
   const page=$('records');
   page.dataset.mobileView=view;
-  $('recordsHeading').textContent=mobile?(view==='form'?(editing?'Editar registro':'Nuevo registro'):'Mis registros'):'Ensayos y actos';
-  $('recordsIntro').textContent=mobile?(view==='form'?'Registra un ensayo o acto y marca tu asistencia.':'Consulta los ensayos y actos que has registrado.'):'Consulta tu historial o añade un ensayo o acto.';
+  $('recordsHeading').textContent=mobile?(view==='form'?(editing?'Editar registro':'Nuevo registro'):'Historial'):'Ensayos y actos';
+  $('recordsIntro').textContent=mobile?(view==='form'?'Registra un ensayo o acto y marca tu asistencia.':'Consulta tus ensayos y actos.'):'Consulta tu historial o añade un ensayo o acto.';
   const isForm=mobile&&view==='form'&&page.classList.contains('active');
+  $('deleteEdited').hidden=!isForm||!editing;
   document.querySelector('.content').classList.toggle('record-form-open',isForm);
   const recordTab=document.querySelector('.bottomnav [data-page="records"]');
   const addTab=$('mobileAdd');
-  // Al redactar ya no hace falta Añadir: se oculta para no tapar el formulario.
-  addTab.hidden=isForm;
+  addTab.disabled=isForm;
   addTab.removeAttribute('aria-current');
   recordTab.classList.toggle('active',page.classList.contains('active'));
   if(page.classList.contains('active'))recordTab.setAttribute('aria-current','page');
@@ -1143,7 +1194,12 @@ function initYears(){const years=new Set(records.map(r=>r.date.slice(0,4)));year
 function subset(){return records.filter(r=>(filterYear==='all'||r.date.slice(0,4)===filterYear)&&(filterMonth==='all'||Number(r.date.slice(5,7))===Number(filterMonth)))}
 function ordered(arr){return [...arr].sort((a,b)=>b.date.localeCompare(a.date)||b.id.localeCompare(a.id))}
 function renderDashboard(){initYears();$('month').value=filterMonth;const data=subset(),ensayos=data.filter(r=>r.kind==='Ensayo'),acts=data.filter(r=>r.kind==='Acto'),yes=ensayos.filter(r=>r.status==='yes').length,no=ensayos.filter(r=>r.status==='no').length,actsYes=acts.filter(r=>r.status==='yes').length,pct=ensayos.length?Math.round(100*yes/ensayos.length):null;
-$('totalRehearsals').textContent=ensayos.length.toLocaleString('es-ES');$('attendedRehearsals').textContent=yes.toLocaleString('es-ES');$('actsAttended').textContent=actsYes.toLocaleString('es-ES');$('attendanceRate').textContent=pct===null?'—':`${pct} %`;$('rehearsalDetail').textContent=ensayos.length?`Último: ${fmtDate(ordered(ensayos)[0].date)}`:'Sin ensayos en el periodo';$('missedDetail').textContent=`${no} faltas en total`;$('actsDetail').textContent=actsYes?`Último: ${fmtDate(ordered(acts.filter(r=>r.status==='yes'))[0].date)}`:'Sin actos en el periodo';
+$('totalRehearsals').textContent=ensayos.length.toLocaleString('es-ES');$('attendedRehearsals').textContent=yes.toLocaleString('es-ES');$('actsAttended').textContent=actsYes.toLocaleString('es-ES');$('attendanceRate').textContent=pct===null?'—':`${pct} %`;$('rehearsalDetail').textContent=ensayos.length?`Último: ${fmtDate(ordered(ensayos)[0].date)}`:'Sin ensayos en el periodo';$('missedDetail').textContent=no===1?'1 falta en total':`${no} faltas en total`;$('actsDetail').textContent=actsYes?`Último: ${fmtDate(ordered(acts.filter(r=>r.status==='yes'))[0].date)}`:'Sin actos en el periodo';
+
+const progress=$('attendanceProgress');
+progress.hidden=pct===null;
+progress.value=pct??0;
+$('attendanceDetail').textContent=ensayos.length?`${yes.toLocaleString('es-ES')} de ${ensayos.length.toLocaleString('es-ES')} ensayos registrados`:'Sin ensayos en el periodo';
 
 hideGraphTooltip();
 const chartData=filterYear==='all'?data:records.filter(r=>r.date.slice(0,4)===filterYear);const buckets=Array.from({length:12},(_,m)=>{const list=chartData.filter(r=>Number(r.date.slice(5,7))===m+1);return {ensayos:list.filter(r=>r.kind==='Ensayo'&&r.status==='yes').length,actos:list.filter(r=>r.kind==='Acto'&&r.status==='yes').length}});const max=Math.max(1,...buckets.flatMap(b=>[b.ensayos,b.actos]));$('chartYear').textContent=filterYear==='all'?'Todos los años (agrupado por mes)':filterYear+(filterMonth==='all'?'':` · ${monthNames[Number(filterMonth)-1]} seleccionado`);
@@ -1156,6 +1212,9 @@ const makeRecent=(kind,target)=>{
 };
 makeRecent('Ensayo','recentEnsayos');
 makeRecent('Acto','recentActos');
+$('mobileRecentRecords').innerHTML=data.length
+  ?ordered(data).slice(0,4).map(r=>compactRecord(r,fmtDate(r.date))).join('')
+  :'<p class="empty">No hay actividad en este periodo.</p>';
 }
 function renderTrend(){
   // When "Todos los años" is selected, each point groups the same calendar
@@ -1228,17 +1287,33 @@ function recordStatusIcon(r){
   const label=isAct?'Acto realizado':attended?'Asistí':'No asistí';
   return `<span class="record-status-icon ${style}" role="img" aria-label="${label}"><svg viewBox="0 0 24 24" aria-hidden="true">${path}</svg></span>`;
 }
-function recordGlance(r,withNotes=false){
+function recordGlance(r){
   const month=monthNames[Number(r.date.slice(5,7))-1]||'Mes';
   return `<div class="record-glance-head">
     <div class="date-tile" aria-hidden="true"><strong>${r.date.slice(8,10)}</strong><span>${month.slice(0,3)}</span><small>${r.date.slice(0,4)}</small></div>
     <div class="record-glance-body">
       <strong class="record-glance-name">${escapeHtml(r.name)}</strong>
       <span class="record-glance-meta">${r.kind} · ${weekdayShort(r.date)}</span>
-      ${withNotes&&r.notes?`<span class="record-glance-notes">${escapeHtml(r.notes)}</span>`:''}
     </div>
     ${recordStatusIcon(r)}
   </div>`;
+}
+const historyDateFormat=new Intl.DateTimeFormat('es-ES',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'});
+function historyDate(iso){
+  const date=new Date(iso+'T00:00:00Z');
+  return Number.isNaN(date.getTime())?fmtDate(iso):historyDateFormat.format(date);
+}
+function compactRecord(r,dateLabel=''){
+  const act=r.kind==='Acto';
+  const icon=act
+    ?'<path d="M5 21V4m0 1c5-5 9 4 14 0v10c-5 4-9-5-14 0"/>'
+    :'<path d="M9 18V5l11-2v13M9 9l11-2"/><ellipse cx="6" cy="18" rx="3" ry="2"/><ellipse cx="17" cy="16" rx="3" ry="2"/>';
+  return `<button type="button" class="compact-record ${act?'is-act':''}" data-edit="${escapeHtml(r.id)}">
+    <span class="compact-icon" aria-hidden="true"><svg viewBox="0 0 24 24">${icon}</svg></span>
+    <span class="compact-description"><strong>${escapeHtml(r.name)}</strong><small>${r.kind}${dateLabel?' · '+dateLabel:''}</small></span>
+    <span class="compact-status ${r.status==='yes'?'green':'absent'}">${labelStatus(r.status)}</span>
+    <span class="compact-arrow" aria-hidden="true">›</span>
+  </button>`;
 }
 function renderTable(){
   const available=historyCandidates();
@@ -1254,22 +1329,21 @@ function renderTable(){
   $('recordFilterDescription').textContent=filterYear==='all'?'Mostrando todos los años':`Mostrando ${filterMonth==='all'?'todo el año':monthNames[Number(filterMonth)-1]+' de'} ${filterYear}`;
   $('clearHistoryFilters').hidden=filterYear==='all'&&filterMonth==='all'&&$('typeFilter').value==='all'&&$('statusFilter').value==='all'&&!$('search').value.trim();
   $('rows').innerHTML=list.map(r=>`<tr><td>${fmtDate(r.date)}</td><td>${r.kind}</td><td><strong>${escapeHtml(r.name)}</strong>${r.notes?`<div class="muted" style="font-size:12px;margin-top:3px">${escapeHtml(r.notes)}</div>`:''}</td><td>${pill(r.status)}</td><td><div class="row-actions"><button class="btn sm" data-edit="${escapeHtml(r.id)}" aria-label="Editar registro">Editar</button><button class="btn sm danger" data-delete="${escapeHtml(r.id)}" aria-label="Eliminar registro">Eliminar</button></div></td></tr>`).join('');
-  const editIcon='<svg class="action-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L9 17l-4 1 1-4z"/></svg>';
-  const deleteIcon='<svg class="action-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>';
-  $('mobileRecords').innerHTML=list.map(r=>{
-    const label=`${r.kind} del ${fmtDate(r.date)}`;
-    return `<article class="mobile-record-card ${r.kind==='Acto'?'kind-acto':'kind-ensayo'}" aria-label="${escapeHtml(label)}">
-      ${recordGlance(r,true)}
-      <div class="mobile-record-actions">
-        <button type="button" class="btn" data-edit="${escapeHtml(r.id)}" aria-label="Editar ${escapeHtml(r.name)}">${editIcon} Editar</button>
-        <button type="button" class="btn danger" data-delete="${escapeHtml(r.id)}" aria-label="Eliminar ${escapeHtml(r.name)}">${deleteIcon} Eliminar</button>
-      </div>
-    </article>`;
-  }).join('');
+  const groups=new Map();
+  for(const record of list){
+    if(!groups.has(record.date))groups.set(record.date,[]);
+    groups.get(record.date).push(record);
+  }
+  $('historyCount').textContent=list.length===1?'1 registro visible':`${list.length.toLocaleString('es-ES')} registros visibles`;
+  $('mobileRecords').innerHTML=[...groups].map(([date,items])=>`
+    <section class="record-group">
+      <h3><time datetime="${date}">${historyDate(date)}</time></h3>
+      <div class="record-stack">${items.map(r=>compactRecord(r)).join('')}</div>
+    </section>`).join('');
   $('emptyRecords').hidden=list.length>0;
 }
 function render(){renderDashboard();renderTable()}
-function resetForm(){$('recordForm').reset();$('date').value=today();editing=null;$('saveBtn').textContent='Guardar registro';$('formTitle').textContent='Nuevo registro';$('cancelEdit').hidden=true;markFormClean()}
+function resetForm(){$('recordForm').reset();$('date').value=today();editing=null;$('saveBtn').textContent='Guardar registro';$('formTitle').textContent='Nuevo registro';$('cancelEdit').hidden=true;$('deleteEdited').hidden=true;markFormClean()}
 function download(content,name,mime){const blob=new Blob([content],{type:mime}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000)}
 function csvCell(x){return '"'+String(x??'').replace(/"/g,'""')+'"'}
 $('recordForm').addEventListener('submit',e=>{e.preventDefault();const date=$('date').value,kind=$('kind').value,name=$('name').value.trim(),status=$('status').value,notes=$('notes').value.trim();if(!date||!/^\d{4}-\d{2}-\d{2}$/.test(date)||!name||!['Ensayo','Acto'].includes(kind)||!['yes','no'].includes(status))return;if(editing){const idx=records.findIndex(r=>r.id===editing);if(idx<0)return;records[idx]={id:editing,date,kind,name,status,notes}}else records.push({id:typeof crypto!=='undefined'&&crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random(),date,kind,name,status,notes});if(!save('Guardado correctamente'))return;filterYear=date.slice(0,4);filterMonth='all';render();resetForm();if(window.matchMedia('(max-width:740px)').matches){setMobileRecordsView('history');scrollTo({top:0,behavior:'smooth'})}});
@@ -1299,7 +1373,14 @@ $('confirmDeleteRecord').addEventListener('click',()=>{
   const previous=records;
   records=records.filter(r=>r.id!==id);
   if(save('Registro eliminado correctamente')){
-    if(editing===id)resetForm();
+    if(editing===id){
+      resetForm();
+      if(window.matchMedia('(max-width:740px)').matches){
+        setMobileRecordsView('history');
+        scrollTo({top:0,behavior:'instant'});
+        $('historyAdd').focus({preventScroll:true});
+      }
+    }
     render();
   }else{
     records=previous;
@@ -1312,6 +1393,7 @@ function handleRecordAction(e){
     const r=records.find(r=>r.id===edit.dataset.edit);
     if(!r)return;
     if(!confirmDiscardForm())return;
+    if(!$('records').classList.contains('active'))show('records');
     editing=r.id;
     $('date').value=r.date;$('kind').value=r.kind;$('name').value=r.name;
     $('status').value=r.status==='just'?'no':r.status;
@@ -1332,6 +1414,11 @@ function handleRecordAction(e){
 }
 $('rows').addEventListener('click',handleRecordAction);
 $('mobileRecords').addEventListener('click',handleRecordAction);
+$('mobileRecentRecords').addEventListener('click',handleRecordAction);
+$('deleteEdited').addEventListener('click',()=>{
+  const record=records.find(r=>r.id===editing);
+  if(record)openDeleteConfirmation(record,$('deleteEdited'));
+});
 function scrollToRecordForm(){
   if(window.matchMedia('(max-width:740px)').matches)scrollTo({top:0,behavior:'instant'});
   else $('formPanel').scrollIntoView({behavior:'smooth',block:'nearest'});
@@ -1341,6 +1428,7 @@ $('cancelEdit').addEventListener('click',()=>{if(!confirmDiscardForm())return;re
 document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.page)));
 $('quickAdd').addEventListener('click',openNewRecord);
 $('mobileAdd').addEventListener('click',openNewRecord);
+$('historyAdd').addEventListener('click',openNewRecord);
 window.addEventListener('resize',()=>{if($('records').classList.contains('active'))setMobileRecordsView(hasUnsavedFormChanges()?'form':$('records').dataset.mobileView||'history')});
 document.querySelectorAll('[data-kind-tab]').forEach(button=>button.addEventListener('click',()=>{
   $('typeFilter').value=button.dataset.kindTab;
