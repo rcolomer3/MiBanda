@@ -349,8 +349,11 @@
 }
 @media(max-width:740px){
   #records[data-mobile-view="form"] #formPanel{margin:0;padding-bottom:16px}
-  #records[data-mobile-view="form"] .form-actions{margin-top:15px;margin-bottom:0;padding-bottom:0}
-  #records[data-mobile-view="form"] #saveBtn{width:100%;min-height:47px}
+  #records[data-mobile-view="form"] .form-actions{
+    display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+    margin-top:15px;margin-bottom:0;padding-bottom:0;
+  }
+  #records[data-mobile-view="form"] #saveBtn{grid-column:1/-1;min-height:47px}
   #recordForm .form-grid{grid-template-columns:minmax(0,1fr)}
   #recordForm .form-grid>*{min-width:0;max-width:100%}
 }
