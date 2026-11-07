@@ -6,9 +6,9 @@
 <meta name="application-name" content="BandApp">
 <meta name="apple-mobile-web-app-title" content="BandApp">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<link rel="icon" type="image/png" sizes="32x32" href="./favicon.png?v=4">
-<link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png?v=4">
-<link rel="manifest" href="./site.webmanifest?v=4">
+<link rel="icon" type="image/png" sizes="32x32" href="./favicon.png?v=5">
+<link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png?v=5">
+<link rel="manifest" href="./site.webmanifest?v=5">
 <title>BandApp</title>
 <script>
 // Aplicar el tema antes de pintar la página evita un destello claro al abrirla.
@@ -1079,16 +1079,16 @@ html[data-theme="dark"] .toast{background:#1b2434;color:var(--text)}
 </head>
 <body>
 <div id="bootScreen" class="auth-gate" role="status" aria-live="polite">
-<div class="auth-card"><img class="brand-icon-image" src="./icon-512.png?v=4" alt="" width="78" height="78">
+<div class="auth-card"><img class="brand-icon-image" src="./icon-512.png?v=5" alt="" width="78" height="78">
 <h1>BandApp</h1><p id="bootMessage">Recuperando tu sesión…</p><div class="boot-spinner" aria-hidden="true"></div>
 </div></div>
 <div id="authGate" class="auth-gate" hidden><div class="auth-card">
-<img class="brand-icon-image" src="./icon-512.png?v=4" alt="Icono de BandApp" width="78" height="78"><h1>BandApp</h1><p class="auth-subtitle">Tus ensayos, actos y asistencia</p><p id="authMessage">Cargando Firebase…</p>
+<img class="brand-icon-image" src="./icon-512.png?v=5" alt="Icono de BandApp" width="78" height="78"><h1>BandApp</h1><p class="auth-subtitle">Tus ensayos, actos y asistencia</p><p id="authMessage">Cargando Firebase…</p>
 <button class="btn primary" id="signInBtn" type="button">Entrar con Google</button>
 <button class="btn" id="retryConnection" type="button" hidden>Reintentar conexión</button>
 </div></div>
 <div class="app" hidden>
-<aside class="sidebar"><div class="brand"><img class="brand-logo" src="./icon-192.png?v=4" alt="" width="39" height="39"><span class="brand-copy">BandApp<small>Control de asistencias</small></span></div><nav class="nav" aria-label="Navegación principal"><button data-page="dashboard" class="active"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 21v-8h6v8"/></svg><span>Inicio</span></button><button data-page="records"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg><span>Historial</span></button><button data-page="settings"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h4m4 0h10M3 12h10m4 0h4M3 18h4m4 0h10"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="9" cy="18" r="2"/></svg><span>Ajustes</span></button></nav><div class="sidebar-foot">BandApp · Tu actividad musical</div></aside>
+<aside class="sidebar"><div class="brand"><img class="brand-logo" src="./icon-192.png?v=5" alt="" width="39" height="39"><span class="brand-copy">BandApp<small>Control de asistencias</small></span></div><nav class="nav" aria-label="Navegación principal"><button data-page="dashboard" class="active"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 21v-8h6v8"/></svg><span>Inicio</span></button><button data-page="records"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg><span>Historial</span></button><button data-page="settings"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h4m4 0h10M3 12h10m4 0h4M3 18h4m4 0h10"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="9" cy="18" r="2"/></svg><span>Ajustes</span></button></nav><div class="sidebar-foot">BandApp · Tu actividad musical</div></aside>
 <main class="content">
 <section id="dashboard" class="page active">
 <div class="head"><div><h1>Inicio</h1><p>Tu actividad en la banda de un vistazo.</p></div><button class="btn primary" id="quickAdd"><svg class="ui-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>Añadir registro</span></button></div>

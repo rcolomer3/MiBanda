@@ -14,11 +14,12 @@ def icon_without_white_corners(image: Image.Image) -> Image.Image:
     icon = image.convert("RGB")
     pixels = icon.load()
     width, height = icon.size
+    edge_inset = max(1, width // 64)
 
     def is_blue(pixel: tuple[int, int, int]) -> bool:
         red, green, blue = pixel
-        # Excluir tonos casi blancos de la compresión JPEG / Lanczos.
-        return red < 170 and blue >= 27 and blue > red + 18 and blue > green + 6
+        # Muestrear el fondo marino y evitar el borde claro del JPG.
+        return red < 50 and green < 70 and blue > red + 12 and blue > green + 6
 
     for y in range(height):
         # Hallar el primer y último píxel del fondo azul en cada línea.
@@ -26,7 +27,9 @@ def icon_without_white_corners(image: Image.Image) -> Image.Image:
         # blancas: solo se corrigen los bordes exteriores del cuadrado.
         blue_x = [x for x in range(width) if is_blue(pixels[x, y])]
         if blue_x:
-            left, right = blue_x[0], blue_x[-1]
+            # Tomar el color unos píxeles dentro para evitar el halo de compresión.
+            left = min(blue_x[0] + edge_inset, width // 2)
+            right = max(blue_x[-1] - edge_inset, width // 2)
             left_color, right_color = pixels[left, y], pixels[right, y]
             for x in range(left):
                 pixels[x, y] = left_color
@@ -35,7 +38,7 @@ def icon_without_white_corners(image: Image.Image) -> Image.Image:
         else:
             # Respaldo para filas completamente blancas en las esquinas.
             for x in range(width):
-                pixels[x, y] = (8, 43, 121)
+                pixels[x, y] = (16, 27, 48)
 
     return icon
 
