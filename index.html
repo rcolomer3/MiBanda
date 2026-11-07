@@ -353,6 +353,7 @@
     margin-top:15px;margin-bottom:0;padding-bottom:0;
   }
   #records[data-mobile-view="form"] #saveBtn{grid-column:1/-1;min-height:47px}
+  #cancelRecord:has(+ #deleteEdited[hidden]){grid-column:1/-1}
   #recordForm .form-grid{grid-template-columns:minmax(0,1fr)}
   #recordForm .form-grid>*{min-width:0;max-width:100%}
 }
@@ -863,22 +864,11 @@ html[data-theme="dark"] :is(.toast,.graph-tooltip){background:#223149;border-col
   .bottomnav button:hover{background:#edf2f8}
   .bottomnav button:not(.add-action)[aria-current="page"]{background:#e6effa;border-color:#bdd3ed;color:#185fb8;font-weight:750}
   .bottomnav button:focus-visible{outline:2px solid #2678ec;outline-offset:1px}
-  .bottomnav .add-action{
-    position:absolute;bottom:calc(100% + 16px);right:max(20px,env(safe-area-inset-right,0px));
-    width:56px;height:56px;padding:0;gap:0;border-radius:18px;
-    background:#1669da;border:1px solid #1669da;color:#fff;
-    box-shadow:0 6px 18px rgba(19,71,140,.25);
-  }
-  .bottomnav .add-action .dock-icon{width:27px;height:27px;stroke-width:2.2}
-  .bottomnav .add-action .dock-label{display:none}
-  .bottomnav .add-action:hover{background:#115bbf;border-color:#115bbf}
   .toast{bottom:calc(156px + env(safe-area-inset-bottom,0px))}
   html[data-theme="dark"] .bottomnav{background:rgba(25,35,51,.97);border-color:var(--line);box-shadow:0 -4px 20px rgba(0,0,0,.15)}
   html[data-theme="dark"] .bottomnav button{color:#c3ccda}
   html[data-theme="dark"] .bottomnav button:hover{background:var(--control)}
   html[data-theme="dark"] .bottomnav button:not(.add-action)[aria-current="page"]{background:var(--selected);border-color:var(--selection-border);color:var(--on-selected)}
-  html[data-theme="dark"] .bottomnav .add-action{background:var(--primary);border-color:#6a98d1;color:#fff;box-shadow:0 6px 18px rgba(0,0,0,.3)}
-  html[data-theme="dark"] .bottomnav .add-action:hover{background:var(--primary-hover);border-color:#8bb5e8}
   html[data-theme="dark"] .bottomnav button:focus-visible{outline-color:#89baff}
 }
 @media(prefers-reduced-motion:reduce){.bottomnav button{transition:none}}
@@ -973,16 +963,19 @@ html[data-theme="dark"] #dashboard .stat-card.porcentaje{
 
   .bottomnav{
     inset:auto max(8px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px));
-    grid-template-columns:repeat(2,minmax(0,1fr)) 58px minmax(0,1fr);
+    grid-template-columns:repeat(4,minmax(0,1fr));
     height:63px;padding:4px 7px;border:1px solid var(--line);border-radius:36px;
   }
   .bottomnav button{height:52px;border-radius:26px;gap:3px}
-  .bottomnav .add-action{position:static;justify-self:center;width:46px;height:46px;border-radius:50%}
+  .bottomnav .add-action{background:#e8f2ff;border-color:#d3e5ff;color:#185fb8;font-weight:750}
+  .bottomnav .add-action:hover,.bottomnav .add-action[aria-current="page"]{background:#dbeafe;border-color:#a6c9f7}
+  .bottomnav .add-action .dock-icon{stroke-width:2.4}
   html[data-theme="dark"] .bottomnav{background:#171f30;border-color:#3c4a62}
   html[data-theme="dark"] .bottomnav button:not(.add-action)[aria-current="page"]{background:#2a3345;border-color:#3b4454;color:#fff}
-  html[data-theme="dark"] .bottomnav .add-action{background:#2563eb;border-color:#2563eb}
-  html[data-theme="dark"] .bottomnav .add-action:hover{background:#1d4ed8;border-color:#1d4ed8}
-  .bottomnav .add-action:disabled{opacity:.45;cursor:default}
+  html[data-theme="dark"] .bottomnav .add-action{background:#203653;border-color:#344e72;color:#b7d6ff}
+  html[data-theme="dark"] .bottomnav .add-action:hover,
+  html[data-theme="dark"] .bottomnav .add-action[aria-current="page"]{background:#284a79;border-color:#557caa;color:#f0f6ff}
+  .bottomnav .add-action[aria-current="page"]:disabled{opacity:1;cursor:default}
   .toast{bottom:calc(82px + env(safe-area-inset-bottom,0px))}
 }
 html[data-theme="dark"] #dashboard .attendance-trend{background:#151d2d}
@@ -1015,6 +1008,8 @@ html[data-theme="dark"] body{background:var(--bg)}
 .record-options input:checked+span{background:#dbeafe;border-color:#b8d2f8;color:#174581}
 html[data-theme="dark"] .record-options input:checked+span{background:#23457a;border-color:#466a9b;color:#e4efff}
 .record-options input:focus-visible+span{outline:2px solid var(--blue);outline-offset:1px}
+.record-options input:checked[value="Acto"]+span{color:#7047a8;background:#f2edff;border-color:#ded1f4}
+html[data-theme="dark"] .record-options input:checked[value="Acto"]+span{color:#c4a4ff;background:#383051;border-color:#665384}
 .record-options input:checked[value="yes"]+span{color:#166534;background:#dcfce7;border-color:#b7eac8}
 .record-options input:checked[value="no"]+span{color:#991b1b;background:#fee2e2;border-color:#f5b8bf}
 html[data-theme="dark"] .record-options input:checked[value="yes"]+span{color:var(--green);background:#183b33;border-color:#2e634f}
@@ -1167,7 +1162,7 @@ html[data-theme="dark"] .toast{background:#1b2434;color:var(--text)}
     </div>
     <div class="form-actions">
       <button class="btn primary" type="submit" id="saveBtn">Guardar registro</button>
-      <button class="btn" type="button" id="cancelEdit" hidden>Cancelar edición</button>
+      <button class="btn" type="button" id="cancelRecord">Cancelar</button>
       <button class="btn danger" type="button" id="deleteEdited" hidden>Eliminar registro</button>
     </div>
   </form>
@@ -1222,6 +1217,7 @@ const KEY='miBandaAsistencias_v1',monthNames=['Enero','Febrero','Marzo','Abril',
 const $=id=>document.getElementById(id);const today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
 let records=[];try{const data=JSON.parse(localStorage.getItem(KEY)||'[]');if(Array.isArray(data))records=data.filter(isValidRecord).map(r=>r.status==='just'?{...r,status:'no'}:r)}catch(e){console.warn('Error leyendo datos almacenados',e)}
 let editing=null;let filterYear=new Date().getFullYear().toString();let filterMonth='all';let toastTimeout,loadingTimeout;
+let newRecordOrigin=null;
 const recordForm=$('recordForm');
 const formFields=['date','kind','name','status','notes'].map(name=>recordForm.elements.namedItem(name));
 let formBaseline='',formDirty=false;
@@ -1286,6 +1282,7 @@ function setMobileRecordsView(view){
   const mobile=window.matchMedia('(max-width:740px)').matches;
   const page=$('records');
   page.dataset.mobileView=view;
+  if(view==='history')newRecordOrigin=null;
   $('recordsHeading').textContent=mobile?(view==='form'?(editing?'Editar registro':'Nuevo registro'):'Historial'):'Historial';
   $('recordsIntro').textContent=mobile?(view==='form'?(editing?'Actualiza los datos y la asistencia del registro.':'Registra un ensayo o acto y marca tu asistencia.'):'Consulta tus ensayos y actos.'):'Consulta tu historial o añade un ensayo o acto.';
   const isForm=mobile&&view==='form'&&page.classList.contains('active');
@@ -1293,10 +1290,13 @@ function setMobileRecordsView(view){
   document.querySelector('.content').classList.toggle('record-form-open',isForm);
   const recordTab=document.querySelector('.bottomnav [data-page="records"]');
   const addTab=$('mobileAdd');
+  const adding=isForm&&!editing;
+  const recordsActive=page.classList.contains('active')&&!adding;
   addTab.disabled=isForm;
-  addTab.removeAttribute('aria-current');
-  recordTab.classList.toggle('active',page.classList.contains('active'));
-  if(page.classList.contains('active'))recordTab.setAttribute('aria-current','page');
+  if(adding)addTab.setAttribute('aria-current','page');
+  else addTab.removeAttribute('aria-current');
+  recordTab.classList.toggle('active',recordsActive);
+  if(recordsActive)recordTab.setAttribute('aria-current','page');
   else recordTab.removeAttribute('aria-current');
 }
 function show(page){
@@ -1466,10 +1466,10 @@ function renderTable(){
   $('emptyRecords').hidden=list.length>0;
 }
 function render(){renderDashboard();renderTable()}
-function resetForm(){recordForm.reset();$('date').value=today();editing=null;$('saveBtn').textContent='Guardar registro';$('formTitle').textContent='Nuevo registro';$('cancelEdit').hidden=true;$('deleteEdited').hidden=true;markFormClean()}
+function resetForm(){recordForm.reset();$('date').value=today();editing=null;$('saveBtn').textContent='Guardar registro';$('formTitle').textContent='Nuevo registro';$('cancelRecord').textContent='Cancelar';$('deleteEdited').hidden=true;markFormClean()}
 function download(content,name,mime){const blob=new Blob([content],{type:mime}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000)}
 function csvCell(x){return '"'+String(x??'').replace(/"/g,'""')+'"'}
-recordForm.addEventListener('submit',e=>{e.preventDefault();const date=$('date').value,kind=recordForm.elements.kind.value,name=$('name').value.trim(),status=recordForm.elements.status.value,notes=$('notes').value.trim();if(!date||!/^\d{4}-\d{2}-\d{2}$/.test(date)||!name||!['Ensayo','Acto'].includes(kind)||!['yes','no'].includes(status))return;if(editing){const idx=records.findIndex(r=>r.id===editing);if(idx<0)return;records[idx]={id:editing,date,kind,name,status,notes}}else records.push({id:typeof crypto!=='undefined'&&crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random(),date,kind,name,status,notes});if(!save('Guardado correctamente'))return;filterYear=date.slice(0,4);filterMonth='all';render();resetForm();if(window.matchMedia('(max-width:740px)').matches){setMobileRecordsView('history');scrollTo({top:0,behavior:'smooth'})}});
+recordForm.addEventListener('submit',e=>{e.preventDefault();const date=$('date').value,kind=recordForm.elements.kind.value,name=$('name').value.trim(),status=recordForm.elements.status.value,notes=$('notes').value.trim();if(!date||!/^\d{4}-\d{2}-\d{2}$/.test(date)||!name||!['Ensayo','Acto'].includes(kind)||!['yes','no'].includes(status))return;if(editing){const idx=records.findIndex(r=>r.id===editing);if(idx<0)return;records[idx]={id:editing,date,kind,name,status,notes}}else records.push({id:typeof crypto!=='undefined'&&crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random(),date,kind,name,status,notes});if(!save('Guardado correctamente'))return;filterYear=date.slice(0,4);filterMonth='all';render();resetForm();setMobileRecordsView('history');if(window.matchMedia('(max-width:740px)').matches)scrollTo({top:0,behavior:'smooth'})});
 let pendingDeleteId=null, deleteRecordTrigger=null;
 function openDeleteConfirmation(record,trigger){
   pendingDeleteId=record.id;
@@ -1517,12 +1517,13 @@ function handleRecordAction(e){
     if(!r)return;
     if(!confirmDiscardForm())return;
     if(!$('records').classList.contains('active'))show('records');
+    newRecordOrigin=null;
     editing=r.id;
     $('date').value=r.date;recordForm.elements.kind.value=r.kind;$('name').value=r.name;
     recordForm.elements.status.value=r.status==='just'?'no':r.status;
     $('notes').value=r.notes||'';
     $('saveBtn').textContent='Guardar cambios';$('formTitle').textContent='Editar registro';
-    $('cancelEdit').hidden=false;
+    $('cancelRecord').textContent='Cancelar edición';
     markFormClean();
     setMobileRecordsView('form');
     requestAnimationFrame(()=>{
@@ -1546,8 +1547,33 @@ function scrollToRecordForm(){
   if(window.matchMedia('(max-width:740px)').matches)scrollTo({top:0,behavior:'instant'});
   else $('formPanel').scrollIntoView({behavior:'smooth',block:'nearest'});
 }
-function openNewRecord(){if(!confirmDiscardForm())return;resetForm();show('records');setMobileRecordsView('form');requestAnimationFrame(scrollToRecordForm)}
-$('cancelEdit').addEventListener('click',()=>{if(!confirmDiscardForm())return;resetForm();if(window.matchMedia('(max-width:740px)').matches){setMobileRecordsView('history');scrollTo({top:0,behavior:'smooth'})}});
+function openNewRecord(event){
+  if(!confirmDiscardForm())return;
+  const origin={page:document.querySelector('.page.active').id,button:event.currentTarget};
+  resetForm();
+  show('records');
+  newRecordOrigin=origin;
+  setMobileRecordsView('form');
+  requestAnimationFrame(scrollToRecordForm);
+}
+$('cancelRecord').addEventListener('click',()=>{
+  const origin=newRecordOrigin;
+  if(!confirmDiscardForm())return;
+  resetForm();
+  if(origin&&origin.page!=='records'){
+    show(origin.page);
+    origin.button.focus({preventScroll:true});
+    return;
+  }
+  setMobileRecordsView('history');
+  if(window.matchMedia('(max-width:740px)').matches){
+    scrollTo({top:0,behavior:'smooth'});
+    (origin?.button||$('historyAdd')).focus({preventScroll:true});
+  }else{
+    $('historyPanel').scrollIntoView({behavior:'smooth',block:'start'});
+    $('search').focus({preventScroll:true});
+  }
+});
 document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.page)));
 $('quickAdd').addEventListener('click',openNewRecord);
 $('mobileAdd').addEventListener('click',openNewRecord);
