@@ -1423,7 +1423,7 @@ function historyDate(iso){
 function compactRecord(r,dateLabel=''){
   const act=r.kind==='Acto';
   const icon=act
-    ?'<path d="M5 21V4m0 1c5-5 9 4 14 0v10c-5 4-9-5-14 0"/>'
+    ?'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4m8-4v4M3 10h18"/><path fill="currentColor" stroke="none" d="m12 11.5 1.2 2.5 2.8.4-2 2 .5 2.8-2.5-1.3-2.5 1.3.5-2.8-2-2 2.8-.4z"/>'
     :'<path d="M9 18V5l11-2v13M9 9l11-2"/><ellipse cx="6" cy="18" rx="3" ry="2"/><ellipse cx="17" cy="16" rx="3" ry="2"/>';
   return `<button type="button" class="compact-record ${act?'is-act':''}" data-edit="${escapeHtml(r.id)}">
     <span class="compact-icon" aria-hidden="true"><svg viewBox="0 0 24 24">${icon}</svg></span>
