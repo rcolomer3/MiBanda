@@ -20,7 +20,7 @@
   function applyTheme(){
     const dark=preference==='dark'||(preference==='system'&&system.matches);
     document.documentElement.dataset.theme=dark?'dark':'light';
-    document.querySelector('meta[name="theme-color"]').content=dark?'#101722':'#f4f6fa';
+    document.querySelector('meta[name="theme-color"]').content=dark?'#0e1321':'#f4f6fa';
     document.querySelectorAll('[data-theme-control]').forEach(control=>{control.value=preference});
   }
   applyTheme();
@@ -124,7 +124,6 @@
   font-size:11.2px;font-weight:500;line-height:1.4;
   color:var(--stat-caption);opacity:1;overflow-wrap:anywhere;
 }
-#dashboard .stat-card.ensayos{--stat-tint:#EDF5FF;--stat-border:#D9E7FA;--stat-heading:#476C9D;--stat-value:#1D4F8F;--stat-caption:#476C9D}
 #dashboard .stat-card.asistidos{--stat-tint:#EAF8F1;--stat-border:#D3EDDF;--stat-heading:#367A5E;--stat-value:#20734F;--stat-caption:#486E5D}
 #dashboard .stat-card.actos{--stat-tint:#F3EEFF;--stat-border:#E5D9FB;--stat-heading:#7355A1;--stat-value:#67459B;--stat-caption:#785E9D}
 #dashboard .stat-card.porcentaje{--stat-tint:#FFF5E5;--stat-border:#F4E1C7;--stat-heading:#836020;--stat-value:#94621E;--stat-caption:#826531}
@@ -592,7 +591,7 @@ select{padding-right:25px;cursor:pointer}
   width:38px;height:38px;padding:9px;flex-shrink:0;
   border:1px solid #e3ecf8;border-radius:13px;background:#edf5ff;color:#277dea;
 }
-#settings .sync-panel+.panel .settings-heading .ui-icon{background:#edf9f3;border-color:#dcefe5;color:#20976b}
+#settings .settings-backup .settings-heading .ui-icon{background:#edf9f3;border-color:#dcefe5;color:#20976b}
 #settings>.panel:last-child .settings-heading .ui-icon{background:#fff3f3;border-color:#fae6e7;color:#d15a68}
 .settings-list{gap:10px;margin-top:20px}
 .settings-list .btn,.select-file{min-height:44px}
@@ -792,7 +791,6 @@ html[data-theme="dark"] .btn.danger:hover{background:#583042;border-color:#cb849
 html[data-theme="dark"] :is(.btn,.kind-tab,.sidebar button):focus-visible{outline:2px solid #89baff;outline-offset:3px}
 html[data-theme="dark"] .account-icon{background:var(--dark-blue);color:var(--blue)}
 html[data-theme="dark"] #dashboard .stat-card{box-shadow:var(--shadow)}
-html[data-theme="dark"] #dashboard .stat-card.ensayos{--stat-tint:#1b2d46;--stat-border:#304a6a;--stat-heading:#a2c5f3;--stat-value:#a2caff;--stat-caption:#a2b9d7}
 html[data-theme="dark"] #dashboard .stat-card.asistidos{--stat-tint:#19352f;--stat-border:#2e5347;--stat-heading:#97d4b8;--stat-value:#7fe0b1;--stat-caption:#9fbdaf}
 html[data-theme="dark"] #dashboard .stat-card.actos{--stat-tint:#2e2843;--stat-border:#4b3e65;--stat-heading:#cbb5ed;--stat-value:#c9adff;--stat-caption:#bbadce}
 html[data-theme="dark"] #dashboard .stat-card.porcentaje{--stat-tint:#382e21;--stat-border:#594932;--stat-heading:#e1c28e;--stat-value:#f3cc87;--stat-caption:#caba9d}
@@ -826,7 +824,7 @@ html[data-theme="dark"] #historyPanel td{color:var(--text);border-color:var(--li
 html[data-theme="dark"] #historyPanel td strong{color:var(--text)}
 html[data-theme="dark"] #historyPanel tbody tr:hover td{background:var(--dark-raised)}
 html[data-theme="dark"] #settings .settings-heading .ui-icon{background:var(--dark-blue);border-color:var(--line);color:var(--blue)}
-html[data-theme="dark"] #settings .sync-panel+.panel .settings-heading .ui-icon{background:var(--dark-green);border-color:#2e5347;color:var(--green)}
+html[data-theme="dark"] #settings .settings-backup .settings-heading .ui-icon{background:var(--dark-green);border-color:#2e5347;color:var(--green)}
 html[data-theme="dark"] #settings>.panel:last-child .settings-heading .ui-icon{background:var(--dark-red);border-color:#704051;color:var(--red)}
 html[data-theme="dark"] .sync-state[data-state="ok"]{background:var(--dark-green);border-color:#2e5347;color:var(--green)}
 html[data-theme="dark"] .sync-state[data-state="working"]{background:#382e21;border-color:#594932;color:var(--amber)}
@@ -891,16 +889,34 @@ html[data-theme="dark"] :is(.toast,.graph-tooltip){background:#223149;border-col
 @media(prefers-reduced-transparency:reduce){
   html[data-theme="dark"] :is(.sidebar,.bottomnav,.auth-card,.account-pill){background:var(--panel)}
 }
-/* Inicio e Historial en móvil */
-#attendanceProgress,.mobile-recent,.history-add,.history-count,.history-mobile-title{display:none}
-#historyPanel .section-head h2 span{color:inherit;font:inherit}
+/* Inicio e Historial */
+#dashboard .stats{margin:0 0 12px;gap:10px}
+#dashboard .stat-card{
+  display:grid;grid-template-rows:auto;gap:5px;min-height:0;padding:12px 14px;border-radius:17px;
+  background:var(--panel);border-color:var(--line);box-shadow:none;
+}
+html[data-theme="dark"] #dashboard .stat-card{box-shadow:none}
+#dashboard .stat-card :is(.stat-label,.detail){color:var(--muted)}
+#dashboard .stat-card .value{font-size:26px;color:var(--text)}
+#dashboard .stat-card.actos .value{color:var(--green)}
+#dashboard .stat-card.porcentaje{
+  padding:16px;
+  background:linear-gradient(135deg,#e6f0ff,var(--panel) 85%);
+}
+html[data-theme="dark"] #dashboard .stat-card.porcentaje{
+  background:linear-gradient(135deg,#1d3658,#1a2437 85%);border-color:#304762;
+}
+#dashboard .stat-card.porcentaje .value{font-size:45px;letter-spacing:-1.7px}
+#attendanceProgress:not([hidden]){
+  display:block;width:100%;height:6px;margin:4px 0;appearance:none;
+  border:0;border-radius:10px;background:var(--line);accent-color:var(--blue);
+}
+#attendanceProgress::-webkit-progress-bar{background:var(--line);border-radius:10px}
+#attendanceProgress::-webkit-progress-value{background:var(--blue);border-radius:10px}
+#attendanceProgress::-moz-progress-bar{background:var(--blue);border-radius:10px}
+#dashboard .attendance-trend{margin:0}
+.mobile-recent,.history-add,.history-count{display:none}
 @media(max-width:740px){
-  html[data-theme="dark"]{
-    --bg:#0e1321;--panel:#1b2434;--line:#293548;--text:#f0f4fa;
-    --green:#4ade80;--red:#ff8088;
-  }
-  html[data-theme="dark"] body{background:var(--bg)}
-  @media(prefers-contrast:more){html[data-theme="dark"]{--line:#71849e}}
   .content,.content.record-form-open{padding-bottom:calc(90px + env(safe-area-inset-bottom,0px))}
   :is(#dashboard,#records)>.head h1{font-size:30px}
   :is(#dashboard,#records)>.head p{font-size:14px}
@@ -910,32 +926,7 @@ html[data-theme="dark"] :is(.toast,.graph-tooltip){background:#223149;border-col
   }
   #dashboard .filters select{padding-inline:9px}
   #dashboard #clearFilters{padding-inline:10px}
-  #dashboard .stats{margin:0 0 12px;gap:10px}
-  #dashboard .stat-card{
-    display:grid;grid-template-rows:auto;gap:5px;min-height:0;padding:12px 14px;border-radius:17px;
-    background:var(--panel);border-color:var(--line);box-shadow:none;
-  }
-  html[data-theme="dark"] #dashboard .stat-card{box-shadow:none}
-  #dashboard .stat-card :is(.stat-label,.detail){color:var(--muted)}
-  #dashboard .stat-card .value{font-size:26px;color:var(--text)}
-  #dashboard .stat-card.actos .value{color:var(--green)}
-  #dashboard .stat-card.ensayos{display:none}
-  #dashboard .stat-card.porcentaje{
-    grid-column:1/-1;grid-row:1;padding:16px;
-    background:linear-gradient(135deg,#e6f0ff,var(--panel) 85%);
-  }
-  html[data-theme="dark"] #dashboard .stat-card.porcentaje{
-    background:linear-gradient(135deg,#1d3658,#1a2437 85%);border-color:#304762;
-  }
-  #dashboard .stat-card.porcentaje .value{font-size:45px;letter-spacing:-1.7px}
-  #attendanceProgress:not([hidden]){
-    display:block;width:100%;height:6px;margin:4px 0;appearance:none;
-    border:0;border-radius:10px;background:var(--line);accent-color:var(--blue);
-  }
-  #attendanceProgress::-webkit-progress-bar{background:var(--line);border-radius:10px}
-  #attendanceProgress::-webkit-progress-value{background:var(--blue);border-radius:10px}
-  #attendanceProgress::-moz-progress-bar{background:var(--blue);border-radius:10px}
-  #dashboard .attendance-trend{margin:0}
+  #dashboard .stat-card.porcentaje{grid-column:1/-1}
   #dashboard .recent-split{display:none}
   .mobile-recent{display:block;margin-top:18px}
   .mobile-recent h2{font-size:17px;margin:0 3px 10px}
@@ -946,10 +937,8 @@ html[data-theme="dark"] :is(.toast,.graph-tooltip){background:#223149;border-col
   #records[data-mobile-view="history"] #historyPanel{padding:0;background:none;border:0;box-shadow:none}
   .history-controls,.record-stack{border:1px solid var(--line);border-radius:17px;background:var(--panel)}
   .history-controls{padding:14px}
-  html[data-theme="dark"] .history-controls,html[data-theme="dark"] #dashboard .attendance-trend{background:#151d2d}
+  html[data-theme="dark"] .history-controls{background:#151d2d}
   #historyPanel .history-controls .section-head{margin:0 0 10px}
-  .history-desktop-title{display:none}
-  .history-mobile-title{display:inline}
   #historyPanel .record-kinds{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px;padding:0;background:none;border:0}
   #historyPanel .kind-tab{flex:0 1 auto;min-height:40px;padding:6px 10px;border-radius:20px}
   #historyPanel .toolbar{margin:0;gap:8px}
@@ -996,6 +985,107 @@ html[data-theme="dark"] :is(.toast,.graph-tooltip){background:#223149;border-col
   .bottomnav .add-action:disabled{opacity:.45;cursor:default}
   .toast{bottom:calc(82px + env(safe-area-inset-bottom,0px))}
 }
+html[data-theme="dark"] #dashboard .attendance-trend{background:#151d2d}
+/* Superficies y controles compartidos */
+html[data-theme="dark"]{
+  --bg:#0e1321;--panel:#1b2434;--line:#293548;--text:#f0f4fa;
+  --green:#4ade80;--red:#ff8088;
+  --primary:#2563eb;--primary-hover:#1d4ed8;
+}
+@media(prefers-contrast:more){html[data-theme="dark"]{--line:#71849e}}
+html[data-theme="dark"] body{background:var(--bg)}
+:is(#formPanel,#settings>.panel,.auth-card,.delete-dialog){border-radius:17px}
+:is(#formPanel,#settings>.panel,.auth-card){
+  background:var(--panel);border-color:var(--line);box-shadow:none;
+}
+#recordForm .field label,#recordForm legend{color:var(--muted);font-size:13px;font-weight:700}
+#recordForm .field :is(input:not([type="radio"]),textarea),#recordForm .date-input-frame{border-radius:11px}
+#recordForm .record-choice{margin:0;padding:0;border:0}
+#recordForm .record-choice legend{padding:0;margin-bottom:7px}
+.record-options{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;
+  padding:4px;border:1px solid var(--line);border-radius:13px;background:var(--bg);
+}
+.record-options label{position:relative;cursor:pointer}
+#recordForm .record-options input{position:absolute;inset:0;height:100%;min-height:0;margin:0;opacity:0;cursor:pointer}
+.record-options span{
+  display:grid;place-items:center;text-align:center;min-height:42px;padding:5px 7px;
+  border:1px solid transparent;border-radius:9px;
+}
+.record-options input:checked+span{background:#dbeafe;border-color:#b8d2f8;color:#174581}
+html[data-theme="dark"] .record-options input:checked+span{background:#23457a;border-color:#466a9b;color:#e4efff}
+.record-options input:focus-visible+span{outline:2px solid var(--blue);outline-offset:1px}
+.record-options input:checked[value="yes"]+span{color:#166534;background:#dcfce7;border-color:#b7eac8}
+.record-options input:checked[value="no"]+span{color:#991b1b;background:#fee2e2;border-color:#f5b8bf}
+html[data-theme="dark"] .record-options input:checked[value="yes"]+span{color:var(--green);background:#183b33;border-color:#2e634f}
+html[data-theme="dark"] .record-options input:checked[value="no"]+span{color:var(--red);background:#442633;border-color:#80515e}
+#recordForm textarea{min-height:96px}
+html[data-theme="dark"] :is(#saveBtn,#signInBtn){border-color:var(--primary)}
+
+#settings>.panel .note{color:var(--muted)}
+#settings .account-name{margin:14px 0 8px;font-size:15px;font-weight:750;overflow-wrap:anywhere}
+#settings .account-name:empty{display:none}
+#settings .settings-heading .ui-icon{border-radius:50%}
+#settings .sync-state{margin:8px 0;min-height:44px}
+#settings .settings-danger{border-color:#e9b4bb}
+html[data-theme="dark"] #settings .settings-danger{background:#241d2a;border-color:#69404e}
+.select-file:focus-within{outline:2px solid var(--blue);outline-offset:2px}
+
+.auth-gate,html[data-theme="dark"] .auth-gate{background:var(--bg)}
+.auth-card{padding:30px clamp(18px,5vw,32px)}
+.auth-card h1{font-size:30px;margin:12px 0 4px;color:var(--text)}
+.auth-card p{color:var(--muted);margin:6px 0 14px}
+.auth-card .auth-subtitle{margin-bottom:18px;font-weight:650}
+#authMessage{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:11px 14px}
+.boot-spinner{margin:18px auto 0;border-color:var(--line);border-top-color:var(--blue)}
+.delete-dialog{background:var(--panel);border-color:var(--line);color:var(--text)}
+.delete-dialog-content{text-align:left}
+.delete-dialog-icon{margin:0 0 14px;border-radius:50%}
+.delete-dialog-record{background:var(--bg);border-color:var(--line)}
+.toast{background:var(--text);color:var(--bg);border-color:var(--line);border-radius:13px}
+html[data-theme="dark"] .toast{background:#1b2434;color:var(--text)}
+
+/* La navegación lateral y la tabla aprovechan pantallas anchas. */
+@media(min-width:741px){
+  html[data-theme="dark"] .sidebar{background:#171f30;border-color:var(--line)}
+  html[data-theme="dark"] .sidebar .nav button.active{background:#2a3345;border-color:#3b4454;color:var(--text)}
+  #dashboard .stats{grid-template-columns:minmax(0,1.6fr) repeat(2,minmax(0,1fr));align-items:stretch}
+  #dashboard .stat-card{padding:clamp(12px,2vw,22px)}
+  #dashboard .stat-card.porcentaje{grid-column:auto;grid-row:auto}
+  #dashboard .stat-card.porcentaje .value{font-size:clamp(38px,4vw,52px)}
+  #dashboard .stat-card:not(.porcentaje) .value{font-size:clamp(28px,3vw,38px)}
+  #dashboard .recent-split{margin:0;grid-template-columns:minmax(0,1fr)}
+  #dashboard .layout{margin:0;grid-column:1/-1}
+  .dashboard-insights{display:grid;gap:14px;align-items:start}
+  #historyPanel .history-controls{padding:0 0 12px;border-bottom:1px solid var(--line)}
+  #historyPanel .history-count{display:block;margin:14px 0;font-size:14px;font-weight:750}
+  #historyPanel .history-period{margin:0}
+  #historyPanel .tablewrap{border:1px solid var(--line);border-radius:13px}
+  #historyPanel th:first-child,#historyPanel th:last-child{border-radius:0}
+  #historyPanel td{overflow-wrap:anywhere}
+  #historyPanel td:first-child{white-space:nowrap}
+  #historyPanel .row-actions{flex-wrap:wrap}
+  #settings.active{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:start}
+  #settings>.head{grid-column:1/-1;margin-bottom:4px}
+  #settings>.panel{margin:0;padding:18px}
+}
+@media(min-width:741px) and (max-width:960px){
+  .app{grid-template-columns:178px minmax(0,1fr)}
+  .sidebar{padding-inline:10px}
+  .sidebar .brand{padding-inline:3px;gap:8px}
+  #historyPanel table{min-width:0}
+  #historyPanel :is(td,th){padding-inline:7px}
+  #historyPanel .row-actions{gap:4px}
+  #settings.active{grid-template-columns:minmax(0,1fr)}
+}
+@media(min-width:1150px){
+  .dashboard-insights{
+    grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);
+    grid-template-rows:auto 1fr;
+  }
+  #dashboard .recent-split{grid-column:2;grid-row:1/3}
+  #dashboard .layout{grid-column:1;grid-row:2}
+}
 </style>
 </head>
 <body>
@@ -1004,22 +1094,22 @@ html[data-theme="dark"] :is(.toast,.graph-tooltip){background:#223149;border-col
 <h1>BandApp</h1><p id="bootMessage">Recuperando tu sesión…</p><div class="boot-spinner" aria-hidden="true"></div>
 </div></div>
 <div id="authGate" class="auth-gate" hidden><div class="auth-card">
-<img class="brand-icon-image" src="./icon-512.png?v=4" alt="Icono de BandApp" width="78" height="78"><h1>BandApp</h1><p id="authMessage">Cargando Firebase…</p>
+<img class="brand-icon-image" src="./icon-512.png?v=4" alt="Icono de BandApp" width="78" height="78"><h1>BandApp</h1><p class="auth-subtitle">Tus ensayos, actos y asistencia</p><p id="authMessage">Cargando Firebase…</p>
 <button class="btn primary" id="signInBtn" type="button">Entrar con Google</button>
 <button class="btn" id="retryConnection" type="button" hidden>Reintentar conexión</button>
 </div></div>
 <div class="app" hidden>
-<aside class="sidebar"><div class="brand"><img class="brand-logo" src="./icon-192.png?v=4" alt="" width="39" height="39"><span class="brand-copy">BandApp<small>Control de asistencias</small></span></div><nav class="nav" aria-label="Navegación principal"><button data-page="dashboard" class="active"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 21v-8h6v8"/></svg><span>Resumen</span></button><button data-page="records"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg><span>Ensayos y actos</span></button><button data-page="settings"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h4m4 0h10M3 12h10m4 0h4M3 18h4m4 0h10"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="9" cy="18" r="2"/></svg><span>Ajustes</span></button></nav><div class="sidebar-foot">BandApp · Tu actividad musical</div></aside>
+<aside class="sidebar"><div class="brand"><img class="brand-logo" src="./icon-192.png?v=4" alt="" width="39" height="39"><span class="brand-copy">BandApp<small>Control de asistencias</small></span></div><nav class="nav" aria-label="Navegación principal"><button data-page="dashboard" class="active"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 21v-8h6v8"/></svg><span>Inicio</span></button><button data-page="records"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg><span>Historial</span></button><button data-page="settings"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h4m4 0h10M3 12h10m4 0h4M3 18h4m4 0h10"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="9" cy="18" r="2"/></svg><span>Ajustes</span></button></nav><div class="sidebar-foot">BandApp · Tu actividad musical</div></aside>
 <main class="content">
 <section id="dashboard" class="page active">
 <div class="head"><div><h1>Inicio</h1><p>Tu actividad en la banda de un vistazo.</p></div><button class="btn primary" id="quickAdd"><svg class="ui-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>Añadir registro</span></button></div>
 <div class="filters"><div class="field"><label for="year">Año</label><select id="year"></select></div><div class="field"><label for="month">Mes</label><select id="month"><option value="all">Todo el año</option></select></div><button class="btn" id="clearFilters">Ver todo</button></div>
 <div class="stats">
-<div class="card stat-card ensayos"><div class="stat-top"><span class="stat-label">Ensayos registrados</span></div><div class="value" id="totalRehearsals">0</div><div class="detail" id="rehearsalDetail">Sin ensayos en el periodo</div></div>
+<div class="card stat-card porcentaje"><div class="stat-top"><span class="stat-label">Asistencia a ensayos</span></div><div class="value" id="attendanceRate">—</div><progress id="attendanceProgress" max="100" aria-label="Asistencia a ensayos" hidden></progress><div class="detail" id="attendanceDetail">Sin ensayos en el periodo</div></div>
 <div class="card stat-card asistidos"><div class="stat-top"><span class="stat-label">Ensayos asistidos</span></div><div class="value" id="attendedRehearsals">0</div><div class="detail" id="missedDetail">0 faltas</div></div>
 <div class="card stat-card actos"><div class="stat-top"><span class="stat-label">Actos realizados</span></div><div class="value" id="actsAttended">0</div><div class="detail" id="actsDetail">0 actos registrados</div></div>
-<div class="card stat-card porcentaje"><div class="stat-top"><span class="stat-label">Asistencia a ensayos</span></div><div class="value" id="attendanceRate">—</div><progress id="attendanceProgress" max="100" aria-label="Asistencia a ensayos" hidden></progress><div class="detail" id="attendanceDetail">Sin ensayos en el periodo</div></div>
 </div>
+<div class="dashboard-insights">
 <div class="panel attendance-trend">
   <div class="section-head trend-heading">
     <div><h2>Evolución mensual de asistencia</h2><p class="note trend-explanation">Porcentaje de ensayos asistidos respecto a los registrados en cada mes.</p></div>
@@ -1050,11 +1140,40 @@ html[data-theme="dark"] :is(.toast,.graph-tooltip){background:#223149;border-col
 </div>
 <div class="layout"><div class="panel"><div class="section-head"><h2>Actividad por meses</h2><span id="chartYear"></span></div><div class="bars" id="chart"></div><div class="months" id="monthLabels"></div><div class="legend"><span><i style="background:#2563eb"></i> Ensayos asistidos</span><span><i style="background:#22a06b"></i> Actos realizados</span></div></div>
 </div>
+</div>
 </section>
-<section id="records" class="page" data-mobile-view="history"><div class="head"><div><h1 id="recordsHeading">Ensayos y actos</h1><p id="recordsIntro">Consulta tu historial o añade un ensayo o acto.</p></div><button type="button" class="btn history-add" id="historyAdd">+ Añadir registro</button></div>
-<div class="panel" id="formPanel"><div class="section-head"><h2 id="formTitle">Nuevo registro</h2></div><form id="recordForm"><div class="form-grid"><div class="field"><label for="date">Fecha *</label><div class="date-input-frame"><input required id="date" type="date"></div></div><div class="field"><label for="kind">Tipo *</label><select id="kind"><option value="Ensayo">Ensayo</option><option value="Acto">Acto</option></select></div><div class="field"><label for="name">Nombre / descripción *</label><input id="name" maxlength="120" required placeholder="Ej.: Ensayo general"></div><div class="field"><label for="status">Asistencia *</label><select id="status"><option value="yes">✅ Asistí</option><option value="no">❌ No asistí</option></select></div><div class="field wide"><label for="notes">Notas (opcional)</label><textarea id="notes" rows="2" maxlength="500" placeholder="Lugar, repertorio, observaciones..."></textarea></div></div><div class="form-actions"><button class="btn primary" type="submit" id="saveBtn">Guardar registro</button><button class="btn" type="button" id="cancelEdit" hidden>Cancelar edición</button><button type="button" class="btn danger" id="deleteEdited" hidden>Eliminar registro</button></div></form></div>
+<section id="records" class="page" data-mobile-view="history"><div class="head"><div><h1 id="recordsHeading">Historial</h1><p id="recordsIntro">Consulta tu historial o añade un ensayo o acto.</p></div><button type="button" class="btn history-add" id="historyAdd">+ Añadir registro</button></div>
+<div class="panel" id="formPanel">
+  <div class="section-head"><h2 id="formTitle">Nuevo registro</h2></div>
+  <form id="recordForm">
+    <div class="form-grid">
+      <div class="field"><label for="date">Fecha *</label><div class="date-input-frame"><input required id="date" type="date"></div></div>
+      <fieldset class="field record-choice">
+        <legend>Tipo *</legend>
+        <div class="record-options">
+          <label><input type="radio" name="kind" value="Ensayo" checked required><span>Ensayo</span></label>
+          <label><input type="radio" name="kind" value="Acto"><span>Acto</span></label>
+        </div>
+      </fieldset>
+      <div class="field wide"><label for="name">Nombre / descripción *</label><input id="name" maxlength="120" required placeholder="Ej.: Ensayo general"></div>
+      <fieldset class="field record-choice wide">
+        <legend>Asistencia *</legend>
+        <div class="record-options">
+          <label><input type="radio" name="status" value="yes" checked required><span>Asistí</span></label>
+          <label><input type="radio" name="status" value="no"><span>No asistí</span></label>
+        </div>
+      </fieldset>
+      <div class="field wide"><label for="notes">Notas (opcional)</label><textarea id="notes" rows="2" maxlength="500" placeholder="Lugar, repertorio, observaciones…"></textarea></div>
+    </div>
+    <div class="form-actions">
+      <button class="btn primary" type="submit" id="saveBtn">Guardar registro</button>
+      <button class="btn" type="button" id="cancelEdit" hidden>Cancelar edición</button>
+      <button class="btn danger" type="button" id="deleteEdited" hidden>Eliminar registro</button>
+    </div>
+  </form>
+</div>
 <div class="panel" id="historyPanel">
-  <div class="history-controls"><div class="section-head"><h2><span class="history-desktop-title">Historial</span><span class="history-mobile-title">Buscar y filtrar</span></h2><button class="btn sm" id="exportCsv">Exportar CSV</button></div>
+  <div class="history-controls"><div class="section-head"><h2>Buscar y filtrar</h2><button class="btn sm" id="exportCsv">Exportar CSV</button></div>
   <div class="record-kinds" role="group" aria-label="Ver registros por tipo">
     <button type="button" class="kind-tab active" data-kind-tab="all" aria-pressed="true"><span>Todos</span><span class="kind-tab-count" id="countAll">0</span></button>
     <button type="button" class="kind-tab" data-kind-tab="Ensayo" aria-pressed="false"><span>Ensayos</span><span class="kind-tab-count" id="countEnsayos">0</span></button>
@@ -1065,19 +1184,19 @@ html[data-theme="dark"] :is(.toast,.graph-tooltip){background:#223149;border-col
     <select id="statusFilter" aria-label="Filtrar asistencia"><option value="all">Todas las asistencias</option><option value="yes">Asistí</option><option value="no">No asistí</option></select></div><div class="history-period"><p class="note" id="recordFilterDescription"></p><button type="button" class="btn sm" id="clearHistoryFilters" hidden>Ver todos</button></div></div><p class="history-count" id="historyCount" role="status"></p><div class="tablewrap"><table><thead><tr><th>Fecha</th><th>Actividad</th><th>Nombre</th><th>Asistencia</th><th>Acciones</th></tr></thead><tbody id="rows"></tbody></table></div><div id="mobileRecords" class="mobile-record-list" aria-label="Lista de ensayos y actos"></div><div class="empty" id="emptyRecords" hidden>No hay registros con estos filtros.</div></div>
 </section>
 <section id="settings" class="page"><div class="head"><div><h1>Ajustes</h1><p>Apariencia, sincronización y copias de seguridad.</p></div></div>
-<div class="panel"><h2>Apariencia</h2><p class="note">Elige cómo quieres ver BandApp. Tu preferencia se guarda en este dispositivo.</p><div class="field theme-field"><label for="appTheme">Tema de la aplicación</label><select id="appTheme" data-theme-control><option value="system">Según el dispositivo</option><option value="light">Claro</option><option value="dark">Oscuro</option></select></div></div>
 <div class="panel sync-panel">
 <h2 class="settings-heading"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5 20 6v5.5c0 4.5-3.2 7.9-8 10-4.8-2.1-8-5.5-8-10V6l8-3.5z"/><path d="m9 12 2 2 4-4"/></svg><span>Cuenta y sincronización</span></h2>
+<p id="syncAccount" class="account-name"></p>
 <p id="syncStatus" class="sync-state" role="status" data-state="working"><span class="sync-dot" aria-hidden="true"></span><span id="syncStatusText">Comprobando conexión con Firebase…</span></p>
 <p id="syncHelp" class="sync-help">El estado se actualizará cuando Firebase confirme la conexión.</p>
-<p id="syncAccount" class="note"></p>
 <div class="settings-list">
 <button class="btn primary" id="connectGoogle">Conectar con Google</button>
 <button class="btn" type="button" id="checkConnectionBtn" hidden>Comprobar conexión</button>
 <button class="btn" id="signOutBtn" hidden>Cerrar sesión</button>
 </div>
 </div>
-<div class="panel"><h2 class="settings-heading"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M8 12.5l2.8 2.8 5.6-6"/></svg><span>Copias de seguridad</span></h2><p class="note">Tus registros se sincronizan con Firebase al entrar con Google. También puedes descargar una copia de seguridad en JSON.</p><div class="settings-list"><button class="btn primary" id="exportJson">⬇ Descargar copia JSON</button><label class="btn select-file">⬆ Restaurar copia JSON<input type="file" accept=".json,application/json" id="importJson"></label></div></div><div class="panel" style="margin-top:16px"><h2 class="settings-heading"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="5" rx="1.5"/><path d="M5.5 9v10a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V9M10 13h4"/></svg><span>Administración</span></h2><p class="note">Eliminar todos los registros no se puede deshacer. Antes puedes descargar una copia de seguridad.</p><button class="btn danger" id="deleteAll">Borrar todos los registros</button></div></section>
+<div class="panel"><h2 class="settings-heading"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8m-4-4v4"/></svg><span>Apariencia</span></h2><p class="note">Elige cómo quieres ver BandApp. Tu preferencia se guarda en este dispositivo.</p><div class="field theme-field"><label for="appTheme">Tema de la aplicación</label><select id="appTheme" data-theme-control><option value="system">Según el dispositivo</option><option value="light">Claro</option><option value="dark">Oscuro</option></select></div></div>
+<div class="panel settings-backup"><h2 class="settings-heading"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M8 12.5l2.8 2.8 5.6-6"/></svg><span>Copias de seguridad</span></h2><p class="note">Tus registros se sincronizan con Firebase al entrar con Google. También puedes descargar una copia de seguridad en JSON.</p><div class="settings-list"><button class="btn primary" id="exportJson">Descargar copia JSON</button><label class="btn select-file">Restaurar copia JSON<input type="file" accept=".json,application/json" id="importJson"></label></div></div><div class="panel settings-danger"><h2 class="settings-heading"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="5" rx="1.5"/><path d="M5.5 9v10a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V9M10 13h4"/></svg><span>Administración</span></h2><p class="note">Eliminar todos los registros no se puede deshacer. Antes puedes descargar una copia de seguridad.</p><button class="btn danger" id="deleteAll">Borrar todos los registros</button></div></section>
 </main></div>
 <nav class="bottomnav" hidden aria-label="Navegación móvil">
   <button type="button" class="active" data-page="dashboard" aria-label="Ir al inicio" aria-current="page"><svg class="dock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 21v-8h6v8"/></svg><span class="dock-label">Inicio</span></button>
@@ -1103,9 +1222,10 @@ const KEY='miBandaAsistencias_v1',monthNames=['Enero','Febrero','Marzo','Abril',
 const $=id=>document.getElementById(id);const today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
 let records=[];try{const data=JSON.parse(localStorage.getItem(KEY)||'[]');if(Array.isArray(data))records=data.filter(isValidRecord).map(r=>r.status==='just'?{...r,status:'no'}:r)}catch(e){console.warn('Error leyendo datos almacenados',e)}
 let editing=null;let filterYear=new Date().getFullYear().toString();let filterMonth='all';let toastTimeout,loadingTimeout;
-const formFields=['date','kind','name','status','notes'];
+const recordForm=$('recordForm');
+const formFields=['date','kind','name','status','notes'].map(name=>recordForm.elements.namedItem(name));
 let formBaseline='',formDirty=false;
-function formState(){return JSON.stringify(formFields.map(id=>$(id).value))}
+function formState(){return JSON.stringify(formFields.map(field=>field.value))}
 function hasUnsavedFormChanges(){return formState()!==formBaseline}
 function warnBeforeUnload(event){
   if(!hasUnsavedFormChanges())return;
@@ -1126,8 +1246,8 @@ function confirmDiscardForm(){
   resetForm();
   return true;
 }
-$('recordForm').addEventListener('input',updateFormGuard);
-$('recordForm').addEventListener('change',updateFormGuard);
+recordForm.addEventListener('input',updateFormGuard);
+recordForm.addEventListener('change',updateFormGuard);
 function isValidRecord(r){return r&&typeof r.id==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(r.date)&&['Ensayo','Acto'].includes(r.kind)&&typeof r.name==='string'&&['yes','no','just'].includes(r.status)&&(!r.notes||typeof r.notes==='string')}
 let latestSaveRequest=0;
 function save(successMessage='Guardado correctamente'){
@@ -1166,8 +1286,8 @@ function setMobileRecordsView(view){
   const mobile=window.matchMedia('(max-width:740px)').matches;
   const page=$('records');
   page.dataset.mobileView=view;
-  $('recordsHeading').textContent=mobile?(view==='form'?(editing?'Editar registro':'Nuevo registro'):'Historial'):'Ensayos y actos';
-  $('recordsIntro').textContent=mobile?(view==='form'?'Registra un ensayo o acto y marca tu asistencia.':'Consulta tus ensayos y actos.'):'Consulta tu historial o añade un ensayo o acto.';
+  $('recordsHeading').textContent=mobile?(view==='form'?(editing?'Editar registro':'Nuevo registro'):'Historial'):'Historial';
+  $('recordsIntro').textContent=mobile?(view==='form'?(editing?'Actualiza los datos y la asistencia del registro.':'Registra un ensayo o acto y marca tu asistencia.'):'Consulta tus ensayos y actos.'):'Consulta tu historial o añade un ensayo o acto.';
   const isForm=mobile&&view==='form'&&page.classList.contains('active');
   $('deleteEdited').hidden=!isForm||!editing;
   document.querySelector('.content').classList.toggle('record-form-open',isForm);
@@ -1197,7 +1317,7 @@ function initYears(){const years=new Set(records.map(r=>r.date.slice(0,4)));year
 function subset(){return records.filter(r=>(filterYear==='all'||r.date.slice(0,4)===filterYear)&&(filterMonth==='all'||Number(r.date.slice(5,7))===Number(filterMonth)))}
 function ordered(arr){return [...arr].sort((a,b)=>b.date.localeCompare(a.date)||b.id.localeCompare(a.id))}
 function renderDashboard(){initYears();$('month').value=filterMonth;const data=subset(),ensayos=data.filter(r=>r.kind==='Ensayo'),acts=data.filter(r=>r.kind==='Acto'),yes=ensayos.filter(r=>r.status==='yes').length,no=ensayos.filter(r=>r.status==='no').length,actsYes=acts.filter(r=>r.status==='yes').length,pct=ensayos.length?Math.round(100*yes/ensayos.length):null;
-$('totalRehearsals').textContent=ensayos.length.toLocaleString('es-ES');$('attendedRehearsals').textContent=yes.toLocaleString('es-ES');$('actsAttended').textContent=actsYes.toLocaleString('es-ES');$('attendanceRate').textContent=pct===null?'—':`${pct} %`;$('rehearsalDetail').textContent=ensayos.length?`Último: ${fmtDate(ordered(ensayos)[0].date)}`:'Sin ensayos en el periodo';$('missedDetail').textContent=no===1?'1 falta en total':`${no} faltas en total`;$('actsDetail').textContent=actsYes?`Último: ${fmtDate(ordered(acts.filter(r=>r.status==='yes'))[0].date)}`:'Sin actos en el periodo';
+$('attendedRehearsals').textContent=yes.toLocaleString('es-ES');$('actsAttended').textContent=actsYes.toLocaleString('es-ES');$('attendanceRate').textContent=pct===null?'—':`${pct} %`;$('missedDetail').textContent=no===1?'1 falta en total':`${no} faltas en total`;$('actsDetail').textContent=actsYes?`Último: ${fmtDate(ordered(acts.filter(r=>r.status==='yes'))[0].date)}`:'Sin actos en el periodo';
 
 const progress=$('attendanceProgress');
 progress.hidden=pct===null;
@@ -1346,10 +1466,10 @@ function renderTable(){
   $('emptyRecords').hidden=list.length>0;
 }
 function render(){renderDashboard();renderTable()}
-function resetForm(){$('recordForm').reset();$('date').value=today();editing=null;$('saveBtn').textContent='Guardar registro';$('formTitle').textContent='Nuevo registro';$('cancelEdit').hidden=true;$('deleteEdited').hidden=true;markFormClean()}
+function resetForm(){recordForm.reset();$('date').value=today();editing=null;$('saveBtn').textContent='Guardar registro';$('formTitle').textContent='Nuevo registro';$('cancelEdit').hidden=true;$('deleteEdited').hidden=true;markFormClean()}
 function download(content,name,mime){const blob=new Blob([content],{type:mime}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000)}
 function csvCell(x){return '"'+String(x??'').replace(/"/g,'""')+'"'}
-$('recordForm').addEventListener('submit',e=>{e.preventDefault();const date=$('date').value,kind=$('kind').value,name=$('name').value.trim(),status=$('status').value,notes=$('notes').value.trim();if(!date||!/^\d{4}-\d{2}-\d{2}$/.test(date)||!name||!['Ensayo','Acto'].includes(kind)||!['yes','no'].includes(status))return;if(editing){const idx=records.findIndex(r=>r.id===editing);if(idx<0)return;records[idx]={id:editing,date,kind,name,status,notes}}else records.push({id:typeof crypto!=='undefined'&&crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random(),date,kind,name,status,notes});if(!save('Guardado correctamente'))return;filterYear=date.slice(0,4);filterMonth='all';render();resetForm();if(window.matchMedia('(max-width:740px)').matches){setMobileRecordsView('history');scrollTo({top:0,behavior:'smooth'})}});
+recordForm.addEventListener('submit',e=>{e.preventDefault();const date=$('date').value,kind=recordForm.elements.kind.value,name=$('name').value.trim(),status=recordForm.elements.status.value,notes=$('notes').value.trim();if(!date||!/^\d{4}-\d{2}-\d{2}$/.test(date)||!name||!['Ensayo','Acto'].includes(kind)||!['yes','no'].includes(status))return;if(editing){const idx=records.findIndex(r=>r.id===editing);if(idx<0)return;records[idx]={id:editing,date,kind,name,status,notes}}else records.push({id:typeof crypto!=='undefined'&&crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random(),date,kind,name,status,notes});if(!save('Guardado correctamente'))return;filterYear=date.slice(0,4);filterMonth='all';render();resetForm();if(window.matchMedia('(max-width:740px)').matches){setMobileRecordsView('history');scrollTo({top:0,behavior:'smooth'})}});
 let pendingDeleteId=null, deleteRecordTrigger=null;
 function openDeleteConfirmation(record,trigger){
   pendingDeleteId=record.id;
@@ -1398,8 +1518,8 @@ function handleRecordAction(e){
     if(!confirmDiscardForm())return;
     if(!$('records').classList.contains('active'))show('records');
     editing=r.id;
-    $('date').value=r.date;$('kind').value=r.kind;$('name').value=r.name;
-    $('status').value=r.status==='just'?'no':r.status;
+    $('date').value=r.date;recordForm.elements.kind.value=r.kind;$('name').value=r.name;
+    recordForm.elements.status.value=r.status==='just'?'no':r.status;
     $('notes').value=r.notes||'';
     $('saveBtn').textContent='Guardar cambios';$('formTitle').textContent='Editar registro';
     $('cancelEdit').hidden=false;
