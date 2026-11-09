@@ -175,14 +175,10 @@
   .content{padding-left:12px;padding-right:12px}
 }
 
-/* En móvil, Registros y Añadir abren pantallas diferentes. */
-@media(max-width:740px){
-  #records[data-mobile-view="history"] #formPanel{display:none;}
-  #records[data-mobile-view="form"] #historyPanel{display:none;}
-
-  #records[data-mobile-view="history"] #historyPanel{margin-top:0;}
-  #records[data-mobile-view="form"] #formPanel{margin-top:0;}
-}
+/* Historial y formulario comparten navegación en todos los tamaños. */
+#records[data-view="history"] #formPanel,
+#records[data-view="form"] :is(#historyPanel,.history-add){display:none}
+#records[data-view="form"] #formPanel{margin:0}
 
 /* Formulario responsivo: evita que el selector nativo de fecha de Safari sobresalga */
 #formPanel,#recordForm,#recordForm .form-grid,#recordForm .field{min-width:0;max-width:100%}
@@ -195,14 +191,6 @@
   #recordForm .field{width:100%;min-width:0}
   #recordForm input,#recordForm select,#recordForm textarea{font-size:16px}
   #recordForm input[type="date"]{min-height:46px;overflow:hidden}
-}
-
-/* Historial compacto para móvil: sin tabla desplazable */
-.mobile-record-list{display:none}
-@media(max-width:740px){
-  #historyPanel .tablewrap{display:none}
-  #historyPanel .mobile-record-list{display:grid}
-  #historyPanel .empty{padding:25px 12px}
 }
 
 /* Evolución mensual: línea de porcentaje, sin confundir meses sin ensayos con 0 %. */
@@ -240,16 +228,6 @@
 @media(max-width:740px){.attendance-trend{padding:17px}.trend-heading{gap:8px;align-items:start}.trend-heading h2{font-size:16px}.trend-heading .note{font-size:11px}.trend-period{font-size:10px;padding:6px 8px}.trend-visual{grid-template-columns:31px minmax(0,1fr);gap:6px;margin-top:18px}.trend-months span{font-size:9px}.trend-plot,.trend-y-labels{height:150px}.trend-summary{margin-top:17px}}
 @media(max-width:365px){.trend-months span{font-size:8px}.trend-period{max-width:102px;white-space:normal;text-align:center}}
 
-/* Secciones de últimos registros separadas en el resumen */
-.recent-split{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:16px}
-.recent-split .recent{margin-top:0;min-width:0}
-.recent-split .section-head{align-items:flex-start}
-.recent-split .section-head h2{font-size:17px}
-.recent-split .recent-item{grid-template-columns:43px minmax(0,1fr) auto;gap:9px}
-.recent-split .recent-item small{display:block;margin-top:4px}
-.recent-split .recent-item strong{overflow-wrap:anywhere}
-@media(max-width:1000px){.recent-split{grid-template-columns:minmax(0,1fr)}}
-@media(max-width:740px){.recent-split{gap:12px}.recent-split .recent-item{grid-template-columns:43px minmax(0,1fr)}.recent-split .recent-item .pill{grid-column:2;justify-self:start}}
 /* Historial: pestañas para ensayos y actos */
 .record-kinds{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:5px;border:1px solid #e5ebf5;border-radius:15px;background:#f2f5fa;margin:14px 0 16px}
 .kind-tab{min-width:0;min-height:44px;display:flex;align-items:center;justify-content:center;gap:8px;padding:9px 7px;border:1px solid transparent;border-radius:11px;background:transparent;color:#64748b;font-size:13px;font-weight:750;cursor:pointer;transition:background .18s,color .18s,box-shadow .18s}
@@ -345,14 +323,13 @@
 #recordForm .date-input-frame #date::-webkit-calendar-picker-indicator{
   flex-shrink:0;margin:0;
 }
+#records[data-view="form"] .form-actions{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  margin-top:15px;margin-bottom:0;padding-bottom:0;
+}
+#records[data-view="form"] #saveBtn{grid-column:1/-1;min-height:47px}
+#cancelRecord:has(+ #deleteEdited[hidden]){grid-column:1/-1}
 @media(max-width:740px){
-  #records[data-mobile-view="form"] #formPanel{margin:0;padding-bottom:16px}
-  #records[data-mobile-view="form"] .form-actions{
-    display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
-    margin-top:15px;margin-bottom:0;padding-bottom:0;
-  }
-  #records[data-mobile-view="form"] #saveBtn{grid-column:1/-1;min-height:47px}
-  #cancelRecord:has(+ #deleteEdited[hidden]){grid-column:1/-1}
   #recordForm .form-grid{grid-template-columns:minmax(0,1fr)}
   #recordForm .form-grid>*{min-width:0;max-width:100%}
 }
@@ -507,7 +484,7 @@ select{padding-right:25px;cursor:pointer}
 #dashboard .stat-card{box-shadow:0 10px 29px rgba(29,48,80,.065),inset 0 1px 0 rgba(255,255,255,.95)}
 #dashboard .stat-card .value{font-weight:810}
 .layout{gap:17px}
-.layout .panel,.attendance-trend,.recent-split .panel{border-radius:24px}
+.layout .panel,.attendance-trend{border-radius:24px}
 .bars{border-bottom-color:#e3ebf7}
 .months{color:#9aa7b9}
 .legend{color:#77869a;gap:18px}
@@ -519,9 +496,6 @@ select{padding-right:25px;cursor:pointer}
   background:linear-gradient(110deg,#f1f7ff,#f7faff);
   border:1px solid #e6effd;border-radius:15px;color:#587394;
 }
-.recent-split{gap:17px}
-.recent-split .recent{padding:21px}
-.recent-split .section-head h2{font-size:17px}
 .recent-item{padding:14px 0;border-bottom-color:#edf2f7}
 .recent-item strong{font-weight:730;color:#253650}
 .recent-item small{color:#98a3b5}
@@ -571,17 +545,6 @@ select{padding-right:25px;cursor:pointer}
 #historyPanel .toolbar #search,#historyPanel .toolbar #statusFilter{background-color:#fbfcff}
 .history-period{margin:0 0 16px}
 .history-period .note{color:#93a0b3}
-#historyPanel table{border-collapse:separate;border-spacing:0;font-size:13px}
-#historyPanel th{
-  padding:13px 12px;background:#f7f9fd;
-  color:#8490a5;border-bottom:1px solid #e8eef6;font-size:11px;font-weight:720;
-}
-#historyPanel th:first-child{border-radius:11px 0 0 0}
-#historyPanel th:last-child{border-radius:0 11px 0 0}
-#historyPanel td{padding:14px 12px;border-color:#edf1f7;color:#3e4c63}
-#historyPanel td strong{color:#273850}
-#historyPanel tbody tr:hover td{background:#fafcff}
-#historyPanel .row-actions{gap:7px}
 /* Ajustes y bloques de administración */
 #settings>.panel{margin-bottom:16px;padding:24px}
 #settings>.panel h2{font-size:17px;letter-spacing:-.4px}
@@ -666,10 +629,7 @@ select{padding-right:25px;cursor:pointer}
  .filters .field{flex:1 1 128px;min-width:0}
  .filters select{min-width:0;width:100%;font-size:14px;height:46px}
  .filters .btn{min-height:46px;border-radius:13px}
- .recent-split{gap:13px}
- .recent-split .recent{padding:18px}
- #records[data-mobile-view="history"] #historyPanel{padding:17px;margin:0}
- #records[data-mobile-view="form"] #formPanel{padding:18px;margin:0}
+ #records[data-view="form"] #formPanel{padding:18px;margin:0}
  #formPanel .section-head,#historyPanel .section-head{margin-bottom:15px}
  #recordForm .form-grid{gap:15px}
  #recordForm input,#recordForm select,#recordForm textarea{font-size:16px}
@@ -703,58 +663,6 @@ select{padding-right:25px;cursor:pointer}
  .sidebar,.bottomnav,.auth-card,.account-pill{background:#fff;-webkit-backdrop-filter:none;backdrop-filter:none}
 }
 
-/* Tarjetas unificadas para Inicio e Historial · estilo de listas iOS */
-.record-glance-head{display:flex;align-items:center;gap:12px;min-width:0}
-.date-tile{display:flex;align-items:center;justify-content:center;flex-direction:column;flex:0 0 58px;width:58px;min-height:65px;padding:7px 4px;background:#eaf3ff;color:#246fcb;border:1px solid #e1edfd;border-radius:16px;font-variant-numeric:tabular-nums}
-.date-tile strong{display:block;font-size:24px;font-weight:810;line-height:1.04;letter-spacing:-.8px}
-.date-tile span{font-size:10px;line-height:1.3;font-weight:800;text-transform:uppercase;letter-spacing:.5px}
-.date-tile small{font-size:10px;line-height:1.2;font-weight:640;color:#7d9ac0}
-.kind-acto .date-tile{background:#f2edff;border-color:#e8dfff;color:#8156c2}
-.kind-acto .date-tile small{color:#a18abd}
-.record-glance-body{min-width:0;flex:1;display:flex;flex-direction:column;gap:5px}
-.record-glance-name{font-size:14px;line-height:1.34;letter-spacing:-.2px;font-weight:760;color:#25354d;overflow-wrap:anywhere}
-.record-glance-meta{font-size:11.5px;font-weight:550;line-height:1.36;color:#92a0b2}
-.record-glance-notes{font-size:11.5px;line-height:1.45;color:#8692a4;overflow-wrap:anywhere;white-space:pre-wrap}
-.record-status-icon{flex:0 0 33px;width:33px;height:33px;border-radius:50%;display:grid;place-items:center;background:#e7f8f0;color:#159266}
-.record-status-icon.no{background:#fff0f2;color:#c9485f}
-.record-status-icon.acto{background:#f4efff;color:#8c61cc}
-.record-status-icon svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.recent-split .recent{padding:20px}
-.recent-split .recent .section-head{align-items:center;gap:8px;margin-bottom:16px}
-.recent-split .recent .section-head h2{font-size:16px;letter-spacing:-.35px}
-.recent-split .recent .recent-more{display:inline-flex;align-items:center;gap:2px;min-height:32px;padding:5px 7px;background:transparent;border:0;border-radius:10px;color:#1674de;font-size:11.5px;font-weight:730;white-space:nowrap;box-shadow:none}
-.recent-split .recent .recent-more:hover{background:#eef6ff}
-.recent-split .recent .recent-more svg{width:14px;height:14px}
-/* Listas agrupadas, como en la app Calendario: una tarjeta exterior, filas ligeras. */
-.recent-split .recent-item{
-  display:block;min-width:0;margin:0;padding:13px 0;
-  border:0;border-bottom:1px solid #edf1f6;border-radius:0;
-  background:transparent;box-shadow:none;
-}
-.recent-split .recent-item:last-child{border-bottom:0;padding-bottom:4px}
-.recent-split .recent-item:first-child{padding-top:3px}
-.recent-split .recent-item .record-glance-head{align-items:center}
-.recent-split .recent-item .record-glance-body{gap:2px;justify-content:center}
-.recent-split .recent-item .date-tile{flex-basis:53px;width:53px;min-height:60px;border-radius:14px}
-.recent-split .recent-item .date-tile strong{font-size:22px}
-.recent-split .recent-item .record-glance-name{
-  font-size:13px;line-height:1.27;min-height:0;
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
-  overflow:hidden;
-}
-.recent-split .recent-item .record-glance-meta{font-size:11px;line-height:1.3}
-.recent-split .recent-item .record-status-icon{flex-basis:30px;width:30px;height:30px}
-.recent-split .recent-item .record-status-icon svg{width:18px;height:18px}
-@media(max-width:740px){
- .recent-split .recent{padding:18px}
- .recent-split .recent-item{padding:13px 0}
- .recent-split .recent-item:first-child{padding-top:3px}
- .recent-split .recent-item:last-child{padding-bottom:3px}
-}
-@media(max-width:380px){
- .recent-split .recent-item .record-glance-head{gap:10px}
-}
-
 /* Apariencia: superficies azul noche y acentos suaves, también en móvil. */
 .theme-field{max-width:320px;margin-top:16px}
 html[data-theme="dark"]{
@@ -773,8 +681,8 @@ html[data-theme="dark"] .sidebar .nav button{color:#d1dcea}
 html[data-theme="dark"] .sidebar .nav button:hover{background:var(--control);border-color:var(--control-border);color:#fff}
 html[data-theme="dark"] .sidebar .nav button.active{background:var(--selected);border-color:var(--selection-border);color:var(--on-selected);box-shadow:none}
 html[data-theme="dark"] :is(.sidebar-foot,.brand small){color:var(--muted)}
-html[data-theme="dark"] :is(.page>.head h1,.section-head h2,.panel h2,.account-details strong,.auth-card h1,.record-glance-name){color:var(--text)}
-html[data-theme="dark"] :is(.page>.head p,.note,.field label,.account-details small,.auth-card p,.sync-help,.record-glance-meta,.record-glance-notes,.legend,.months,.trend-y-labels,.trend-months span,.trend-plot .trend-empty,.delete-dialog p){color:var(--muted)}
+html[data-theme="dark"] :is(.page>.head h1,.section-head h2,.panel h2,.account-details strong,.auth-card h1){color:var(--text)}
+html[data-theme="dark"] :is(.page>.head p,.note,.field label,.account-details small,.auth-card p,.sync-help,.legend,.months,.trend-y-labels,.trend-months span,.trend-plot .trend-empty,.delete-dialog p){color:var(--muted)}
 html[data-theme="dark"] #settings>.panel .note{color:var(--muted)}
 html[data-theme="dark"] :is(input,select,textarea),
 html[data-theme="dark"] #recordForm .date-input-frame,
@@ -793,7 +701,7 @@ html[data-theme="dark"] #dashboard .stat-card{box-shadow:var(--shadow)}
 html[data-theme="dark"] #dashboard .stat-card.asistidos{--stat-tint:#19352f;--stat-border:#2e5347;--stat-heading:#97d4b8;--stat-value:#7fe0b1;--stat-caption:#9fbdaf}
 html[data-theme="dark"] #dashboard .stat-card.actos{--stat-tint:#2e2843;--stat-border:#4b3e65;--stat-heading:#cbb5ed;--stat-value:#c9adff;--stat-caption:#bbadce}
 html[data-theme="dark"] #dashboard .stat-card.porcentaje{--stat-tint:#382e21;--stat-border:#594932;--stat-heading:#e1c28e;--stat-value:#f3cc87;--stat-caption:#caba9d}
-html[data-theme="dark"] :is(.bars,.recent-split .recent-item){border-color:var(--line)}
+html[data-theme="dark"] .bars{border-color:var(--line)}
 html[data-theme="dark"] .trend-plot .trend-gridline{stroke:var(--line)}
 html[data-theme="dark"] .trend-plot .trend-stroke{stroke:var(--blue)}
 html[data-theme="dark"] .trend-plot .trend-point{background:var(--panel);border-color:var(--blue)}
@@ -802,26 +710,13 @@ html[data-theme="dark"] .trend-plot .trend-area{opacity:.22}
 html[data-theme="dark"] :is(.trend-period,.trend-summary){background:var(--dark-blue);border-color:var(--line);color:#b7d3f4}
 html[data-theme="dark"] .trend-summary::before{color:var(--blue)}
 html[data-theme="dark"] .trend-months :is(.with-data,.highlight){color:#b7d3f4}
-html[data-theme="dark"] .date-tile{background:var(--dark-blue);border-color:#304a6a;color:#a2caff}
-html[data-theme="dark"] .date-tile strong{color:inherit}
-html[data-theme="dark"] .date-tile small{color:#a2b9d7}
-html[data-theme="dark"] .kind-acto .date-tile{background:var(--dark-purple);border-color:#4b3e65;color:#c9adff}
-html[data-theme="dark"] .kind-acto .date-tile small{color:#bbadce}
-html[data-theme="dark"] :is(.record-status-icon,.pill.yes){background:var(--dark-green);color:var(--green)}
-html[data-theme="dark"] :is(.record-status-icon.no,.pill.no,.delete-dialog-icon){background:var(--dark-red);color:var(--red)}
-html[data-theme="dark"] .record-status-icon.acto{background:var(--dark-purple);color:#c9adff}
-html[data-theme="dark"] .recent-split .recent .recent-more{background:var(--control);border:1px solid var(--control-border);color:#f0f5ff}
-html[data-theme="dark"] .recent-split .recent .recent-more:hover{background:#31435d}
+html[data-theme="dark"] .delete-dialog-icon{background:var(--dark-red);color:var(--red)}
 html[data-theme="dark"] .record-kinds{background:var(--bg);border-color:var(--line)}
 html[data-theme="dark"] .kind-tab{color:#d1dcea}
 html[data-theme="dark"] .kind-tab:hover{background:var(--control)}
 html[data-theme="dark"] .kind-tab.active{background:var(--selected);border-color:var(--selection-border);color:var(--on-selected);box-shadow:none}
 html[data-theme="dark"] .kind-tab-count{background:var(--dark-raised);color:var(--muted)}
 html[data-theme="dark"] .kind-tab.active .kind-tab-count{background:#304f77;color:#e7edf6}
-html[data-theme="dark"] #historyPanel th{background:var(--bg);color:var(--muted);border-color:var(--line)}
-html[data-theme="dark"] #historyPanel td{color:var(--text);border-color:var(--line)}
-html[data-theme="dark"] #historyPanel td strong{color:var(--text)}
-html[data-theme="dark"] #historyPanel tbody tr:hover td{background:var(--dark-raised)}
 html[data-theme="dark"] #settings .settings-heading .ui-icon{background:var(--dark-blue);border-color:var(--line);color:var(--blue)}
 html[data-theme="dark"] #settings .settings-backup .settings-heading .ui-icon{background:var(--dark-green);border-color:#2e5347;color:var(--green)}
 html[data-theme="dark"] #settings>.panel:last-child .settings-heading .ui-icon{background:var(--dark-red);border-color:#704051;color:var(--red)}
@@ -834,11 +729,8 @@ html[data-theme="dark"] .sync-state[data-state="error"] .sync-dot{box-shadow:0 0
 html[data-theme="dark"] .auth-gate{background:radial-gradient(circle at 15% 25%,#203b60,transparent 48%),radial-gradient(circle at 90% 72%,#302947,transparent 45%),var(--bg)}
 html[data-theme="dark"] .delete-dialog-record{background:var(--bg);border-color:var(--line)}
 html[data-theme="dark"] :is(.toast,.graph-tooltip){background:#223149;border-color:#526781}
-/* Tres destinos a todo el ancho y acción flotante separada de la barra. */
+/* Navegación inferior para móvil. */
 @media(max-width:740px){
-  .content{padding-bottom:calc(164px + env(safe-area-inset-bottom,0px))}
-  .content.record-form-open{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
-  .content.record-form-open #formPanel>.section-head{display:none}
   .bottomnav{
     display:grid;position:fixed;inset:auto 0 0;z-index:15;
     grid-template-columns:repeat(3,minmax(0,1fr));align-items:center;gap:4px;
@@ -902,9 +794,55 @@ html[data-theme="dark"] #dashboard .stat-card.porcentaje{
 #attendanceProgress::-webkit-progress-value{background:var(--blue);border-radius:10px}
 #attendanceProgress::-moz-progress-bar{background:var(--blue);border-radius:10px}
 #dashboard .attendance-trend{margin:0}
-.mobile-recent,.history-add,.history-count{display:none}
+.dashboard-recent{margin-top:18px;min-width:0}
+.dashboard-recent .section-head{margin:0 3px 10px}
+.dashboard-recent h2{font-size:17px}
+#historyPanel{padding:0;background:none;border:0;box-shadow:none;margin:0}
+html[data-theme="dark"] #historyPanel{background:none}
+.history-add{border-radius:12px}
+html[data-theme="dark"] #records .history-add{background:#e0e6ef;color:#101727;border-color:#e0e6ef}
+.history-controls,.record-stack{border:1px solid var(--line);border-radius:17px;background:var(--panel)}
+.history-controls{padding:14px}
+html[data-theme="dark"] .history-controls{background:#151d2d}
+#historyPanel .history-controls .section-head{margin:0 0 10px}
+#historyPanel .record-kinds{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px;padding:0;background:none;border:0}
+#historyPanel .kind-tab{flex:0 1 auto;min-height:40px;padding:6px 10px;border-radius:20px}
+#historyPanel .toolbar{margin:0;gap:8px}
+#historyPanel .history-period{margin:8px 0 0}
+.history-count{display:block;font-size:17px;font-weight:750;margin:18px 3px 0}
+#historyPanel .history-list{display:grid;gap:14px;margin-top:10px}
+.record-group h3{margin:0 4px 7px;color:var(--muted);font-size:12px;font-weight:750}
+.record-stack{overflow:hidden}
+.record-stack .empty{margin:0}
+.compact-record{
+  display:grid;grid-template-columns:36px minmax(0,1fr) auto 9px;gap:9px;align-items:center;
+  width:100%;min-height:62px;padding:10px 11px;border:0;background:none;color:var(--text);
+  text-align:left;touch-action:manipulation;
+}
+.compact-record+.compact-record{border-top:1px solid var(--line)}
+.compact-record:hover{background:var(--bg)}
+.compact-record:focus-visible{outline:2px solid var(--blue);outline-offset:-3px}
+.compact-icon{
+  display:grid;place-items:center;width:36px;height:36px;border-radius:50%;
+  background:#e8f2ff;color:#276dc6;
+}
+.compact-record.is-act .compact-icon{background:#f2edff;color:#7047a8}
+html[data-theme="dark"] .compact-icon{background:#233b5b;color:#67afff}
+html[data-theme="dark"] .compact-record.is-act .compact-icon{background:#383051;color:#c4a4ff}
+.compact-icon svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.compact-description strong{display:block;font-size:14px;overflow-wrap:anywhere}
+.compact-description small{display:block;margin-top:3px;color:var(--muted);font-size:12px}
+.compact-description .compact-notes{display:none;overflow-wrap:anywhere}
+.compact-status{font-size:12px;font-weight:750}
+.compact-status.absent{color:var(--red)}
+.compact-arrow{color:var(--muted);font-size:19px}
+
 @media(max-width:740px){
-  .content,.content.record-form-open{padding-bottom:calc(90px + env(safe-area-inset-bottom,0px))}
+  #recentHistory{display:none}
+  #historyPanel .toolbar input{font-size:16px}
+  #records[data-view="history"]>.head{align-items:stretch;flex-direction:column}
+  #records[data-view="history"] .history-add{width:100%}
+  .content{padding-bottom:calc(90px + env(safe-area-inset-bottom,0px))}
   :is(#dashboard,#records)>.head h1{font-size:30px}
   :is(#dashboard,#records)>.head p{font-size:14px}
 
@@ -914,50 +852,6 @@ html[data-theme="dark"] #dashboard .stat-card.porcentaje{
   #dashboard .filters select{padding-inline:9px}
   #dashboard #clearFilters{padding-inline:10px}
   #dashboard .stat-card.porcentaje{grid-column:1/-1}
-  #dashboard .recent-split{display:none}
-  .mobile-recent{display:block;margin-top:18px}
-  .mobile-recent h2{font-size:17px;margin:0 3px 10px}
-
-  #records[data-mobile-view="history"]>.head{align-items:stretch;flex-direction:column}
-  #records[data-mobile-view="history"] .history-add{display:block;width:100%;border-radius:12px}
-  html[data-theme="dark"] #records .history-add{background:#e0e6ef;color:#101727;border-color:#e0e6ef}
-  #records[data-mobile-view="history"] #historyPanel{padding:0;background:none;border:0;box-shadow:none}
-  .history-controls,.record-stack{border:1px solid var(--line);border-radius:17px;background:var(--panel)}
-  .history-controls{padding:14px}
-  html[data-theme="dark"] .history-controls{background:#151d2d}
-  #historyPanel .history-controls .section-head{margin:0 0 10px}
-  #historyPanel .record-kinds{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px;padding:0;background:none;border:0}
-  #historyPanel .kind-tab{flex:0 1 auto;min-height:40px;padding:6px 10px;border-radius:20px}
-  #historyPanel .toolbar{margin:0;gap:8px}
-  #historyPanel .toolbar input{font-size:16px}
-  #historyPanel .history-period{margin:8px 0 0}
-  .history-count{display:block;font-size:17px;font-weight:750;margin:18px 3px 0}
-  #historyPanel .mobile-record-list{gap:14px;margin-top:10px}
-  .record-group h3{margin:0 4px 7px;color:var(--muted);font-size:12px;font-weight:750}
-  .record-stack{overflow:hidden}
-  .record-stack .empty{margin:0}
-  .compact-record{
-    display:grid;grid-template-columns:36px minmax(0,1fr) auto 9px;gap:9px;align-items:center;
-    width:100%;min-height:62px;padding:10px 11px;border:0;background:none;color:var(--text);
-    text-align:left;touch-action:manipulation;
-  }
-  .compact-record+.compact-record{border-top:1px solid var(--line)}
-  .compact-record:hover{background:var(--bg)}
-  .compact-record:focus-visible{outline:2px solid var(--blue);outline-offset:-3px}
-  .compact-icon{
-    display:grid;place-items:center;width:36px;height:36px;border-radius:50%;
-    background:#e8f2ff;color:#276dc6;
-  }
-  .compact-record.is-act .compact-icon{background:#f2edff;color:#7047a8}
-  html[data-theme="dark"] .compact-icon{background:#233b5b;color:#67afff}
-  html[data-theme="dark"] .compact-record.is-act .compact-icon{background:#383051;color:#c4a4ff}
-  .compact-icon svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-  .compact-description strong{display:block;font-size:14px;overflow-wrap:anywhere}
-  .compact-description small{display:block;margin-top:3px;color:var(--muted);font-size:12px}
-  .compact-status{font-size:12px;font-weight:750}
-  .compact-status.absent{color:var(--red)}
-  .compact-arrow{color:var(--muted);font-size:19px}
-
   .bottomnav{
     inset:auto max(8px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px));
     grid-template-columns:repeat(4,minmax(0,1fr));
@@ -1042,7 +936,7 @@ html[data-theme="dark"] .auth-notice{background:#141d2d}
 .toast{background:var(--text);color:var(--bg);border-color:var(--line);border-radius:13px}
 html[data-theme="dark"] .toast{background:#1b2434;color:var(--text)}
 
-/* La navegación lateral y la tabla aprovechan pantallas anchas. */
+/* La navegación lateral y las listas aprovechan pantallas anchas. */
 @media(min-width:741px){
   html[data-theme="dark"] .sidebar{background:#171f30;border-color:var(--line)}
   html[data-theme="dark"] .sidebar .nav button.active{background:#2a3345;border-color:#3b4454;color:var(--text)}
@@ -1051,17 +945,13 @@ html[data-theme="dark"] .toast{background:#1b2434;color:var(--text)}
   #dashboard .stat-card.porcentaje{grid-column:auto;grid-row:auto}
   #dashboard .stat-card.porcentaje .value{font-size:clamp(38px,4vw,52px)}
   #dashboard .stat-card:not(.porcentaje) .value{font-size:clamp(28px,3vw,38px)}
-  #dashboard .recent-split{margin:0;grid-template-columns:minmax(0,1fr)}
   #dashboard .layout{margin:0;grid-column:1/-1}
   .dashboard-insights{display:grid;gap:14px;align-items:start}
-  #historyPanel .history-controls{padding:0 0 12px;border-bottom:1px solid var(--line)}
-  #historyPanel .history-count{display:block;margin:14px 0;font-size:14px;font-weight:750}
-  #historyPanel .history-period{margin:0}
-  #historyPanel .tablewrap{border:1px solid var(--line);border-radius:13px}
-  #historyPanel th:first-child,#historyPanel th:last-child{border-radius:0}
-  #historyPanel td{overflow-wrap:anywhere}
-  #historyPanel td:first-child{white-space:nowrap}
-  #historyPanel .row-actions{flex-wrap:wrap}
+  .dashboard-recent{margin:0}
+  #records[data-view="form"] #formPanel{max-width:740px}
+  #historyPanel .history-controls{padding:18px}
+  #historyPanel .compact-record{padding:12px 16px;gap:12px}
+  #historyPanel .compact-notes{display:block;white-space:pre-wrap}
   #settings.active{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:start}
   #settings>.head{grid-column:1/-1;margin-bottom:4px}
   #settings>.panel{margin:0;padding:18px}
@@ -1070,9 +960,6 @@ html[data-theme="dark"] .toast{background:#1b2434;color:var(--text)}
   .app{grid-template-columns:178px minmax(0,1fr)}
   .sidebar{padding-inline:10px}
   .sidebar .brand{padding-inline:3px;gap:8px}
-  #historyPanel table{min-width:0}
-  #historyPanel :is(td,th){padding-inline:7px}
-  #historyPanel .row-actions{gap:4px}
   #settings.active{grid-template-columns:minmax(0,1fr)}
 }
 @media(min-width:1150px){
@@ -1080,7 +967,7 @@ html[data-theme="dark"] .toast{background:#1b2434;color:var(--text)}
     grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);
     grid-template-rows:auto 1fr;
   }
-  #dashboard .recent-split{grid-column:2;grid-row:1/3}
+  .dashboard-recent{grid-column:2;grid-row:1/3}
   #dashboard .layout{grid-column:1;grid-row:2}
 }
 </style>
@@ -1127,27 +1014,19 @@ html[data-theme="dark"] .toast{background:#1b2434;color:var(--text)}
   </div>
   <p id="trendSummary" class="trend-summary" role="status"></p>
 </div>
-<div class="mobile-recent">
-  <h2>Actividad reciente</h2>
-  <div id="mobileRecentRecords" class="record-stack"></div>
-</div>
-<div class="recent-split">
-  <div class="panel recent">
-    <div class="section-head"><h2>Últimos ensayos</h2><button type="button" class="btn sm recent-more" data-recent-kind="Ensayo" aria-label="Ver todos los ensayos">Ver todos <svg class="ui-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button></div>
-    <div id="recentEnsayos"></div>
+<div class="dashboard-recent">
+  <div class="section-head">
+    <h2>Actividad reciente</h2>
+    <button type="button" class="btn sm" id="recentHistory">Ver historial</button>
   </div>
-  <div class="panel recent">
-    <div class="section-head"><h2>Últimos actos</h2><button type="button" class="btn sm recent-more" data-recent-kind="Acto" aria-label="Ver todos los actos">Ver todos <svg class="ui-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button></div>
-    <div id="recentActos"></div>
-  </div>
+  <div id="recentRecords" class="record-stack"></div>
 </div>
 <div class="layout"><div class="panel"><div class="section-head"><h2>Actividad por meses</h2><span id="chartYear"></span></div><div class="bars" id="chart"></div><div class="months" id="monthLabels"></div><div class="legend"><span><i style="background:#2563eb"></i> Ensayos asistidos</span><span><i style="background:#22a06b"></i> Actos realizados</span></div></div>
 </div>
 </div>
 </section>
-<section id="records" class="page" data-mobile-view="history"><div class="head"><div><h1 id="recordsHeading">Historial</h1><p id="recordsIntro">Consulta tu historial o añade un ensayo o acto.</p></div><button type="button" class="btn history-add" id="historyAdd">+ Añadir registro</button></div>
+<section id="records" class="page" data-view="history"><div class="head"><div><h1 id="recordsHeading">Historial</h1><p id="recordsIntro">Consulta tu historial o añade un ensayo o acto.</p></div><button type="button" class="btn history-add" id="historyAdd">+ Añadir registro</button></div>
 <div class="panel" id="formPanel">
-  <div class="section-head"><h2 id="formTitle">Nuevo registro</h2></div>
   <form id="recordForm">
     <div class="form-grid">
       <div class="field"><label for="date">Fecha *</label><div class="date-input-frame"><input required id="date" type="date"></div></div>
@@ -1184,7 +1063,7 @@ html[data-theme="dark"] .toast{background:#1b2434;color:var(--text)}
   </div>
   <div class="toolbar"><input id="search" type="search" placeholder="Buscar por nombre, tipo o notas" aria-label="Buscar">
     <select id="typeFilter" hidden aria-label="Filtro interno por tipo"><option value="all">Todos los tipos</option><option value="Ensayo">Solo ensayos</option><option value="Acto">Solo actos</option></select>
-    <select id="statusFilter" aria-label="Filtrar asistencia"><option value="all">Todas las asistencias</option><option value="yes">Asistí</option><option value="no">No asistí</option></select></div><div class="history-period"><p class="note" id="recordFilterDescription"></p><button type="button" class="btn sm" id="clearHistoryFilters" hidden>Ver todos</button></div></div><p class="history-count" id="historyCount" role="status"></p><div class="tablewrap"><table><thead><tr><th>Fecha</th><th>Actividad</th><th>Nombre</th><th>Asistencia</th><th>Acciones</th></tr></thead><tbody id="rows"></tbody></table></div><div id="mobileRecords" class="mobile-record-list" aria-label="Lista de ensayos y actos"></div><div class="empty" id="emptyRecords" hidden>No hay registros con estos filtros.</div></div>
+    <select id="statusFilter" aria-label="Filtrar asistencia"><option value="all">Todas las asistencias</option><option value="yes">Asistí</option><option value="no">No asistí</option></select></div><div class="history-period"><p class="note" id="recordFilterDescription"></p><button type="button" class="btn sm" id="clearHistoryFilters" hidden>Ver todos</button></div></div><p class="history-count" id="historyCount" role="status"></p><div id="historyRecords" class="history-list" aria-label="Lista de ensayos y actos"></div><div class="empty" id="emptyRecords" hidden>No hay registros con estos filtros.</div></div>
 </section>
 <section id="settings" class="page"><div class="head"><div><h1>Ajustes</h1><p>Apariencia, sincronización y copias de seguridad.</p></div></div>
 <div class="panel sync-panel">
@@ -1279,23 +1158,20 @@ function save(successMessage='Guardado correctamente'){
 function escapeHtml(str){return String(str??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function fmtDate(iso){const a=iso.split('-');return `${a[2]}/${a[1]}/${a[0]}`}
 function labelStatus(s){return {yes:'Asistí',no:'No asistí'}[s]||s}
-function pill(s){return `<span class="pill ${s}">${s==='yes'?'✓ ':'✕ '}${labelStatus(s)}</span>`}
 function toast(msg,persistent=false){
   $('toast').textContent=msg;
   $('toast').classList.add('on');
   clearTimeout(toastTimeout);
   if(!persistent)toastTimeout=setTimeout(()=>$('toast').classList.remove('on'),2800);
 }
-function setMobileRecordsView(view){
-  const mobile=window.matchMedia('(max-width:740px)').matches;
+function setRecordsView(view){
   const page=$('records');
-  page.dataset.mobileView=view;
+  page.dataset.view=view;
   if(view==='history')newRecordOrigin=null;
-  $('recordsHeading').textContent=mobile?(view==='form'?(editing?'Editar registro':'Nuevo registro'):'Historial'):'Historial';
-  $('recordsIntro').textContent=mobile?(view==='form'?(editing?'Actualiza los datos y la asistencia del registro.':'Registra un ensayo o acto y marca tu asistencia.'):'Consulta tus ensayos y actos.'):'Consulta tu historial o añade un ensayo o acto.';
-  const isForm=mobile&&view==='form'&&page.classList.contains('active');
+  $('recordsHeading').textContent=view==='form'?(editing?'Editar registro':'Nuevo registro'):'Historial';
+  $('recordsIntro').textContent=view==='form'?(editing?'Actualiza los datos y la asistencia del registro.':'Registra un ensayo o acto y marca tu asistencia.'):'Consulta tus ensayos y actos.';
+  const isForm=view==='form'&&page.classList.contains('active');
   $('deleteEdited').hidden=!isForm||!editing;
-  document.querySelector('.content').classList.toggle('record-form-open',isForm);
   const recordTab=document.querySelector('.bottomnav [data-page="records"]');
   const addTab=$('mobileAdd');
   const adding=isForm&&!editing;
@@ -1309,7 +1185,7 @@ function setMobileRecordsView(view){
 }
 function show(page){
   const recordsPage=$('records');
-  const leavesForm=recordsPage.classList.contains('active')&&(page!=='records'||(window.matchMedia('(max-width:740px)').matches&&recordsPage.dataset.mobileView==='form'));
+  const leavesForm=recordsPage.classList.contains('active')&&recordsPage.dataset.view==='form';
   if(leavesForm&&!confirmDiscardForm())return false;
   document.querySelectorAll('.page').forEach(e=>e.classList.toggle('active',e.id===page));
   document.querySelectorAll('[data-page]').forEach(e=>{
@@ -1317,8 +1193,8 @@ function show(page){
     e.classList.toggle('active',active);
     if(e.closest('.bottomnav')){if(active)e.setAttribute('aria-current','page');else e.removeAttribute('aria-current')}
   });
-  if(page==='records')renderTable();
-  setMobileRecordsView('history');
+  if(page==='records')renderHistory();
+  setRecordsView('history');
   scrollTo({top:0,behavior:'smooth'});
 }
 function initYears(){const years=new Set(records.map(r=>r.date.slice(0,4)));years.add(String(new Date().getFullYear()));if(/^\d{4}$/.test(filterYear))years.add(filterYear);const opts=['<option value="all">Todos los años</option>',...[...years].sort((a,b)=>Number(b)-Number(a)).map(y=>`<option value="${y}">${y}</option>`)];$('year').innerHTML=opts.join('');$('year').value=filterYear}
@@ -1336,14 +1212,7 @@ hideGraphTooltip();
 const chartData=filterYear==='all'?data:records.filter(r=>r.date.slice(0,4)===filterYear);const buckets=Array.from({length:12},(_,m)=>{const list=chartData.filter(r=>Number(r.date.slice(5,7))===m+1);return {ensayos:list.filter(r=>r.kind==='Ensayo'&&r.status==='yes').length,actos:list.filter(r=>r.kind==='Acto'&&r.status==='yes').length}});const max=Math.max(1,...buckets.flatMap(b=>[b.ensayos,b.actos]));$('chartYear').textContent=filterYear==='all'?'Todos los años (agrupado por mes)':filterYear+(filterMonth==='all'?'':` · ${monthNames[Number(filterMonth)-1]} seleccionado`);
 $('chart').innerHTML=buckets.map((b,i)=>`<button type="button" class="bar-group graph-target" data-graph-point data-chart-type="activity" data-month-index="${i}" data-attended="${b.ensayos}" data-acts="${b.actos}" aria-label="${monthNames[i]}: ${b.ensayos} ${b.ensayos===1?'ensayo asistido':'ensayos asistidos'} y ${b.actos} ${b.actos===1?'acto realizado':'actos realizados'}" style="${filterMonth!=='all'&&Number(filterMonth)!==i+1?'opacity:.32;':''}"><span class="bar ensayo" style="height:${b.ensayos?Math.max(3,b.ensayos/max*100):0}%"></span><span class="bar acto" style="height:${b.actos?Math.max(3,b.actos/max*100):0}%"></span></button>`).join('');$('monthLabels').innerHTML=monthNames.map(n=>`<span>${n.slice(0,3)}</span>`).join('');
 renderTrend();
-const makeRecent=(kind,target)=>{
-  const list=ordered(data.filter(r=>r.kind===kind)).slice(0,4);
-  $(target).innerHTML=list.length?list.map(r=>`<div class="recent-item ${r.kind==='Acto'?'kind-acto':'kind-ensayo'}">${recordGlance(r)}</div>`).join('')
-    :`<div class="empty">No hay ${kind==='Ensayo'?'ensayos':'actos'} registrados en este periodo.</div>`;
-};
-makeRecent('Ensayo','recentEnsayos');
-makeRecent('Acto','recentActos');
-$('mobileRecentRecords').innerHTML=data.length
+$('recentRecords').innerHTML=data.length
   ?ordered(data).slice(0,4).map(r=>compactRecord(r,fmtDate(r.date))).join('')
   :'<p class="empty">No hay actividad en este periodo.</p>';
 }
@@ -1405,30 +1274,6 @@ function filteredRecords(){
   return ordered(historyCandidates().filter(r=>kind==='all'||r.kind===kind));
 }
 
-function weekdayShort(iso){
-  const [year,month,day]=iso.split('-').map(Number);
-  return new Intl.DateTimeFormat('es-ES',{weekday:'long'}).format(new Date(year,month-1,day));
-}
-function recordStatusIcon(r){
-  const attended=r.status==='yes',isAct=r.kind==='Acto'&&attended;
-  const path=isAct
-    ?'<path d="M9 18V5l11-2v12M9 8l11-2"/><ellipse cx="6" cy="18" rx="3" ry="2.1"/><ellipse cx="17" cy="15" rx="3" ry="2.1"/>'
-    :attended?'<path d="m5 12 4.5 4.5L19 7"/>':'<path d="M7 7l10 10M17 7 7 17"/>';
-  const style=isAct?'acto':attended?'yes':'no';
-  const label=isAct?'Acto realizado':attended?'Asistí':'No asistí';
-  return `<span class="record-status-icon ${style}" role="img" aria-label="${label}"><svg viewBox="0 0 24 24" aria-hidden="true">${path}</svg></span>`;
-}
-function recordGlance(r){
-  const month=monthNames[Number(r.date.slice(5,7))-1]||'Mes';
-  return `<div class="record-glance-head">
-    <div class="date-tile" aria-hidden="true"><strong>${r.date.slice(8,10)}</strong><span>${month.slice(0,3)}</span><small>${r.date.slice(0,4)}</small></div>
-    <div class="record-glance-body">
-      <strong class="record-glance-name">${escapeHtml(r.name)}</strong>
-      <span class="record-glance-meta">${r.kind} · ${weekdayShort(r.date)}</span>
-    </div>
-    ${recordStatusIcon(r)}
-  </div>`;
-}
 const historyDateFormat=new Intl.DateTimeFormat('es-ES',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'});
 function historyDate(iso){
   const date=new Date(iso+'T00:00:00Z');
@@ -1441,12 +1286,12 @@ function compactRecord(r,dateLabel=''){
     :'<path d="M9 18V5l11-2v13M9 9l11-2"/><ellipse cx="6" cy="18" rx="3" ry="2"/><ellipse cx="17" cy="16" rx="3" ry="2"/>';
   return `<button type="button" class="compact-record ${act?'is-act':''}" data-edit="${escapeHtml(r.id)}">
     <span class="compact-icon" aria-hidden="true"><svg viewBox="0 0 24 24">${icon}</svg></span>
-    <span class="compact-description"><strong>${escapeHtml(r.name)}</strong><small>${r.kind}${dateLabel?' · '+dateLabel:''}</small></span>
+    <span class="compact-description"><strong>${escapeHtml(r.name)}</strong><small>${r.kind}${dateLabel?' · '+dateLabel:''}</small>${!dateLabel&&r.notes?`<small class="compact-notes">${escapeHtml(r.notes)}</small>`:''}</span>
     <span class="compact-status ${r.status==='yes'?'green':'absent'}">${labelStatus(r.status)}</span>
     <span class="compact-arrow" aria-hidden="true">›</span>
   </button>`;
 }
-function renderTable(){
+function renderHistory(){
   const available=historyCandidates();
   const list=filteredRecords();
   $('countAll').textContent=available.length.toLocaleString('es-ES');
@@ -1459,27 +1304,25 @@ function renderTable(){
   });
   $('recordFilterDescription').textContent=filterYear==='all'?'Mostrando todos los años':`Mostrando ${filterMonth==='all'?'todo el año':monthNames[Number(filterMonth)-1]+' de'} ${filterYear}`;
   $('clearHistoryFilters').hidden=filterYear==='all'&&filterMonth==='all'&&$('typeFilter').value==='all'&&$('statusFilter').value==='all'&&!$('search').value.trim();
-  $('rows').innerHTML=list.map(r=>`<tr><td>${fmtDate(r.date)}</td><td>${r.kind}</td><td><strong>${escapeHtml(r.name)}</strong>${r.notes?`<div class="muted" style="font-size:12px;margin-top:3px">${escapeHtml(r.notes)}</div>`:''}</td><td>${pill(r.status)}</td><td><div class="row-actions"><button class="btn sm" data-edit="${escapeHtml(r.id)}" aria-label="Editar registro">Editar</button><button class="btn sm danger" data-delete="${escapeHtml(r.id)}" aria-label="Eliminar registro">Eliminar</button></div></td></tr>`).join('');
   const groups=new Map();
   for(const record of list){
     if(!groups.has(record.date))groups.set(record.date,[]);
     groups.get(record.date).push(record);
   }
   $('historyCount').textContent=list.length===1?'1 registro visible':`${list.length.toLocaleString('es-ES')} registros visibles`;
-  $('mobileRecords').innerHTML=[...groups].map(([date,items])=>`
+  $('historyRecords').innerHTML=[...groups].map(([date,items])=>`
     <section class="record-group">
       <h3><time datetime="${date}">${historyDate(date)}</time></h3>
       <div class="record-stack">${items.map(r=>compactRecord(r)).join('')}</div>
     </section>`).join('');
   $('emptyRecords').hidden=list.length>0;
 }
-function render(){renderDashboard();renderTable()}
+function render(){renderDashboard();renderHistory()}
 function resetForm(){
   recordForm.reset();
   $('date').value=today();
   editing=null;
   $('saveBtn').textContent='Guardar registro';
-  $('formTitle').textContent='Nuevo registro';
   $('cancelRecord').textContent='Cancelar';
   $('cancelRecord').classList.add('danger');
   $('deleteEdited').hidden=true;
@@ -1487,7 +1330,7 @@ function resetForm(){
 }
 function download(content,name,mime){const blob=new Blob([content],{type:mime}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000)}
 function csvCell(x){return '"'+String(x??'').replace(/"/g,'""')+'"'}
-recordForm.addEventListener('submit',e=>{e.preventDefault();const date=$('date').value,kind=recordForm.elements.kind.value,name=$('name').value.trim(),status=recordForm.elements.status.value,notes=$('notes').value.trim();if(!date||!/^\d{4}-\d{2}-\d{2}$/.test(date)||!name||!['Ensayo','Acto'].includes(kind)||!['yes','no'].includes(status))return;if(editing){const idx=records.findIndex(r=>r.id===editing);if(idx<0)return;records[idx]={id:editing,date,kind,name,status,notes}}else records.push({id:typeof crypto!=='undefined'&&crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random(),date,kind,name,status,notes});if(!save('Guardado correctamente'))return;filterYear=date.slice(0,4);filterMonth='all';render();resetForm();setMobileRecordsView('history');if(window.matchMedia('(max-width:740px)').matches)scrollTo({top:0,behavior:'smooth'})});
+recordForm.addEventListener('submit',e=>{e.preventDefault();const date=$('date').value,kind=recordForm.elements.kind.value,name=$('name').value.trim(),status=recordForm.elements.status.value,notes=$('notes').value.trim();if(!date||!/^\d{4}-\d{2}-\d{2}$/.test(date)||!name||!['Ensayo','Acto'].includes(kind)||!['yes','no'].includes(status))return;if(editing){const idx=records.findIndex(r=>r.id===editing);if(idx<0)return;records[idx]={id:editing,date,kind,name,status,notes}}else records.push({id:typeof crypto!=='undefined'&&crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random(),date,kind,name,status,notes});if(!save('Guardado correctamente'))return;filterYear=date.slice(0,4);filterMonth='all';render();resetForm();setRecordsView('history');scrollTo({top:0,behavior:'smooth'});$('historyAdd').focus({preventScroll:true})});
 let pendingDeleteId=null, deleteRecordTrigger=null;
 function openDeleteConfirmation(record,trigger){
   pendingDeleteId=record.id;
@@ -1516,11 +1359,9 @@ $('confirmDeleteRecord').addEventListener('click',()=>{
   if(save('Registro eliminado correctamente')){
     if(editing===id){
       resetForm();
-      if(window.matchMedia('(max-width:740px)').matches){
-        setMobileRecordsView('history');
-        scrollTo({top:0,behavior:'instant'});
-        $('historyAdd').focus({preventScroll:true});
-      }
+      setRecordsView('history');
+      scrollTo({top:0,behavior:'instant'});
+      $('historyAdd').focus({preventScroll:true});
     }
     render();
   }else{
@@ -1528,43 +1369,36 @@ $('confirmDeleteRecord').addEventListener('click',()=>{
     render();
   }
 });
-function handleRecordAction(e){
-  const edit=e.target.closest('[data-edit]'),del=e.target.closest('[data-delete]');
-  if(edit){
-    const r=records.find(r=>r.id===edit.dataset.edit);
-    if(!r)return;
-    if(!confirmDiscardForm())return;
-    if(!$('records').classList.contains('active'))show('records');
-    newRecordOrigin=null;
-    editing=r.id;
-    $('date').value=r.date;recordForm.elements.kind.value=r.kind;$('name').value=r.name;
-    recordForm.elements.status.value=r.status==='just'?'no':r.status;
-    $('notes').value=r.notes||'';
-    $('saveBtn').textContent='Guardar cambios';$('formTitle').textContent='Editar registro';
-    $('cancelRecord').textContent='Cancelar edición';
-    $('cancelRecord').classList.remove('danger');
-    markFormClean();
-    setMobileRecordsView('form');
-    requestAnimationFrame(()=>{
-      scrollToRecordForm();
-      $('name').focus({preventScroll:true});
-    });
-  }
-  if(del){
-    const r=records.find(r=>r.id===del.dataset.delete);
-    if(r)openDeleteConfirmation(r,del);
-  }
+function handleRecordEdit(e){
+  const edit=e.target.closest('[data-edit]');
+  if(!edit)return;
+  const r=records.find(r=>r.id===edit.dataset.edit);
+  if(!r)return;
+  if(!confirmDiscardForm())return;
+  if(!$('records').classList.contains('active'))show('records');
+  newRecordOrigin=null;
+  editing=r.id;
+  $('date').value=r.date;recordForm.elements.kind.value=r.kind;$('name').value=r.name;
+  recordForm.elements.status.value=r.status==='just'?'no':r.status;
+  $('notes').value=r.notes||'';
+  $('saveBtn').textContent='Guardar cambios';
+  $('cancelRecord').textContent='Cancelar edición';
+  $('cancelRecord').classList.remove('danger');
+  markFormClean();
+  setRecordsView('form');
+  requestAnimationFrame(()=>{
+    scrollToRecordForm();
+    $('name').focus({preventScroll:true});
+  });
 }
-$('rows').addEventListener('click',handleRecordAction);
-$('mobileRecords').addEventListener('click',handleRecordAction);
-$('mobileRecentRecords').addEventListener('click',handleRecordAction);
+$('historyRecords').addEventListener('click',handleRecordEdit);
+$('recentRecords').addEventListener('click',handleRecordEdit);
 $('deleteEdited').addEventListener('click',()=>{
   const record=records.find(r=>r.id===editing);
   if(record)openDeleteConfirmation(record,$('deleteEdited'));
 });
 function scrollToRecordForm(){
-  if(window.matchMedia('(max-width:740px)').matches)scrollTo({top:0,behavior:'instant'});
-  else $('formPanel').scrollIntoView({behavior:'smooth',block:'nearest'});
+  scrollTo({top:0,behavior:'instant'});
 }
 function openNewRecord(event){
   if(!confirmDiscardForm())return;
@@ -1572,7 +1406,7 @@ function openNewRecord(event){
   resetForm();
   show('records');
   newRecordOrigin=origin;
-  setMobileRecordsView('form');
+  setRecordsView('form');
   requestAnimationFrame(scrollToRecordForm);
 }
 $('cancelRecord').addEventListener('click',()=>{
@@ -1584,28 +1418,19 @@ $('cancelRecord').addEventListener('click',()=>{
     origin.button.focus({preventScroll:true});
     return;
   }
-  setMobileRecordsView('history');
-  if(window.matchMedia('(max-width:740px)').matches){
-    scrollTo({top:0,behavior:'smooth'});
-    (origin?.button||$('historyAdd')).focus({preventScroll:true});
-  }else{
-    $('historyPanel').scrollIntoView({behavior:'smooth',block:'start'});
-    $('search').focus({preventScroll:true});
-  }
+  setRecordsView('history');
+  scrollTo({top:0,behavior:'smooth'});
+  (origin?.button||$('historyAdd')).focus({preventScroll:true});
 });
 document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.page)));
 $('quickAdd').addEventListener('click',openNewRecord);
 $('mobileAdd').addEventListener('click',openNewRecord);
 $('historyAdd').addEventListener('click',openNewRecord);
-window.addEventListener('resize',()=>{if($('records').classList.contains('active'))setMobileRecordsView(hasUnsavedFormChanges()?'form':$('records').dataset.mobileView||'history')});
 document.querySelectorAll('[data-kind-tab]').forEach(button=>button.addEventListener('click',()=>{
   $('typeFilter').value=button.dataset.kindTab;
-  renderTable();
+  renderHistory();
 }));
-document.querySelectorAll('[data-recent-kind]').forEach(button=>button.addEventListener('click',()=>{
-  $('typeFilter').value=button.dataset.recentKind;
-  show('records');
-}));
+$('recentHistory').addEventListener('click',()=>show('records'));
 
 /* One tooltip for both charts; delegated listeners work after every render. */
 let activeGraphPoint=null, graphTooltipPinned=false;
@@ -1684,7 +1509,7 @@ $('clearHistoryFilters').addEventListener('click',()=>{
   $('typeFilter').value='all';$('statusFilter').value='all';$('search').value='';
   render();
 });
-$('year').addEventListener('change',()=>{filterYear=$('year').value;render()});$('month').addEventListener('change',()=>{filterMonth=$('month').value;render()});$('clearFilters').addEventListener('click',()=>{filterYear='all';filterMonth='all';render()});['search','typeFilter','statusFilter'].forEach(id=>$(id).addEventListener(id==='search'?'input':'change',renderTable));
+$('year').addEventListener('change',()=>{filterYear=$('year').value;render()});$('month').addEventListener('change',()=>{filterMonth=$('month').value;render()});$('clearFilters').addEventListener('click',()=>{filterYear='all';filterMonth='all';render()});['search','typeFilter','statusFilter'].forEach(id=>$(id).addEventListener(id==='search'?'input':'change',renderHistory));
 $('exportJson').addEventListener('click',()=>{download(JSON.stringify({version:1,records},null,2),`mi-banda-copia-${today()}.json`,'application/json');toast('Copia descargada')});
 $('exportCsv').addEventListener('click',()=>{const arr=filteredRecords(),lines=[['Fecha','Tipo','Actividad','Asistencia','Notas'],...arr.map(r=>[fmtDate(r.date),r.kind,r.name,labelStatus(r.status),r.notes||''])];download('\ufeff'+lines.map(row=>row.map(csvCell).join(';')).join('\r\n'),`mi-banda-registros-${today()}.csv`,'text/csv;charset=utf-8');toast('CSV descargado')});
 $('importJson').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{const obj=JSON.parse(await file.text()),newRecords=Array.isArray(obj)?obj:obj.records;if(!Array.isArray(newRecords)||!newRecords.every(isValidRecord))throw Error('Archivo no válido');if(!confirm(`¿Restaurar ${newRecords.length} registros? Reemplazará los ${records.length} que tienes actualmente.`))return;const old=records;records=newRecords.map(r=>({...r,status:r.status==='just'?'no':r.status,notes:r.notes||''}));if(!save('Copia restaurada correctamente')){records=old;return}resetForm();render()}catch(err){alert('No se ha podido importar. Selecciona una copia JSON válida de esta web.')}finally{e.target.value=''}});
