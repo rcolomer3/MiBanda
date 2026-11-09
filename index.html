@@ -775,7 +775,12 @@ html[data-theme="dark"] :is(.toast,.graph-tooltip){background:#223149;border-col
 html[data-theme="dark"] #dashboard .stat-card{box-shadow:none}
 #dashboard .stat-card :is(.stat-label,.detail){color:var(--muted)}
 #dashboard .stat-card .value{font-size:26px;color:var(--text)}
+#dashboard .stat-card.faltas{text-align:left}
+#dashboard .stat-card.faltas .stat-top{justify-content:space-between;gap:6px}
 #dashboard .stat-card.faltas .value{color:var(--red)}
+#dashboard .stat-card.faltas:hover{border-color:var(--blue)}
+#dashboard .stat-card.faltas:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.stat-arrow{color:var(--muted);font-size:18px;line-height:1}
 #dashboard .stat-card.actos .value{color:var(--green)}
 #dashboard .stat-card.porcentaje{
   padding:16px;
@@ -1013,7 +1018,10 @@ html[data-theme="dark"] .toast{background:#1b2434;color:var(--text)}
 <div class="filters"><div class="field"><label for="year">Año</label><select id="year"></select></div><div class="field"><label for="month">Mes</label><select id="month"><option value="all">Todo el año</option></select></div><button class="btn" id="clearFilters">Ver todo</button></div>
 <div class="stats">
 <div class="card stat-card porcentaje"><div class="stat-top"><span class="stat-label">Asistencia a ensayos</span></div><div class="value" id="attendanceRate">—</div><progress id="attendanceProgress" max="100" aria-label="Asistencia a ensayos" hidden></progress><div class="detail" id="attendanceDetail">Sin ensayos en el periodo</div></div>
-<div class="card stat-card faltas"><div class="stat-top"><span class="stat-label">Faltas a ensayos</span></div><div class="value" id="missedRehearsals">0</div></div>
+<button type="button" class="card stat-card faltas" id="openMissedRehearsals">
+  <span class="stat-top"><span class="stat-label">Faltas a ensayos</span><span class="stat-arrow" aria-hidden="true">›</span></span>
+  <span class="value" id="missedRehearsals">0</span>
+</button>
 <div class="card stat-card actos"><div class="stat-top"><span class="stat-label">Actos realizados</span></div><div class="value" id="actsAttended">0</div><div class="detail" id="actsDetail">0 actos registrados</div></div>
 </div>
 <div class="dashboard-insights">
@@ -1042,7 +1050,7 @@ html[data-theme="dark"] .toast{background:#1b2434;color:var(--text)}
 </div>
 </div>
 </section>
-<section id="records" class="page" data-view="history"><div class="head"><div><h1 id="recordsHeading">Historial</h1><p id="recordsIntro">Consulta tu historial o añade un ensayo o acto.</p></div><button type="button" class="btn history-add" id="historyAdd">+ Añadir registro</button></div>
+<section id="records" class="page" data-view="history"><div class="head"><div><h1 id="recordsHeading" tabindex="-1">Historial</h1><p id="recordsIntro">Consulta tu historial o añade un ensayo o acto.</p></div><button type="button" class="btn history-add" id="historyAdd">+ Añadir registro</button></div>
 <div class="panel" id="formPanel">
   <form id="recordForm">
     <div class="form-grid">
@@ -1450,6 +1458,13 @@ document.querySelectorAll('[data-kind-tab]').forEach(button=>button.addEventList
   renderHistory();
 }));
 $('recentHistory').addEventListener('click',()=>show('records'));
+$('openMissedRehearsals').addEventListener('click',()=>{
+  $('typeFilter').value='Ensayo';
+  $('statusFilter').value='no';
+  $('search').value='';
+  show('records');
+  $('recordsHeading').focus({preventScroll:true});
+});
 
 /* One tooltip for both charts; delegated listeners work after every render. */
 let activeGraphPoint=null, graphTooltipPinned=false;
