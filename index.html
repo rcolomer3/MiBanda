@@ -147,7 +147,6 @@
   #dashboard .stat-card .value{font-size:35px;letter-spacing:-1px}
   #dashboard .stat-card .detail{font-size:10.3px}
 }
-.boot-spinner{width:25px;height:25px;border:3px solid #cbd5e1;border-top-color:#2563eb;border-radius:50%;animation:boot-spin .7s linear infinite;margin:18px auto 0}
 @keyframes boot-spin{to{transform:rotate(360deg)}}
 
 /* Espaciado y superficies para móvil. */
@@ -626,7 +625,6 @@ select{padding-right:25px;cursor:pointer}
 .auth-card h1{color:#1e2f49;letter-spacing:-1.05px;font-size:29px;font-weight:820;margin:15px 0}
 .auth-card p{color:#7b8a9f}
 .auth-card .btn{min-height:48px}
-.boot-spinner{border-top-color:#007aff}
 .delete-dialog{
   background:rgba(255,255,255,.98);border-color:rgba(226,234,244,.95);
   border-radius:27px;box-shadow:0 28px 80px rgba(20,38,69,.23);
@@ -834,7 +832,6 @@ html[data-theme="dark"] .sync-dot{box-shadow:0 0 0 4px rgba(243,204,135,.13)}
 html[data-theme="dark"] .sync-state[data-state="ok"] .sync-dot{box-shadow:0 0 0 4px rgba(117,214,172,.13)}
 html[data-theme="dark"] .sync-state[data-state="error"] .sync-dot{box-shadow:0 0 0 4px rgba(255,154,170,.13)}
 html[data-theme="dark"] .auth-gate{background:radial-gradient(circle at 15% 25%,#203b60,transparent 48%),radial-gradient(circle at 90% 72%,#302947,transparent 45%),var(--bg)}
-html[data-theme="dark"] .boot-spinner{border-color:var(--line);border-top-color:var(--blue)}
 html[data-theme="dark"] .delete-dialog-record{background:var(--bg);border-color:var(--line)}
 html[data-theme="dark"] :is(.toast,.graph-tooltip){background:#223149;border-color:#526781}
 /* Tres destinos a todo el ancho y acción flotante separada de la barra. */
@@ -1025,8 +1022,19 @@ html[data-theme="dark"] #settings .settings-danger{background:#241d2a;border-col
 .auth-card h1{font-size:30px;margin:12px 0 4px;color:var(--text)}
 .auth-card p{color:var(--muted);margin:6px 0 14px}
 .auth-card .auth-subtitle{margin-bottom:18px;font-weight:650}
-#authMessage{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:11px 14px}
-.boot-spinner{margin:18px auto 0;border-color:var(--line);border-top-color:var(--blue)}
+.auth-content{display:grid;align-items:start;min-height:145px}
+.auth-notice{
+  display:grid;align-content:center;gap:4px;min-height:89px;padding:10px 12px;
+  background:var(--bg);border:1px solid var(--line);border-radius:12px;
+}
+html[data-theme="dark"] .auth-notice{background:#141d2d}
+.auth-notice p{margin:0;font-size:13px;overflow-wrap:anywhere}
+.auth-status-line{display:flex;align-items:center;justify-content:center;gap:8px}
+.boot-spinner{
+  flex:none;width:15px;height:15px;border:2px solid var(--line);border-top-color:var(--blue);
+  border-radius:50%;animation:boot-spin .7s linear infinite;
+}
+@media(prefers-reduced-motion:reduce){.boot-spinner{animation:none}}
 .delete-dialog{background:var(--panel);border-color:var(--line);color:var(--text)}
 .delete-dialog-content{text-align:left}
 .delete-dialog-icon{margin:0 0 14px;border-radius:50%}
@@ -1078,14 +1086,20 @@ html[data-theme="dark"] .toast{background:#1b2434;color:var(--text)}
 </style>
 </head>
 <body>
-<div id="bootScreen" class="auth-gate" role="status" aria-live="polite">
-<div class="auth-card"><img class="brand-icon-image" src="./icon-512.png?v=5" alt="" width="78" height="78">
-<h1>BandApp</h1><p id="bootMessage">Recuperando tu sesión…</p><div class="boot-spinner" aria-hidden="true"></div>
-</div></div>
-<div id="authGate" class="auth-gate" hidden><div class="auth-card">
-<img class="brand-icon-image" src="./icon-512.png?v=5" alt="Icono de BandApp" width="78" height="78"><h1>BandApp</h1><p class="auth-subtitle">Tus ensayos, actos y asistencia</p><p id="authMessage">Cargando Firebase…</p>
-<button class="btn primary" id="signInBtn" type="button">Entrar con Google</button>
-<button class="btn" id="retryConnection" type="button" hidden>Reintentar conexión</button>
+<div id="authScreen" class="auth-gate"><div class="auth-card">
+<img class="brand-icon-image" src="./icon-512.png?v=5" alt="" width="78" height="78">
+<h1>BandApp</h1><p class="auth-subtitle">Tus ensayos, actos y asistencia</p>
+<div class="auth-content">
+  <div id="bootScreen" class="auth-notice" role="status" aria-atomic="true">
+    <div class="auth-status-line"><span class="boot-spinner" aria-hidden="true"></span><strong id="bootMessage">Comprobando sesión…</strong></div>
+    <p id="bootDetail">Buscando tu sesión guardada.</p>
+  </div>
+  <div id="authGate" hidden>
+    <div class="auth-notice"><strong>Accede a tu cuenta</strong><p id="authMessage" role="status"></p></div>
+    <button class="btn primary" id="signInBtn" type="button">Entrar con Google</button>
+    <button class="btn" id="retryConnection" type="button" hidden>Reintentar conexión</button>
+  </div>
+</div>
 </div></div>
 <div class="app" hidden>
 <aside class="sidebar"><div class="brand"><img class="brand-logo" src="./icon-192.png?v=5" alt="" width="39" height="39"><span class="brand-copy">BandApp<small>Control de asistencias</small></span></div><nav class="nav" aria-label="Navegación principal"><button data-page="dashboard" class="active"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 21v-8h6v8"/></svg><span>Inicio</span></button><button data-page="records"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg><span>Historial</span></button><button data-page="settings"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h4m4 0h10M3 12h10m4 0h4M3 18h4m4 0h10"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="9" cy="18" r="2"/></svg><span>Ajustes</span></button></nav><div class="sidebar-foot">BandApp · Tu actividad musical</div></aside>
@@ -1677,14 +1691,24 @@ $('importJson').addEventListener('change',async e=>{const file=e.target.files?.[
 $('deleteAll').addEventListener('click',()=>{if(!records.length)return toast('No hay registros que borrar');if(!confirm('¿Seguro que quieres eliminar TODOS los ensayos y actos? Esta acción no se puede deshacer.'))return;records=[];if(save('Registros eliminados correctamente')){resetForm();render()}});
 
 /* Bridge with the Firebase module: no remote data is displayed before sign-in. */
+const authLoadingCopy={
+  session:['Comprobando sesión…','Buscando tu sesión guardada.'],
+  google:['Conectando con Google…','Esperando la confirmación de tu cuenta.'],
+  records:['Cargando tus datos…','Preparando tu resumen de asistencia.']
+};
 window.miBandaUI={
  embedded:window.self!==window.top||/ChatGPT/i.test(navigator.userAgent),
- showLoading:message=>{
+ showLoading:(stage='session')=>{
   clearTimeout(loadingTimeout);
-  loadingTimeout=setTimeout(()=>{
-    window.miBandaUI.showGate('La conexión está tardando demasiado. Comprueba tu conexión a Internet y vuelve a intentarlo. Si has abierto BandApp en una vista previa, ábrela en el navegador para iniciar sesión con Google.',false);
-  },15000);
-  $('bootMessage').textContent=message||'Recuperando tu sesión…';
+  if(stage!=='google'){
+    loadingTimeout=setTimeout(()=>{
+      window.miBandaUI.showGate('La conexión está tardando demasiado. Comprueba tu conexión a Internet y vuelve a intentarlo. Si has abierto BandApp en una vista previa, ábrela en el navegador para iniciar sesión con Google.',false);
+    },15000);
+  }
+  const [message,detail]=authLoadingCopy[stage];
+  $('bootMessage').textContent=message;
+  $('bootDetail').textContent=detail;
+  $('authScreen').hidden=false;
   $('bootScreen').hidden=false;
   $('authGate').hidden=true;
   document.querySelector('.app').hidden=true;
@@ -1700,6 +1724,7 @@ window.miBandaUI={
  },
  showGate:(message,enabled)=>{
   clearTimeout(loadingTimeout);
+  $('authScreen').hidden=false;
   $('bootScreen').hidden=true;
   $('authMessage').textContent=message||'Accede con Google para sincronizar.';
   $('authGate').hidden=false;
@@ -1712,6 +1737,7 @@ window.miBandaUI={
  },
  showApp:(mode,account)=>{
   clearTimeout(loadingTimeout);
+  $('authScreen').hidden=true;
   $('bootScreen').hidden=true;
   $('authGate').hidden=true;
   document.querySelector('.app').hidden=false;
@@ -1763,7 +1789,7 @@ function withConnectionTimeout(task){
 }
 function loadFirebase(){
   if(!loading){
-    const current=import('./firebase-sync.js?v=20261031-login2&attempt='+attempt++);
+    const current=import('./firebase-sync.js?v=20261109-login3&attempt='+attempt++);
     loading=current;
     current.catch(()=>{if(loading===current)loading=null});
   }
@@ -1780,8 +1806,7 @@ button.addEventListener('click',async()=>{
   if(signingIn||retrying)return;
   signingIn=true;
   button.disabled=true;
-  button.textContent='Conectando con Google…';
-  document.getElementById('authMessage').textContent='Preparando el acceso con Google…';
+  ui.showLoading('google');
   try{
     const firebase=await withConnectionTimeout(loadFirebase());
     await firebase.signIn();
@@ -1789,14 +1814,13 @@ button.addEventListener('click',async()=>{
   finally{
     signingIn=false;
     button.disabled=false;
-    button.textContent='Entrar con Google';
   }
 });
 retry.addEventListener('click',async()=>{
   if(retrying||signingIn)return;
   retrying=true;
   retry.disabled=true;
-  ui.showLoading('Reconectando con Firebase…');
+  ui.showLoading();
   try{
     await withConnectionTimeout(loadFirebase().then(firebase=>firebase.restoreSession()));
   }catch(error){showConnectionError(error)}

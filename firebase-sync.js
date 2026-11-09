@@ -82,7 +82,7 @@ async function connect(user) {
   if (connecting) return;
   connecting = true;
   stopListening();
-  ui.showLoading("Cargando tus registros de Firebase…");
+  ui.showLoading("records");
   try {
     const ref = doc(db, "users", user.uid, "apps", "miBanda");
     const snapshot = await getDocFromServer(ref);
