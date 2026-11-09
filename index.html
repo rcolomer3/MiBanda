@@ -124,7 +124,6 @@
   font-size:11.2px;font-weight:500;line-height:1.4;
   color:var(--stat-caption);opacity:1;overflow-wrap:anywhere;
 }
-#dashboard .stat-card.asistidos{--stat-tint:#EAF8F1;--stat-border:#D3EDDF;--stat-heading:#367A5E;--stat-value:#20734F;--stat-caption:#486E5D}
 #dashboard .stat-card.actos{--stat-tint:#F3EEFF;--stat-border:#E5D9FB;--stat-heading:#7355A1;--stat-value:#67459B;--stat-caption:#785E9D}
 #dashboard .stat-card.porcentaje{--stat-tint:#FFF5E5;--stat-border:#F4E1C7;--stat-heading:#836020;--stat-value:#94621E;--stat-caption:#826531}
 @media(max-width:740px){
@@ -698,7 +697,6 @@ html[data-theme="dark"] .btn.danger:hover{background:#583042;border-color:#cb849
 html[data-theme="dark"] :is(.btn,.kind-tab,.sidebar button):focus-visible{outline:2px solid #89baff;outline-offset:3px}
 html[data-theme="dark"] .account-icon{background:var(--dark-blue);color:var(--blue)}
 html[data-theme="dark"] #dashboard .stat-card{box-shadow:var(--shadow)}
-html[data-theme="dark"] #dashboard .stat-card.asistidos{--stat-tint:#19352f;--stat-border:#2e5347;--stat-heading:#97d4b8;--stat-value:#7fe0b1;--stat-caption:#9fbdaf}
 html[data-theme="dark"] #dashboard .stat-card.actos{--stat-tint:#2e2843;--stat-border:#4b3e65;--stat-heading:#cbb5ed;--stat-value:#c9adff;--stat-caption:#bbadce}
 html[data-theme="dark"] #dashboard .stat-card.porcentaje{--stat-tint:#382e21;--stat-border:#594932;--stat-heading:#e1c28e;--stat-value:#f3cc87;--stat-caption:#caba9d}
 html[data-theme="dark"] .bars{border-color:var(--line)}
@@ -777,6 +775,7 @@ html[data-theme="dark"] :is(.toast,.graph-tooltip){background:#223149;border-col
 html[data-theme="dark"] #dashboard .stat-card{box-shadow:none}
 #dashboard .stat-card :is(.stat-label,.detail){color:var(--muted)}
 #dashboard .stat-card .value{font-size:26px;color:var(--text)}
+#dashboard .stat-card.faltas .value{color:var(--red)}
 #dashboard .stat-card.actos .value{color:var(--green)}
 #dashboard .stat-card.porcentaje{
   padding:16px;
@@ -938,6 +937,23 @@ html[data-theme="dark"] .toast{background:#1b2434;color:var(--text)}
 
 /* La navegación lateral y las listas aprovechan pantallas anchas. */
 @media(min-width:741px){
+  .app{
+    --shell-inset:20px;
+    grid-template-columns:216px minmax(0,1fr);
+    gap:24px;max-width:1680px;margin-inline:auto;padding:var(--shell-inset);
+  }
+  .sidebar{
+    top:var(--shell-inset);
+    height:calc(100vh - 2 * var(--shell-inset));
+    height:calc(100dvh - 2 * var(--shell-inset));
+    padding:16px 12px;border:1px solid var(--line);border-radius:24px;
+    box-shadow:var(--shadow);
+  }
+  .sidebar .brand{padding:4px 4px 20px;font-size:20px;gap:9px}
+  .sidebar .nav{gap:4px}
+  .sidebar .nav button{min-height:44px;padding:9px 11px;border-radius:14px;gap:10px}
+  .sidebar .nav button.active{background:#eef4fc;border-color:#dbe7f7;box-shadow:none}
+  .content{padding:6px 0 28px}
   html[data-theme="dark"] .sidebar{background:#171f30;border-color:var(--line)}
   html[data-theme="dark"] .sidebar .nav button.active{background:#2a3345;border-color:#3b4454;color:var(--text)}
   #dashboard .stats{grid-template-columns:minmax(0,1.6fr) repeat(2,minmax(0,1fr));align-items:stretch}
@@ -957,9 +973,10 @@ html[data-theme="dark"] .toast{background:#1b2434;color:var(--text)}
   #settings>.panel{margin:0;padding:18px}
 }
 @media(min-width:741px) and (max-width:960px){
-  .app{grid-template-columns:178px minmax(0,1fr)}
-  .sidebar{padding-inline:10px}
-  .sidebar .brand{padding-inline:3px;gap:8px}
+  .app{--shell-inset:12px;grid-template-columns:178px minmax(0,1fr);gap:16px}
+  .sidebar{padding-inline:9px}
+  .sidebar .brand{padding-inline:3px;gap:8px;font-size:18px}
+  .sidebar .brand-logo{width:34px;height:34px}
   #settings.active{grid-template-columns:minmax(0,1fr)}
 }
 @media(min-width:1150px){
@@ -989,14 +1006,14 @@ html[data-theme="dark"] .toast{background:#1b2434;color:var(--text)}
 </div>
 </div></div>
 <div class="app" hidden>
-<aside class="sidebar"><div class="brand"><img class="brand-logo" src="./icon-192.png?v=5" alt="" width="39" height="39"><span class="brand-copy">BandApp<small>Control de asistencias</small></span></div><nav class="nav" aria-label="Navegación principal"><button data-page="dashboard" class="active"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 21v-8h6v8"/></svg><span>Inicio</span></button><button data-page="records"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg><span>Historial</span></button><button data-page="settings"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h4m4 0h10M3 12h10m4 0h4M3 18h4m4 0h10"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="9" cy="18" r="2"/></svg><span>Ajustes</span></button></nav><div class="sidebar-foot">BandApp · Tu actividad musical</div></aside>
+<aside class="sidebar"><div class="brand"><img class="brand-logo" src="./icon-192.png?v=5" alt="" width="39" height="39"><span class="brand-copy">BandApp<small>Control de asistencias</small></span></div><nav class="nav" aria-label="Navegación principal"><button data-page="dashboard" class="active" aria-current="page"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 21v-8h6v8"/></svg><span>Inicio</span></button><button data-page="records"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg><span>Historial</span></button><button data-page="settings"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h4m4 0h10M3 12h10m4 0h4M3 18h4m4 0h10"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="9" cy="18" r="2"/></svg><span>Ajustes</span></button></nav><div class="sidebar-foot">BandApp · Tu actividad musical</div></aside>
 <main class="content">
 <section id="dashboard" class="page active">
 <div class="head"><div><h1>Inicio</h1><p>Tu actividad en la banda de un vistazo.</p></div><button class="btn primary" id="quickAdd"><svg class="ui-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>Añadir registro</span></button></div>
 <div class="filters"><div class="field"><label for="year">Año</label><select id="year"></select></div><div class="field"><label for="month">Mes</label><select id="month"><option value="all">Todo el año</option></select></div><button class="btn" id="clearFilters">Ver todo</button></div>
 <div class="stats">
 <div class="card stat-card porcentaje"><div class="stat-top"><span class="stat-label">Asistencia a ensayos</span></div><div class="value" id="attendanceRate">—</div><progress id="attendanceProgress" max="100" aria-label="Asistencia a ensayos" hidden></progress><div class="detail" id="attendanceDetail">Sin ensayos en el periodo</div></div>
-<div class="card stat-card asistidos"><div class="stat-top"><span class="stat-label">Ensayos asistidos</span></div><div class="value" id="attendedRehearsals">0</div><div class="detail" id="missedDetail">0 faltas</div></div>
+<div class="card stat-card faltas"><div class="stat-top"><span class="stat-label">Faltas a ensayos</span></div><div class="value" id="missedRehearsals">0</div></div>
 <div class="card stat-card actos"><div class="stat-top"><span class="stat-label">Actos realizados</span></div><div class="value" id="actsAttended">0</div><div class="detail" id="actsDetail">0 actos registrados</div></div>
 </div>
 <div class="dashboard-insights">
@@ -1191,7 +1208,8 @@ function show(page){
   document.querySelectorAll('[data-page]').forEach(e=>{
     const active=e.dataset.page===page;
     e.classList.toggle('active',active);
-    if(e.closest('.bottomnav')){if(active)e.setAttribute('aria-current','page');else e.removeAttribute('aria-current')}
+    if(active)e.setAttribute('aria-current','page');
+    else e.removeAttribute('aria-current');
   });
   if(page==='records')renderHistory();
   setRecordsView('history');
@@ -1200,13 +1218,14 @@ function show(page){
 function initYears(){const years=new Set(records.map(r=>r.date.slice(0,4)));years.add(String(new Date().getFullYear()));if(/^\d{4}$/.test(filterYear))years.add(filterYear);const opts=['<option value="all">Todos los años</option>',...[...years].sort((a,b)=>Number(b)-Number(a)).map(y=>`<option value="${y}">${y}</option>`)];$('year').innerHTML=opts.join('');$('year').value=filterYear}
 function subset(){return records.filter(r=>(filterYear==='all'||r.date.slice(0,4)===filterYear)&&(filterMonth==='all'||Number(r.date.slice(5,7))===Number(filterMonth)))}
 function ordered(arr){return [...arr].sort((a,b)=>b.date.localeCompare(a.date)||b.id.localeCompare(a.id))}
-function renderDashboard(){initYears();$('month').value=filterMonth;const data=subset(),ensayos=data.filter(r=>r.kind==='Ensayo'),acts=data.filter(r=>r.kind==='Acto'),yes=ensayos.filter(r=>r.status==='yes').length,no=ensayos.filter(r=>r.status==='no').length,actsYes=acts.filter(r=>r.status==='yes').length,pct=ensayos.length?Math.round(100*yes/ensayos.length):null;
-$('attendedRehearsals').textContent=yes.toLocaleString('es-ES');$('actsAttended').textContent=actsYes.toLocaleString('es-ES');$('attendanceRate').textContent=pct===null?'—':`${pct} %`;$('missedDetail').textContent=no===1?'1 falta en total':`${no} faltas en total`;$('actsDetail').textContent=actsYes?`Último: ${fmtDate(ordered(acts.filter(r=>r.status==='yes'))[0].date)}`:'Sin actos en el periodo';
+function renderDashboard(){initYears();$('month').value=filterMonth;const data=subset(),ensayos=data.filter(r=>r.kind==='Ensayo'),acts=data.filter(r=>r.kind==='Acto'),yes=ensayos.filter(r=>r.status==='yes').length,missed=ensayos.filter(r=>r.status==='no').length,actsYes=acts.filter(r=>r.status==='yes').length,pct=ensayos.length?Math.round(100*yes/ensayos.length):null;
+$('missedRehearsals').textContent=missed.toLocaleString('es-ES');
+$('actsAttended').textContent=actsYes.toLocaleString('es-ES');$('attendanceRate').textContent=pct===null?'—':`${pct} %`;$('actsDetail').textContent=actsYes?`Último: ${fmtDate(ordered(acts.filter(r=>r.status==='yes'))[0].date)}`:'Sin actos en el periodo';
 
 const progress=$('attendanceProgress');
 progress.hidden=pct===null;
 progress.value=pct??0;
-$('attendanceDetail').textContent=ensayos.length?`${yes.toLocaleString('es-ES')} de ${ensayos.length.toLocaleString('es-ES')} ensayos registrados`:'Sin ensayos en el periodo';
+$('attendanceDetail').textContent=ensayos.length?`Asistí a ${yes.toLocaleString('es-ES')} de ${ensayos.length.toLocaleString('es-ES')} ${ensayos.length===1?'ensayo':'ensayos'}`:'Sin ensayos en el periodo';
 
 hideGraphTooltip();
 const chartData=filterYear==='all'?data:records.filter(r=>r.date.slice(0,4)===filterYear);const buckets=Array.from({length:12},(_,m)=>{const list=chartData.filter(r=>Number(r.date.slice(5,7))===m+1);return {ensayos:list.filter(r=>r.kind==='Ensayo'&&r.status==='yes').length,actos:list.filter(r=>r.kind==='Acto'&&r.status==='yes').length}});const max=Math.max(1,...buckets.flatMap(b=>[b.ensayos,b.actos]));$('chartYear').textContent=filterYear==='all'?'Todos los años (agrupado por mes)':filterYear+(filterMonth==='all'?'':` · ${monthNames[Number(filterMonth)-1]} seleccionado`);
