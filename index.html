@@ -176,7 +176,7 @@
 
 /* Historial y formulario comparten navegación en todos los tamaños. */
 #records[data-view="history"] #formPanel,
-#records[data-view="form"] :is(#historyPanel,.history-add){display:none}
+#records[data-view="form"] #historyPanel{display:none}
 #records[data-view="form"] #formPanel{margin:0}
 
 /* Formulario responsivo: evita que el selector nativo de fecha de Safari sobresalga */
@@ -803,8 +803,6 @@ html[data-theme="dark"] #dashboard .stat-card.porcentaje{
 .dashboard-recent h2{font-size:17px}
 #historyPanel{padding:0;background:none;border:0;box-shadow:none;margin:0}
 html[data-theme="dark"] #historyPanel{background:none}
-.history-add{border-radius:12px}
-html[data-theme="dark"] #records .history-add{background:#e0e6ef;color:#101727;border-color:#e0e6ef}
 .history-controls,.record-stack{border:1px solid var(--line);border-radius:17px;background:var(--panel)}
 .history-controls{padding:14px}
 html[data-theme="dark"] .history-controls{background:#151d2d}
@@ -845,19 +843,13 @@ html[data-theme="dark"] .compact-record.is-act .compact-icon{background:#383051;
   #recentHistory{display:none}
   #historyPanel .toolbar input{font-size:16px}
   #records[data-view="history"]>.head{align-items:stretch;flex-direction:column}
-  #records[data-view="history"] .history-add{width:100%}
   .content{padding-bottom:calc(90px + env(safe-area-inset-bottom,0px))}
   :is(#dashboard,#records)>.head h1{font-size:30px}
   :is(#dashboard,#records)>.head p{font-size:14px}
 
-  #dashboard .filters{
-    display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr) auto;gap:8px;
-  }
-  #dashboard .filters select{padding-inline:9px}
-  #dashboard #clearFilters{padding-inline:10px}
   #dashboard .stat-card.porcentaje{grid-column:1/-1}
   .bottomnav{
-    inset:auto max(8px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px));
+    inset:auto max(8px,env(safe-area-inset-right,0px)) max(4px, calc(env(safe-area-inset-bottom,0px) - 10px)) max(8px,env(safe-area-inset-left,0px));
     grid-template-columns:repeat(4,minmax(0,1fr));
     height:63px;padding:4px 7px;border:1px solid var(--line);border-radius:36px;
   }
@@ -992,6 +984,32 @@ html[data-theme="dark"] .toast{background:#1b2434;color:var(--text)}
   .dashboard-recent{grid-column:2;grid-row:1/3}
   #dashboard .layout{grid-column:1;grid-row:2}
 }
+
+/* Selector de periodo compartido con el patrón de Finanzas. */
+.period-toolbar{position:relative;display:grid;grid-template-columns:44px minmax(0,300px) 44px;gap:8px;margin:0 0 16px}
+.dashboard-period{min-width:0}
+.dashboard-period summary{
+  display:flex;align-items:center;justify-content:center;gap:10px;min-height:44px;
+  padding:8px 12px;list-style:none;border:1px solid var(--line);border-radius:12px;
+  background:var(--panel);color:var(--text);font-weight:650;cursor:pointer;
+}
+.dashboard-period summary::-webkit-details-marker{display:none}
+.dashboard-period summary:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.dashboard-period[open] .period-caret{transform:rotate(180deg)}
+.period-fields{
+  position:absolute;z-index:20;inset:calc(100% + 8px) 0 auto;
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;
+  padding:14px;background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);
+}
+.period-mode,.period-current{grid-column:1/-1}
+.period-fields select{font-size:16px}
+.period-fields select:disabled{opacity:.6}
+.period-step{padding:0;min-height:44px;font-size:22px}
+@media(max-width:740px){
+  .period-toolbar{grid-template-columns:44px minmax(0,1fr) 44px}
+  #recordForm .field :is(input:not([type="radio"]),select,textarea),
+  #recordForm .date-input-frame #date{font-size:16px}
+}
 </style>
 </head>
 <body>
@@ -1011,11 +1029,23 @@ html[data-theme="dark"] .toast{background:#1b2434;color:var(--text)}
 </div>
 </div></div>
 <div class="app" hidden>
-<aside class="sidebar"><div class="brand"><img class="brand-logo" src="./icon-192.png?v=5" alt="" width="39" height="39"><span class="brand-copy">BandApp<small>Control de asistencias</small></span></div><nav class="nav" aria-label="Navegación principal"><button data-page="dashboard" class="active" aria-current="page"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 21v-8h6v8"/></svg><span>Inicio</span></button><button data-page="records"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg><span>Historial</span></button><button data-page="settings"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h4m4 0h10M3 12h10m4 0h4M3 18h4m4 0h10"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="9" cy="18" r="2"/></svg><span>Ajustes</span></button></nav><div class="sidebar-foot">BandApp · Tu actividad musical</div></aside>
+<aside class="sidebar"><div class="brand"><img class="brand-logo" src="./icon-192.png?v=5" alt="" width="39" height="39"><span class="brand-copy">BandApp<small>Control de asistencias</small></span></div><nav class="nav" aria-label="Navegación principal"><button data-page="dashboard" class="active" aria-current="page"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 21v-8h6v8"/></svg><span>Inicio</span></button><button data-page="records"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg><span>Historial</span></button><button data-page="settings"><svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h4m4 0h10M3 12h10m4 0h4M3 18h4m4 0h10"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="9" cy="18" r="2"/></svg><span>Ajustes</span></button><button type="button" id="sidebarAdd" aria-label="Añadir un ensayo o acto"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8m-4-4h8"/></svg><span>Añadir</span></button></nav><div class="sidebar-foot">BandApp · Tu actividad musical</div></aside>
 <main class="content">
 <section id="dashboard" class="page active">
 <div class="head"><div><h1>Inicio</h1><p>Tu actividad en la banda de un vistazo.</p></div><button class="btn primary" id="quickAdd"><svg class="ui-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>Añadir registro</span></button></div>
-<div class="filters"><div class="field"><label for="year">Año</label><select id="year"></select></div><div class="field"><label for="month">Mes</label><select id="month"><option value="all">Todo el año</option></select></div><button class="btn" id="clearFilters">Ver todo</button></div>
+<div class="period-toolbar">
+  <button type="button" class="btn period-step" id="periodPrev" aria-label="Periodo anterior">‹</button>
+  <details id="dashboardPeriod" class="dashboard-period">
+    <summary><span id="dashboardPeriodLabel">Periodo</span><span class="period-caret" aria-hidden="true">⌄</span></summary>
+    <div class="period-fields">
+      <div class="field period-mode"><label for="periodMode">Vista</label><select id="periodMode"><option value="month">Por mes</option><option value="year">Por año</option><option value="all">Todo</option></select></div>
+      <div class="field"><label for="month">Mes</label><select id="month"></select></div>
+      <div class="field"><label for="year">Año</label><select id="year"></select></div>
+      <button class="btn period-current" type="button" id="goCurrent">Periodo actual</button>
+    </div>
+  </details>
+  <button type="button" class="btn period-step" id="periodNext" aria-label="Periodo siguiente">›</button>
+</div>
 <div class="stats">
 <div class="card stat-card porcentaje"><div class="stat-top"><span class="stat-label">Asistencia a ensayos</span></div><div class="value" id="attendanceRate">—</div><progress id="attendanceProgress" max="100" aria-label="Asistencia a ensayos" hidden></progress><div class="detail" id="attendanceDetail">Sin ensayos en el periodo</div></div>
 <button type="button" class="card stat-card faltas" id="openMissedRehearsals">
@@ -1050,7 +1080,7 @@ html[data-theme="dark"] .toast{background:#1b2434;color:var(--text)}
 </div>
 </div>
 </section>
-<section id="records" class="page" data-view="history"><div class="head"><div><h1 id="recordsHeading" tabindex="-1">Historial</h1><p id="recordsIntro">Consulta tu historial o añade un ensayo o acto.</p></div><button type="button" class="btn history-add" id="historyAdd">+ Añadir registro</button></div>
+<section id="records" class="page" data-view="history"><div class="head"><div><h1 id="recordsHeading" tabindex="-1">Historial</h1><p id="recordsIntro">Consulta tu historial o añade un ensayo o acto.</p></div></div>
 <div class="panel" id="formPanel">
   <form id="recordForm">
     <div class="form-grid">
@@ -1202,6 +1232,7 @@ function setRecordsView(view){
   const adding=isForm&&!editing;
   const recordsActive=page.classList.contains('active')&&!adding;
   addTab.disabled=isForm;
+  $('sidebarAdd').disabled=isForm;
   if(adding)addTab.setAttribute('aria-current','page');
   else addTab.removeAttribute('aria-current');
   recordTab.classList.toggle('active',recordsActive);
@@ -1223,10 +1254,48 @@ function show(page){
   setRecordsView('history');
   scrollTo({top:0,behavior:'smooth'});
 }
-function initYears(){const years=new Set(records.map(r=>r.date.slice(0,4)));years.add(String(new Date().getFullYear()));if(/^\d{4}$/.test(filterYear))years.add(filterYear);const opts=['<option value="all">Todos los años</option>',...[...years].sort((a,b)=>Number(b)-Number(a)).map(y=>`<option value="${y}">${y}</option>`)];$('year').innerHTML=opts.join('');$('year').value=filterYear}
+function initYears(){
+  const years=new Set(records.map(r=>r.date.slice(0,4)));
+  years.add(String(new Date().getFullYear()));
+  if(/^\d{4}$/.test(filterYear))years.add(filterYear);
+  const selected=filterYear==='all'?$('year').value:filterYear;
+  $('year').innerHTML=[...years].sort((a,b)=>Number(b)-Number(a))
+    .map(year=>`<option value="${year}">${year}</option>`).join('');
+  $('year').value=years.has(selected)?selected:String(new Date().getFullYear());
+}
+function syncPeriodControls(){
+  const mode=filterYear==='all'?'all':filterMonth==='all'?'year':'month';
+  $('periodMode').value=mode;
+  if(filterMonth!=='all')$('month').value=filterMonth;
+  $('month').disabled=mode!=='month';
+  $('year').disabled=mode==='all';
+  $('periodPrev').disabled=mode==='all';
+  $('periodNext').disabled=mode==='all';
+  $('dashboardPeriodLabel').textContent=mode==='all'?'Todo el histórico':
+    mode==='year'?filterYear:`${monthNames[Number(filterMonth)-1]} ${filterYear}`;
+}
+function applyPeriodControls(){
+  const mode=$('periodMode').value;
+  filterYear=mode==='all'?'all':$('year').value;
+  filterMonth=mode==='month'?$('month').value:'all';
+  render();
+}
+function shiftPeriod(direction){
+  if(filterYear==='all')return;
+  let year=Number(filterYear);
+  if(filterMonth==='all')year+=direction;
+  else{
+    let month=Number(filterMonth)+direction;
+    if(month<1){month=12;year--}
+    if(month>12){month=1;year++}
+    filterMonth=String(month);
+  }
+  filterYear=String(year);
+  render();
+}
 function subset(){return records.filter(r=>(filterYear==='all'||r.date.slice(0,4)===filterYear)&&(filterMonth==='all'||Number(r.date.slice(5,7))===Number(filterMonth)))}
 function ordered(arr){return [...arr].sort((a,b)=>b.date.localeCompare(a.date)||b.id.localeCompare(a.id))}
-function renderDashboard(){initYears();$('month').value=filterMonth;const data=subset(),ensayos=data.filter(r=>r.kind==='Ensayo'),acts=data.filter(r=>r.kind==='Acto'),yes=ensayos.filter(r=>r.status==='yes').length,missed=ensayos.filter(r=>r.status==='no').length,actsYes=acts.filter(r=>r.status==='yes').length,pct=ensayos.length?Math.round(100*yes/ensayos.length):null;
+function renderDashboard(){initYears();syncPeriodControls();const data=subset(),ensayos=data.filter(r=>r.kind==='Ensayo'),acts=data.filter(r=>r.kind==='Acto'),yes=ensayos.filter(r=>r.status==='yes').length,missed=ensayos.filter(r=>r.status==='no').length,actsYes=acts.filter(r=>r.status==='yes').length,pct=ensayos.length?Math.round(100*yes/ensayos.length):null;
 $('missedRehearsals').textContent=missed.toLocaleString('es-ES');
 $('actsAttended').textContent=actsYes.toLocaleString('es-ES');$('attendanceRate').textContent=pct===null?'—':`${pct} %`;$('actsDetail').textContent=actsYes?`Último: ${fmtDate(ordered(acts.filter(r=>r.status==='yes'))[0].date)}`:'Sin actos en el periodo';
 
@@ -1357,7 +1426,7 @@ function resetForm(){
 }
 function download(content,name,mime){const blob=new Blob([content],{type:mime}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000)}
 function csvCell(x){return '"'+String(x??'').replace(/"/g,'""')+'"'}
-recordForm.addEventListener('submit',e=>{e.preventDefault();const date=$('date').value,kind=recordForm.elements.kind.value,name=$('name').value.trim(),status=recordForm.elements.status.value,notes=$('notes').value.trim();if(!date||!/^\d{4}-\d{2}-\d{2}$/.test(date)||!name||!['Ensayo','Acto'].includes(kind)||!['yes','no'].includes(status))return;if(editing){const idx=records.findIndex(r=>r.id===editing);if(idx<0)return;records[idx]={id:editing,date,kind,name,status,notes}}else records.push({id:typeof crypto!=='undefined'&&crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random(),date,kind,name,status,notes});if(!save('Guardado correctamente'))return;filterYear=date.slice(0,4);filterMonth='all';render();resetForm();setRecordsView('history');scrollTo({top:0,behavior:'smooth'});$('historyAdd').focus({preventScroll:true})});
+recordForm.addEventListener('submit',e=>{e.preventDefault();const date=$('date').value,kind=recordForm.elements.kind.value,name=$('name').value.trim(),status=recordForm.elements.status.value,notes=$('notes').value.trim();if(!date||!/^\d{4}-\d{2}-\d{2}$/.test(date)||!name||!['Ensayo','Acto'].includes(kind)||!['yes','no'].includes(status))return;if(editing){const idx=records.findIndex(r=>r.id===editing);if(idx<0)return;records[idx]={id:editing,date,kind,name,status,notes}}else records.push({id:typeof crypto!=='undefined'&&crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random(),date,kind,name,status,notes});if(!save('Guardado correctamente'))return;filterYear=date.slice(0,4);filterMonth='all';render();resetForm();setRecordsView('history');scrollTo({top:0,behavior:'smooth'});$('recordsHeading').focus({preventScroll:true})});
 let pendingDeleteId=null, deleteRecordTrigger=null;
 function openDeleteConfirmation(record,trigger){
   pendingDeleteId=record.id;
@@ -1388,7 +1457,7 @@ $('confirmDeleteRecord').addEventListener('click',()=>{
       resetForm();
       setRecordsView('history');
       scrollTo({top:0,behavior:'instant'});
-      $('historyAdd').focus({preventScroll:true});
+      $('recordsHeading').focus({preventScroll:true});
     }
     render();
   }else{
@@ -1447,12 +1516,12 @@ $('cancelRecord').addEventListener('click',()=>{
   }
   setRecordsView('history');
   scrollTo({top:0,behavior:'smooth'});
-  (origin?.button||$('historyAdd')).focus({preventScroll:true});
+  (origin?.button||$('recordsHeading')).focus({preventScroll:true});
 });
 document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.page)));
 $('quickAdd').addEventListener('click',openNewRecord);
 $('mobileAdd').addEventListener('click',openNewRecord);
-$('historyAdd').addEventListener('click',openNewRecord);
+$('sidebarAdd').addEventListener('click',openNewRecord);
 document.querySelectorAll('[data-kind-tab]').forEach(button=>button.addEventListener('click',()=>{
   $('typeFilter').value=button.dataset.kindTab;
   renderHistory();
@@ -1543,7 +1612,27 @@ $('clearHistoryFilters').addEventListener('click',()=>{
   $('typeFilter').value='all';$('statusFilter').value='all';$('search').value='';
   render();
 });
-$('year').addEventListener('change',()=>{filterYear=$('year').value;render()});$('month').addEventListener('change',()=>{filterMonth=$('month').value;render()});$('clearFilters').addEventListener('click',()=>{filterYear='all';filterMonth='all';render()});['search','typeFilter','statusFilter'].forEach(id=>$(id).addEventListener(id==='search'?'input':'change',renderHistory));
+['periodMode','year','month'].forEach(id=>$(id).addEventListener('change',applyPeriodControls));
+$('periodPrev').addEventListener('click',()=>shiftPeriod(-1));
+$('periodNext').addEventListener('click',()=>shiftPeriod(1));
+$('goCurrent').addEventListener('click',()=>{
+  const now=new Date();
+  filterYear=String(now.getFullYear());
+  filterMonth=String(now.getMonth()+1);
+  render();
+  $('dashboardPeriod').open=false;
+});
+document.addEventListener('click',event=>{
+  if(!event.target.closest('.period-toolbar'))$('dashboardPeriod').open=false;
+});
+$('dashboardPeriod').addEventListener('keydown',event=>{
+  if(event.key==='Escape'){
+    event.preventDefault();
+    $('dashboardPeriod').open=false;
+    $('dashboardPeriod').querySelector('summary').focus();
+  }
+});
+['search','typeFilter','statusFilter'].forEach(id=>$(id).addEventListener(id==='search'?'input':'change',renderHistory));
 $('exportJson').addEventListener('click',()=>{download(JSON.stringify({version:1,records},null,2),`mi-banda-copia-${today()}.json`,'application/json');toast('Copia descargada')});
 $('exportCsv').addEventListener('click',()=>{const arr=filteredRecords(),lines=[['Fecha','Tipo','Actividad','Asistencia','Notas'],...arr.map(r=>[fmtDate(r.date),r.kind,r.name,labelStatus(r.status),r.notes||''])];download('\ufeff'+lines.map(row=>row.map(csvCell).join(';')).join('\r\n'),`mi-banda-registros-${today()}.csv`,'text/csv;charset=utf-8');toast('CSV descargado')});
 $('importJson').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{const obj=JSON.parse(await file.text()),newRecords=Array.isArray(obj)?obj:obj.records;if(!Array.isArray(newRecords)||!newRecords.every(isValidRecord))throw Error('Archivo no válido');if(!confirm(`¿Restaurar ${newRecords.length} registros? Reemplazará los ${records.length} que tienes actualmente.`))return;const old=records;records=newRecords.map(r=>({...r,status:r.status==='just'?'no':r.status,notes:r.notes||''}));if(!save('Copia restaurada correctamente')){records=old;return}resetForm();render()}catch(err){alert('No se ha podido importar. Selecciona una copia JSON válida de esta web.')}finally{e.target.value=''}});
@@ -1626,7 +1715,7 @@ window.miBandaUI={
  },
  notify:message=>{toast(message);console.warn(message)}
 };
-monthNames.forEach((name,i)=>$('month').insertAdjacentHTML('beforeend',`<option value="${i+1}">${name}</option>`));resetForm();render();
+monthNames.forEach((name,i)=>$('month').insertAdjacentHTML('beforeend',`<option value="${i+1}">${name}</option>`));$('month').value=String(new Date().getMonth()+1);resetForm();render();
 })();
 </script>
 <script>
