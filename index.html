@@ -775,11 +775,11 @@ html[data-theme="dark"] :is(.toast,.graph-tooltip){background:#223149;border-col
 html[data-theme="dark"] #dashboard .stat-card{box-shadow:none}
 #dashboard .stat-card :is(.stat-label,.detail){color:var(--muted)}
 #dashboard .stat-card .value{font-size:26px;color:var(--text)}
-#dashboard .stat-card.faltas{text-align:left}
-#dashboard .stat-card.faltas .stat-top{justify-content:space-between;gap:6px}
+#dashboard button.stat-card{text-align:left}
+#dashboard button.stat-card .stat-top{justify-content:space-between;gap:6px}
 #dashboard .stat-card.faltas .value{color:var(--red)}
-#dashboard .stat-card.faltas:hover{border-color:var(--blue)}
-#dashboard .stat-card.faltas:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+#dashboard button.stat-card:hover{border-color:var(--blue)}
+#dashboard button.stat-card:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 .stat-arrow{color:var(--muted);font-size:18px;line-height:1}
 #dashboard .stat-card.actos .value{color:var(--green)}
 #dashboard .stat-card.porcentaje{
@@ -919,9 +919,14 @@ html[data-theme="dark"] #settings .settings-danger{background:#241d2a;border-col
 }
 html[data-theme="dark"] .auth-notice{background:#141d2d}
 .auth-notice p{margin:0;font-size:13px;overflow-wrap:anywhere}
-.auth-status-line{display:flex;align-items:center;justify-content:center;gap:8px}
+#bootScreen{
+  align-self:stretch;align-content:center;justify-items:center;gap:8px;
+  min-height:145px;padding:12px;background:transparent;border:0;border-radius:0;
+}
+#bootMessage{font-size:14px;font-weight:600}
+#bootDetail{font-size:12px;font-weight:400}
 .boot-spinner{
-  flex:none;width:15px;height:15px;border:2px solid var(--line);border-top-color:var(--blue);
+  width:25px;height:25px;border:3px solid var(--line);border-top-color:var(--blue);
   border-radius:50%;animation:boot-spin .7s linear infinite;
 }
 @media(prefers-reduced-motion:reduce){.boot-spinner{animation:none}}
@@ -1020,7 +1025,8 @@ html[data-theme="dark"] .toast{background:#1b2434;color:var(--text)}
 <h1>BandApp</h1><p class="auth-subtitle">Tus ensayos, actos y asistencia</p>
 <div class="auth-content">
   <div id="bootScreen" class="auth-notice" role="status" aria-atomic="true">
-    <div class="auth-status-line"><span class="boot-spinner" aria-hidden="true"></span><strong id="bootMessage">Comprobando sesión…</strong></div>
+    <span class="boot-spinner" aria-hidden="true"></span>
+    <strong id="bootMessage">Comprobando sesión…</strong>
     <p id="bootDetail">Buscando tu sesión guardada.</p>
   </div>
   <div id="authGate" hidden>
@@ -1050,12 +1056,16 @@ html[data-theme="dark"] .toast{background:#1b2434;color:var(--text)}
 </div>
 <div class="stats">
 <div class="card stat-card porcentaje"><div class="stat-top"><span class="stat-label">Asistencia a ensayos</span></div><div class="value" id="attendanceRate">—</div><progress id="attendanceProgress" max="100" aria-label="Asistencia a ensayos" hidden></progress><div class="detail" id="attendanceDetail">Sin ensayos en el periodo</div></div>
-<button type="button" class="card stat-card faltas" id="openMissedRehearsals">
+<button type="button" class="card stat-card faltas" id="openMissedRehearsals" data-history-kind="Ensayo" data-history-status="no">
   <span class="stat-top"><span class="stat-label">Faltas a ensayos</span><span class="stat-arrow" aria-hidden="true">›</span></span>
   <span class="value" id="missedRehearsals">0</span>
   <span class="detail" id="missedDetail">Sin faltas en el periodo</span>
 </button>
-<div class="card stat-card actos"><div class="stat-top"><span class="stat-label">Actos realizados</span></div><div class="value" id="actsAttended">0</div><div class="detail" id="actsDetail">0 actos registrados</div></div>
+<button type="button" class="card stat-card actos" id="openAttendedActs" data-history-kind="Acto" data-history-status="yes">
+  <span class="stat-top"><span class="stat-label">Actos realizados</span><span class="stat-arrow" aria-hidden="true">›</span></span>
+  <span class="value" id="actsAttended">0</span>
+  <span class="detail" id="actsDetail">Sin actos en el periodo</span>
+</button>
 </div>
 <div class="dashboard-insights">
 <div class="panel attendance-trend">
@@ -1531,13 +1541,13 @@ document.querySelectorAll('[data-kind-tab]').forEach(button=>button.addEventList
   renderHistory();
 }));
 $('recentHistory').addEventListener('click',()=>show('records'));
-$('openMissedRehearsals').addEventListener('click',()=>{
-  $('typeFilter').value='Ensayo';
-  $('statusFilter').value='no';
+document.querySelectorAll('[data-history-kind]').forEach(button=>button.addEventListener('click',()=>{
+  $('typeFilter').value=button.dataset.historyKind;
+  $('statusFilter').value=button.dataset.historyStatus;
   $('search').value='';
   show('records');
   $('recordsHeading').focus({preventScroll:true});
-});
+}));
 
 /* One tooltip for both charts; delegated listeners work after every render. */
 let activeGraphPoint=null, graphTooltipPinned=false;
