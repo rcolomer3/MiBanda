@@ -989,12 +989,14 @@ html[data-theme="dark"] .toast{background:#1b2434;color:var(--text)}
 .period-toolbar{position:relative;display:grid;grid-template-columns:44px minmax(0,300px) 44px;gap:8px;margin:0 0 16px}
 .dashboard-period{min-width:0}
 .dashboard-period summary{
-  display:flex;align-items:center;justify-content:center;gap:10px;min-height:44px;
+  display:grid;grid-template-columns:16px minmax(0,1fr) 16px;align-items:center;gap:8px;min-height:44px;
   padding:8px 12px;list-style:none;border:1px solid var(--line);border-radius:12px;
   background:var(--panel);color:var(--text);font-weight:650;cursor:pointer;
 }
 .dashboard-period summary::-webkit-details-marker{display:none}
 .dashboard-period summary:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+#dashboardPeriodLabel{grid-column:2;text-align:center}
+.period-caret{display:block;width:16px;height:16px;color:var(--muted)}
 .dashboard-period[open] .period-caret{transform:rotate(180deg)}
 .period-fields{
   position:absolute;z-index:20;inset:calc(100% + 8px) 0 auto;
@@ -1036,7 +1038,7 @@ html[data-theme="dark"] .toast{background:#1b2434;color:var(--text)}
 <div class="period-toolbar">
   <button type="button" class="btn period-step" id="periodPrev" aria-label="Periodo anterior">‹</button>
   <details id="dashboardPeriod" class="dashboard-period">
-    <summary><span id="dashboardPeriodLabel">Periodo</span><span class="period-caret" aria-hidden="true">⌄</span></summary>
+    <summary><span id="dashboardPeriodLabel">Periodo</span><svg class="period-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
     <div class="period-fields">
       <div class="field period-mode"><label for="periodMode">Vista</label><select id="periodMode"><option value="month">Por mes</option><option value="year">Por año</option><option value="all">Todo</option></select></div>
       <div class="field"><label for="month">Mes</label><select id="month"></select></div>
@@ -1051,6 +1053,7 @@ html[data-theme="dark"] .toast{background:#1b2434;color:var(--text)}
 <button type="button" class="card stat-card faltas" id="openMissedRehearsals">
   <span class="stat-top"><span class="stat-label">Faltas a ensayos</span><span class="stat-arrow" aria-hidden="true">›</span></span>
   <span class="value" id="missedRehearsals">0</span>
+  <span class="detail" id="missedDetail">Sin faltas en el periodo</span>
 </button>
 <div class="card stat-card actos"><div class="stat-top"><span class="stat-label">Actos realizados</span></div><div class="value" id="actsAttended">0</div><div class="detail" id="actsDetail">0 actos registrados</div></div>
 </div>
@@ -1297,6 +1300,7 @@ function subset(){return records.filter(r=>(filterYear==='all'||r.date.slice(0,4
 function ordered(arr){return [...arr].sort((a,b)=>b.date.localeCompare(a.date)||b.id.localeCompare(a.id))}
 function renderDashboard(){initYears();syncPeriodControls();const data=subset(),ensayos=data.filter(r=>r.kind==='Ensayo'),acts=data.filter(r=>r.kind==='Acto'),yes=ensayos.filter(r=>r.status==='yes').length,missed=ensayos.filter(r=>r.status==='no').length,actsYes=acts.filter(r=>r.status==='yes').length,pct=ensayos.length?Math.round(100*yes/ensayos.length):null;
 $('missedRehearsals').textContent=missed.toLocaleString('es-ES');
+$('missedDetail').textContent=missed? `Última: ${fmtDate(ordered(ensayos.filter(r=>r.status==='no'))[0].date)}`:'Sin faltas en el periodo';
 $('actsAttended').textContent=actsYes.toLocaleString('es-ES');$('attendanceRate').textContent=pct===null?'—':`${pct} %`;$('actsDetail').textContent=actsYes?`Último: ${fmtDate(ordered(acts.filter(r=>r.status==='yes'))[0].date)}`:'Sin actos en el periodo';
 
 const progress=$('attendanceProgress');
